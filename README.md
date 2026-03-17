@@ -65,7 +65,7 @@ For Qt, Opus, PortAudio, etc., manually download their source or binaries and pl
    ```
 2) Clone the repo and open a **x64 Native Tools** VS 2022 prompt (or a PowerShell with the VS dev tools in PATH):
    ```powershell
-   cd C:\Users\YUVANESH\Desktop\projects\new\oyx-main
+   cd project
    ```
 3) Configure with the Visual Studio preset (downloads Qt/Opus via vcpkg as needed):
    ```powershell
