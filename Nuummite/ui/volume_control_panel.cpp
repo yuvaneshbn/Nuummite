@@ -39,8 +39,8 @@ void VolumeControlPanel::configureControls() {
 
     noise_suppression_slider_->setMinimum(0);
     noise_suppression_slider_->setMaximum(100);
-    noise_suppression_slider_->setValue(0);
-    noise_suppression_enable_checkbox_->setChecked(false);
+    noise_suppression_slider_->setValue(50);
+    noise_suppression_enable_checkbox_->setChecked(true);
     echo_checkbox_->setChecked(audio_ ? audio_->echoEnabled() : false);
     echo_checkbox_->setEnabled(audio_ ? audio_->echoAvailable() : false);
     syncNoiseSuppressionControls();

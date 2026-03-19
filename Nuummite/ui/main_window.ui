@@ -78,7 +78,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="participantList"/>
+         <widget class="QListWidget" name="participantList">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="countLabel">
@@ -159,9 +163,30 @@
         <size>
          <width>40</width>
          <height>20</height>
-        </size>
+       </size>
+      </property>
+     </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="selectAllButton">
+       <property name="text">
+        <string>Select All</string>
        </property>
-      </spacer>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="callButton">
+       <property name="text">
+        <string>Call</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="removeButton">
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="muteButton">

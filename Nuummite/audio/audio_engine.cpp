@@ -384,19 +384,10 @@ AudioEngine::AudioEngine()
 
     echo_enabled_.store(false);
 
-    try {
-        aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
-        if (aec_ && aec_->available()) {
-            aec_->set_delay_ms(40);
-            echo_enabled_.store(false);
-            std::cout << "[AUDIO] WebRTC AEC3 ready with fixed 40 ms delay (disabled by default)\n";
-        } else {
-            aec_.reset();
-        }
-    } catch (...) {
-        aec_.reset();
-        std::cout << "[AUDIO] WebRTC AEC3 unavailable\n";
-    }
+    // AEC disabled to rule out echo delay / artifacts during debugging
+    aec_.reset();
+    echo_enabled_.store(false);
+    std::cout << "[AUDIO] AEC disabled for debug\n";
 
     if (!openOutput()) {
         std::cerr << "[AUDIO] Failed to open output device\n";
@@ -718,18 +709,6 @@ std::vector<int16_t> AudioEngine::mixFrame() {
         }
     }
 
-    if (echo_enabled_.load() && aec_) {
-        try {
-            std::lock_guard<std::mutex> lock(echo_mutex_);
-            if (echo_enabled_.load() && aec_) {
-                aec_->process_render(mix.data(), FRAME);
-            }
-        } catch (...) {
-            std::cerr << "[AUDIO] Echo reverse error, disabling echo canceller\n";
-            echo_enabled_.store(false);
-        }
-    }
-
     updateMixedLevel(mix);
     return mix;
 }
@@ -856,14 +835,24 @@ void AudioEngine::sendLoop() {
             input_peak = std::max(input_peak, static_cast<int>(std::abs(sample)));
         }
 
+        // Silence gate with hangover to drop TV/background tails quickly
+        const int silence_gate = 500; // tighter gate, ~-28 dBFS
+        static int quiet_frames = 0;
+        if (input_peak < silence_gate) {
+            ++quiet_frames;
+        } else {
+            quiet_frames = 0;
+        }
+        if (quiet_frames >= 6) { // ~120 ms at 20 ms frames
+            std::fill(frame.begin(), frame.end(), 0);
+        }
+
         bool tx_muted = false;
         bool noise_suppression_enabled = false;
         int noise_suppression = 0;
         float tx_gain_db = 0.0f;
         int mic_sensitivity = 50;
         bool auto_gain = false;
-        bool echo_enabled = false;
-
         {
             std::lock_guard<std::mutex> lock(config_mutex_);
             tx_muted = tx_muted_;
@@ -873,7 +862,7 @@ void AudioEngine::sendLoop() {
             mic_sensitivity = mic_sensitivity_;
             auto_gain = auto_gain_;
         }
-        echo_enabled = false;
+        bool echo_enabled = false; // force-off for debug
 
         capture_level_.store(std::min(100, (input_peak * 100) / 32767));
         const int activity_threshold = std::max(120, 2200 - (mic_sensitivity * 16));
@@ -882,44 +871,33 @@ void AudioEngine::sendLoop() {
         if (tx_muted) {
             std::fill(frame.begin(), frame.end(), 0);
         } else {
-            if (echo_enabled && aec_) {
-                try {
-                    std::lock_guard<std::mutex> lock(echo_mutex_);
-                    if (echo_enabled_.load() && aec_) {
-                        aec_->process_capture(frame);
-                    }
-                } catch (...) {
-                    std::cerr << "[AUDIO] Echo capture error, disabling\n";
-                    echo_enabled_.store(false);
-                }
-            }
+            // Echo canceller disabled for debug
 
+            // Mild noise gate and conservative gain (no clipping)
             if (noise_suppression_enabled) {
-                const int gate = static_cast<int>((noise_suppression / 100.0f) * 2500.0f);
+                const int gate = static_cast<int>((noise_suppression / 100.0f) * 2000.0f);
                 if (gate > 0) {
                     for (auto& sample : frame) {
-                        if (std::abs(sample) < gate) {
-                            sample = 0;
-                        }
+                        if (std::abs(sample) < gate) sample = 0;
                     }
                 }
             }
 
             float gain = std::pow(10.0f, tx_gain_db / 20.0f);
-            gain *= 0.5f + (mic_sensitivity / 100.0f);
+            gain *= 0.5f + (mic_sensitivity / 100.0f) * 0.5f; // 0.5x..1.0x base
+
             if (auto_gain) {
                 int post_peak = 0;
-                for (const auto sample : frame) {
-                    post_peak = std::max(post_peak, static_cast<int>(std::abs(sample)));
-                }
-                const float target = 9000.0f + (mic_sensitivity * 80.0f);
-                gain *= std::clamp(target / static_cast<float>(std::max(post_peak, 1)), 0.5f, 3.0f);
+                for (const auto sample : frame) post_peak = std::max(post_peak, static_cast<int>(std::abs(sample)));
+                const float target = 7500.0f; // conservative target
+                const float agc = target / static_cast<float>(std::max(post_peak, 1));
+                gain *= std::clamp(agc, 0.7f, 1.6f);
             }
 
             if (std::abs(gain - 1.0f) > 0.0001f) {
                 for (auto& sample : frame) {
                     const int scaled = static_cast<int>(sample * gain);
-                    sample = static_cast<int16_t>(std::clamp(scaled, -32768, 32767));
+                    sample = static_cast<int16_t>(std::clamp(scaled, -30000, 30000));
                 }
             }
         }

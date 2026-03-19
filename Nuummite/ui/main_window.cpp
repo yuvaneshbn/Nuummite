@@ -10,6 +10,7 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -19,6 +20,7 @@
 #include <QPushButton>
 #include <QStatusBar>
 #include <QTime>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include <algorithm>
@@ -56,9 +58,20 @@ MainWindow::MainWindow(const QString& my_id,
     setCentralWidget(root_);
     setWindowTitle(root_->windowTitle());
 
+    auto* content_layout = root_->findChild<QHBoxLayout*>("contentLayout");
+    if (!content_layout) {
+        throw std::runtime_error("Missing content layout");
+    }
+    QWidget* available_widget = load_ui_widget(ui_path("available_clients.ui"), this);
+    content_layout->insertWidget(0, available_widget);
+
     room_combo_ = require_child<QComboBox>(root_, "roomCombo");
     join_leave_button_ = require_child<QPushButton>(root_, "joinLeaveButton");
     refresh_button_ = require_child<QPushButton>(root_, "refreshButton");
+    available_list_ = require_child<QListWidget>(available_widget, "availableList");
+    select_all_button_ = require_child<QPushButton>(root_, "selectAllButton");
+    call_button_ = require_child<QPushButton>(root_, "callButton");
+    remove_button_ = require_child<QPushButton>(root_, "removeButton");
     connection_indicator_ = require_child<QLabel>(root_, "connectionIndicator");
 
     search_input_ = require_child<QLineEdit>(root_, "searchInput");
@@ -104,6 +117,9 @@ MainWindow::MainWindow(const QString& my_id,
 
     connect(refresh_button_, &QPushButton::clicked, this, [this]() { refreshParticipants(false); });
     connect(search_input_, &QLineEdit::textChanged, this, [this]() { applySearchFilter(); });
+    connect(select_all_button_, &QPushButton::clicked, this, &MainWindow::selectAllAvailable);
+    connect(call_button_, &QPushButton::clicked, this, &MainWindow::callSelected);
+    connect(remove_button_, &QPushButton::clicked, this, &MainWindow::removeSelected);
 
     mute_button_->setCheckable(true);
     connect(mute_button_, &QPushButton::toggled, this, &MainWindow::toggleSelfMute);
@@ -140,6 +156,17 @@ MainWindow::MainWindow(const QString& my_id,
     setConnectedState(true);
 
     refreshParticipants(false);
+
+    if (discovery_) {
+        discovery_->setIncomingSignalingHandler([this](const std::string& type,
+                                                       const std::string& from_id,
+                                                       uint16_t /*rtp_port*/,
+                                                       const std::string& from_ip) {
+            QTimer::singleShot(0, this, [this, type, from_id, from_ip]() {
+                handleIncomingSignaling(type, from_id, from_ip);
+            });
+        });
+    }
 }
 
 MainWindow::~MainWindow() {
@@ -170,26 +197,19 @@ void MainWindow::refreshParticipants(bool silent) {
     }
 
     std::vector<PeerInfo> peers = discovery_->peers();
-    std::vector<std::string> participants;
-    participants.reserve(peers.size() + 1);
+    std::vector<std::string> all_peers;
+    all_peers.reserve(peers.size() + 1);
     for (const auto& p : peers) {
-        participants.push_back(p.id);
+        all_peers.push_back(p.id);
     }
-    bool has_self = false;
-    for (const auto& p : participants) {
-        if (p == my_id_.toStdString()) {
-            has_self = true;
-            break;
-        }
-    }
-    if (!has_self) {
-        participants.push_back(my_id_.toStdString());
+    if (std::find(all_peers.begin(), all_peers.end(), my_id_.toStdString()) == all_peers.end()) {
+        all_peers.push_back(my_id_.toStdString());
     }
 
-    std::sort(participants.begin(), participants.end(), [](const std::string& a, const std::string& b) {
+    std::sort(all_peers.begin(), all_peers.end(), [](const std::string& a, const std::string& b) {
         return sortClientKey(QString::fromStdString(a)) < sortClientKey(QString::fromStdString(b));
     });
-    participants.erase(std::unique(participants.begin(), participants.end()), participants.end());
+    all_peers.erase(std::unique(all_peers.begin(), all_peers.end()), all_peers.end());
 
     if (!silent) {
         setConnectedState(true, "Participant list refreshed");
@@ -198,12 +218,18 @@ void MainWindow::refreshParticipants(bool silent) {
     }
 
     QSet<QString> participant_set;
-    for (const auto& p : participants) {
+    for (const auto& p : all_peers) {
         participant_set.insert(QString::fromStdString(p));
     }
 
     targets_ = targets_.intersect(participant_set);
+    call_members_ = call_members_.intersect(participant_set);
     muted_participants_ = muted_participants_.intersect(participant_set);
+    // Only allow talk targets for peers that are in the active call set
+    targets_ = targets_.intersect(call_members_);
+
+    QSet<QString> call_set = call_members_;
+    call_set.insert(my_id_);
 
     for (auto it = participant_rows_.begin(); it != participant_rows_.end(); ++it) {
         delete it.value();
@@ -211,21 +237,28 @@ void MainWindow::refreshParticipants(bool silent) {
     participant_rows_.clear();
     participant_list_->clear();
 
-    for (const auto& p : participants) {
-        const QString cid = QString::fromStdString(p);
+    std::vector<QString> call_vec(call_set.begin(), call_set.end());
+    std::sort(call_vec.begin(), call_vec.end(), [](const QString& a, const QString& b) {
+        return sortClientKey(a) < sortClientKey(b);
+    });
+
+    for (const auto& cid : call_vec) {
         bool is_self = (cid == my_id_);
         auto* row = new ParticipantRow(cid, is_self, targets_.contains(cid), muted_participants_.contains(cid), this);
+
         connect(row, &ParticipantRow::talkToggled, this, [this](const QString& client_id, bool enabled) {
             if (client_id == my_id_) {
                 return;
             }
             if (enabled) {
                 targets_.insert(client_id);
+                call_members_.insert(client_id);
             } else {
                 targets_.remove(client_id);
             }
             updateLocalTargets();
         });
+
         connect(row, &ParticipantRow::muteToggled, this, [this](const QString& client_id, bool enabled) {
             if (client_id == my_id_) {
                 return;
@@ -241,14 +274,43 @@ void MainWindow::refreshParticipants(bool silent) {
 
         auto* item = new QListWidgetItem();
         item->setSizeHint(row->widget()->sizeHint());
+        item->setData(Qt::UserRole, cid);
         participant_list_->addItem(item);
         participant_list_->setItemWidget(item, row->widget());
         participant_rows_.insert(cid, row);
     }
 
+    QSet<QString> checked_available;
+    for (int i = 0; i < available_list_->count(); ++i) {
+        QListWidgetItem* item = available_list_->item(i);
+        if (item->checkState() == Qt::Checked) {
+            checked_available.insert(item->text());
+        }
+    }
+
+    available_list_->clear();
+    QSet<QString> available_set = participant_set;
+    available_set.subtract(call_set);
+
+    std::vector<QString> avail_vec(available_set.begin(), available_set.end());
+    std::sort(avail_vec.begin(), avail_vec.end(), [](const QString& a, const QString& b) {
+        return sortClientKey(a) < sortClientKey(b);
+    });
+
+    for (const auto& cid : avail_vec) {
+        auto* item = new QListWidgetItem(cid);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+        item->setCheckState(checked_available.contains(cid) ? Qt::Checked : Qt::Unchecked);
+        if (cid == my_id_) {
+            item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+        }
+        available_list_->addItem(item);
+    }
+
     recomputeHearTargets();
     updateLocalTargets();
     applySearchFilter();
+    syncBroadcastButton();
 }
 
 void MainWindow::applySearchFilter() {
@@ -442,6 +504,94 @@ void MainWindow::updateLiveUi() {
         status_lines << QString("Client %1 - %2").arg(cid, state);
     }
     active_speakers_label_->setText(status_lines.isEmpty() ? "No clients" : status_lines.join("\n"));
+}
+
+void MainWindow::selectAllAvailable() {
+    for (int i = 0; i < available_list_->count(); ++i) {
+        available_list_->item(i)->setCheckState(Qt::Checked);
+    }
+}
+
+void MainWindow::callSelected() {
+    for (int i = 0; i < available_list_->count(); ++i) {
+        QListWidgetItem* item = available_list_->item(i);
+        if (item->checkState() == Qt::Checked) {
+            const QString callee = item->text();
+            if (discovery_) {
+                discovery_->sendCallInvite(callee.toStdString());
+            }
+            // Keep them in the call list even if "Talk" is off later
+            call_members_.insert(callee);
+            // Start sending immediately on caller side
+            targets_.insert(callee);
+        }
+    }
+    for (int i = 0; i < available_list_->count(); ++i) {
+        available_list_->item(i)->setCheckState(Qt::Unchecked);
+    }
+
+    // Start audio + update UI right away
+    updateLocalTargets();
+    refreshParticipants(false);
+}
+
+void MainWindow::removeSelected() {
+    const auto items = participant_list_->selectedItems();
+    bool any_removed = false;
+    for (QListWidgetItem* item : items) {
+        const QString cid = item->data(Qt::UserRole).toString();
+        if (cid.isEmpty() || cid == my_id_) {
+            continue;
+        }
+        if (targets_.contains(cid)) {
+            targets_.remove(cid);
+            any_removed = true;
+        }
+        call_members_.remove(cid);
+        muted_participants_.remove(cid);
+    }
+    if (any_removed) {
+        updateLocalTargets();
+        refreshParticipants(false);
+    }
+}
+
+void MainWindow::handleIncomingSignaling(const std::string& type,
+                                         const std::string& from_id,
+                                         const std::string& from_ip) {
+    const QString caller = QString::fromStdString(from_id);
+    const QString ip_str = QString::fromStdString(from_ip);
+
+    if (type == "CALL") {
+        const QString msg = QString("Incoming call from %1 (%2)\nAccept and start voice chat?")
+                                .arg(caller, ip_str);
+        if (QMessageBox::question(this, "Incoming Call", msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+            if (discovery_) {
+                discovery_->sendCallAccept(from_id);
+            }
+            call_members_.insert(caller);
+            targets_.insert(caller);
+            updateLocalTargets();
+            refreshParticipants(false);
+            main_status_bar_->showMessage("Call accepted from " + caller);
+        } else {
+            if (discovery_) {
+                discovery_->sendCallDecline(from_id);
+            }
+        }
+    } else if (type == "ACCEPT") {
+        call_members_.insert(caller);
+        targets_.insert(caller);
+        updateLocalTargets();
+        refreshParticipants(false);
+        main_status_bar_->showMessage(caller + " accepted your call");
+    } else if (type == "DECLINE") {
+        main_status_bar_->showMessage(caller + " declined your call");
+        targets_.remove(caller);
+        call_members_.remove(caller);
+        updateLocalTargets();
+        refreshParticipants(false);
+    }
 }
 
 void MainWindow::cleanup(bool unregister) {

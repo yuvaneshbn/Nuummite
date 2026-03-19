@@ -23,7 +23,7 @@ ParticipantRow::ParticipantRow(const QString& client_id,
     mic_status_label_ = require_child<QLabel>(widget_, "micStatusLabel");
     volume_bar_ = require_child<QProgressBar>(widget_, "participantVolumeBar");
 
-    QString name_text = QString("Client %1").arg(client_id_);
+    QString name_text = client_id_;
     if (is_self_) {
         name_text += " (You)";
     }

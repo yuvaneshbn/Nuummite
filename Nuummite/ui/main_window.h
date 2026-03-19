@@ -39,6 +39,14 @@ public:
 protected:
     void closeEvent(QCloseEvent* event) override;
 
+private slots:
+    void selectAllAvailable();
+    void callSelected();
+    void removeSelected();
+    void handleIncomingSignaling(const std::string& type,
+                                 const std::string& from_id,
+                                 const std::string& from_ip);
+
 private:
     void setConnectedState(bool connected, const QString& detail = QString());
     void refreshParticipants(bool silent = false);
@@ -61,6 +69,10 @@ private:
     QComboBox* room_combo_ = nullptr;
     QPushButton* join_leave_button_ = nullptr;
     QPushButton* refresh_button_ = nullptr;
+    QListWidget* available_list_ = nullptr;
+    QPushButton* select_all_button_ = nullptr;
+    QPushButton* call_button_ = nullptr;
+    QPushButton* remove_button_ = nullptr;
     QLabel* connection_indicator_ = nullptr;
 
     QLineEdit* search_input_ = nullptr;
@@ -84,6 +96,7 @@ private:
     VolumeControlPanel* volume_controls_ = nullptr;
 
     QSet<QString> targets_;
+    QSet<QString> call_members_;
     QSet<QString> muted_participants_;
     QSet<QString> hear_targets_;
     QMap<QString, ParticipantRow*> participant_rows_;
