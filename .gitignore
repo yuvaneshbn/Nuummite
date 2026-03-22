@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.pytest_cache/
+
+# Build / packaging
+build/
+build-*/
+dist/
+*.egg-info/
+
+# PyInstaller build cache
+*.spec
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake-build-*/
+compile_commands.json
+Testing/
+
+# VS/VSCode
+.vs/
+# keep .vscode for workspace settings
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+Desktop.ini
