@@ -6,11 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>196</width>
-    <height>336</height>
+    <width>260</width>
+    <height>320</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="rootLayout">
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <property name="leftMargin">
+    <number>12</number>
+   </property>
+   <property name="topMargin">
+    <number>12</number>
+   </property>
+   <property name="rightMargin">
+    <number>12</number>
+   </property>
+   <property name="bottomMargin">
+    <number>12</number>
+   </property>
    <item>
     <widget class="QLabel" name="headerLabel">
      <property name="text">
@@ -45,7 +60,7 @@
    <item>
     <widget class="QLabel" name="gainLabel">
      <property name="text">
-      <string>Gain</string>
+      <string>Gain (dB)</string>
      </property>
     </widget>
    </item>
@@ -57,6 +72,20 @@
      <property name="maximum">
       <number>20</number>
      </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="inputSensitivityLabel">
+     <property name="text">
+      <string>Input Sensitivity</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSlider" name="inputSensitivitySlider">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -87,20 +116,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="noiseSuppressionEnableCheckbox">
-     <property name="text">
-      <string>Enable Noise Suppression</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="echoCheckbox">
-     <property name="text">
-      <string>Enable Echo Cancellation</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="testMicLayout">
      <item>
       <widget class="QPushButton" name="testMicButton">
@@ -111,6 +126,12 @@
      </item>
      <item>
       <widget class="QLabel" name="testStatusLabel">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -122,6 +143,13 @@
     <widget class="QProgressBar" name="micLevelBar">
      <property name="textVisible">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="restoreDefaultsButton">
+     <property name="text">
+      <string>Restore Default</string>
      </property>
     </widget>
    </item>

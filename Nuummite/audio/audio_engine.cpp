@@ -4,6 +4,7 @@
 #include "socket_utils.h"
 #include "portaudio_dyn.h"
 #include "aec_processor.h"
+#include "rnnoise_processor.h"
 #include "winsock_init.h"
 
 #include <winsock2.h>
@@ -58,6 +59,15 @@ std::string exeDir() {
     return full.substr(0, slash);
 }
 
+std::string cwd() {
+    char buf[MAX_PATH] = {0};
+    const DWORD len = GetCurrentDirectoryA(MAX_PATH, buf);
+    if (len == 0 || len >= MAX_PATH) {
+        return ".";
+    }
+    return std::string(buf, buf + len);
+}
+
 struct PortAudioApi {
     using Pa_Initialize_Fn = PaError (*)();
     using Pa_Terminate_Fn = PaError (*)();
@@ -103,6 +113,8 @@ struct PortAudioApi {
 
         std::vector<std::string> candidates = {
             exeDir() + "\\" + DEFAULT_PORTAUDIO_DLL,
+            exeDir() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
+            cwd() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
             DEFAULT_PORTAUDIO_DLL,
         };
 #ifdef VOICE_PORTAUDIO_DLL_FALLBACK
@@ -350,6 +362,9 @@ AudioEngine::AudioEngine()
     // VOIP tuned: enable DTX, lower bitrate, VOIP app for cleaner speech
     : encoder_(RATE, 1, FRAME, true, 10, 32000, 10, true, OPUS_APPLICATION_VOIP, true, false),
       decoder_(RATE, 1, FRAME, true, 10, 64000, 10, false, OPUS_APPLICATION_AUDIO, false, true) {
+    SodiumWrapper::init();
+    rnnoise_ = std::make_unique<RnNoiseProcessor>();
+        aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
     std::string pa_error;
     auto& pa = portAudioApi();
     if (!pa.load(pa_error)) {
@@ -663,6 +678,7 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     const auto packet = parse_voice_packet(data);
     if (!packet.has_value() || packet->kind != VoicePacketKind::ClientAudio ||
         packet->sender_id.empty() || packet->sender_id == client_id_) {
+        // No spoofing: parse_voice_packet returns nullopt if signature fails
         return;
     }
 
@@ -683,19 +699,25 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
 }
 
 std::vector<int16_t> AudioEngine::mixFrame() {
-    std::vector<int16_t> mix(FRAME, 0);
+    std::vector<int32_t> sum(FRAME, 0);
 
     {
         std::lock_guard<std::mutex> lock(rx_mutex_);
         for (const auto& [id, pcm] : rx_last_pcm_) {
             if (hear_targets_.count(id)) {
                 for (int i = 0; i < FRAME && i < static_cast<int>(pcm.size()); ++i) {
-                    mix[i] += pcm[i];
+                    sum[i] += pcm[i];   // prevent overflow
                 }
             }
         }
     }
 
+    std::vector<int16_t> mix(FRAME);
+    for (int i = 0; i < FRAME; ++i) {
+        mix[i] = static_cast<int16_t>(std::clamp(sum[i], -32768, 32767));
+    }
+
+    // Apply master + output volume
     float master = 1.0f;
     float output = 1.0f;
     {
@@ -711,6 +733,7 @@ std::vector<int16_t> AudioEngine::mixFrame() {
         }
     }
 
+    // AEC reverse path (only if enabled)
     if (echo_enabled_.load() && aec_) {
         try {
             std::lock_guard<std::mutex> lock(echo_mutex_);
@@ -837,106 +860,76 @@ bool AudioEngine::updateDestinations(const std::vector<std::string>& destination
 
 void AudioEngine::sendLoop() {
     int packet_count = 0;
-
     while (running_.load()) {
         std::vector<int16_t> frame;
-        if (!popCaptureFrame(frame)) {
-            continue;
+        if (!popCaptureFrame(frame)) continue;
+
+        // 1. RNNoise noise suppression (on raw mic)
+        if (noise_suppression_enabled_ && rnnoise_ && rnnoise_->isAvailable()) {
+            rnnoise_->process(frame);
         }
 
+        bool tx_muted = false;
+        float tx_gain_db = 0.0f;
+        int mic_sens = 35;
+        {
+            std::lock_guard<std::mutex> lock(config_mutex_);
+            tx_muted = tx_muted_;
+            tx_gain_db = tx_gain_db_;
+            mic_sens = mic_sensitivity_;
+        }
+
+        bool should_send = false;
+        if (tx_muted) {
+            std::fill(frame.begin(), frame.end(), 0);
+        } else {
+            // === Apply TX gain + mic sensitivity ===
+            const float gain_linear = std::pow(10.0f, tx_gain_db / 20.0f);
+            const float sens_linear = static_cast<float>(mic_sens) / 35.0f;
+            const float total_gain = gain_linear * sens_linear;
+            for (auto& s : frame) {
+                const float amplified = static_cast<float>(s) * total_gain;
+                s = static_cast<int16_t>(std::clamp(amplified, -32768.0f, 32767.0f));
+            }
+
+            // === VAD - ALWAYS RUN (AEC is still optional) ===
+            if (aec_) {
+                aec_->process_capture(frame);   // ← This was the main bug
+            }
+            const bool voice_detected = aec_ ? aec_->hasVoice() : false;
+
+            static int silence_frames = 0;
+            constexpr int VAD_HANGOVER_FRAMES = 12;
+            if (voice_detected) {
+                silence_frames = 0;
+                should_send = true;
+            } else {
+                silence_frames++;
+                should_send = (silence_frames <= VAD_HANGOVER_FRAMES);
+            }
+        }
+
+        // Update UI level from processed frame
         int input_peak = 0;
         for (const auto sample : frame) {
             input_peak = std::max(input_peak, static_cast<int>(std::abs(sample)));
         }
-
-        bool tx_muted = false;
-        bool noise_suppression_enabled = false;
-        int noise_suppression = 0;
-        float tx_gain_db = 0.0f;
-        int mic_sensitivity = 50;
-        bool auto_gain = false;
-        bool echo_enabled = false;
-
-        {
-            std::lock_guard<std::mutex> lock(config_mutex_);
-            tx_muted = tx_muted_;
-            noise_suppression_enabled = noise_suppression_enabled_;
-            noise_suppression = noise_suppression_;
-            tx_gain_db = tx_gain_db_;
-            mic_sensitivity = mic_sensitivity_;
-            auto_gain = auto_gain_;
-        }
-        echo_enabled = false;
-
         capture_level_.store(std::min(100, (input_peak * 100) / 32767));
-        const int activity_threshold = std::max(120, 2200 - (mic_sensitivity * 16));
-        capture_active_.store(input_peak >= activity_threshold && !tx_muted);
+        capture_active_.store(should_send && !tx_muted);
 
-        if (tx_muted) {
-            std::fill(frame.begin(), frame.end(), 0);
-        } else {
-            if (echo_enabled && aec_) {
-                try {
-                    std::lock_guard<std::mutex> lock(echo_mutex_);
-                    if (echo_enabled_.load() && aec_) {
-                        aec_->process_capture(frame);
-                    }
-                } catch (...) {
-                    std::cerr << "[AUDIO] Echo capture error, disabling\n";
-                    echo_enabled_.store(false);
-                }
-            }
-
-        if (noise_suppression_enabled) {
-            // Stronger gate to kill hiss between words
-            const int gate = static_cast<int>((noise_suppression / 100.0f) * 4500.0f);
-                if (gate > 0) {
-                    for (auto& sample : frame) {
-                        if (std::abs(sample) < gate) {
-                            sample = 0;
-                        }
-                    }
-                }
-            }
-
-            float gain = std::pow(10.0f, tx_gain_db / 20.0f);
-            gain *= 0.5f + (mic_sensitivity / 100.0f);
-            if (auto_gain) {
-                int post_peak = 0;
-                for (const auto sample : frame) {
-                    post_peak = std::max(post_peak, static_cast<int>(std::abs(sample)));
-                }
-                const float target = 9000.0f + (mic_sensitivity * 80.0f);
-                gain *= std::clamp(target / static_cast<float>(std::max(post_peak, 1)), 0.5f, 3.0f);
-            }
-
-            if (std::abs(gain - 1.0f) > 0.0001f) {
-                for (auto& sample : frame) {
-                    const int scaled = static_cast<int>(sample * gain);
-                    sample = static_cast<int16_t>(std::clamp(scaled, -32768, 32767));
-                }
-            }
-        }
+        if (!should_send) continue;
 
         const std::vector<uint8_t> opus = encoder_.encode(frame);
-        if (opus.empty()) {
-            continue;
-        }
+        if (opus.empty()) continue;
 
         std::vector<uint8_t> packet = build_client_audio_packet(client_id_, seq_, timestamp_, opus);
-
         seq_ = static_cast<uint16_t>((seq_ + 1) & 0xFFFF);
         timestamp_ += FRAME;
-
         const int sent = transport_.sendPacket(send_sock_, packet);
-        if (sent > 0) {
-            ++packet_count;
-            if (packet_count % 100 == 0) {
-                std::cout << "[AUDIO] Sent " << packet_count << " packets from " << client_id_ << "\n";
-            }
-        }
+        if (sent > 0) ++packet_count;
     }
 }
+
 
 void AudioEngine::stop() {
     running_.store(false);
@@ -985,4 +978,6 @@ void AudioEngine::shutdown() {
     if (pa.Terminate) {
         pa.Terminate();
     }
+
+    SodiumWrapper::shutdown();
 }

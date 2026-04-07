@@ -76,7 +76,7 @@ static OPUS_INLINE float relu(float x)
    return x < 0 ? 0 : x;
 }
 
-static void compute_dense(const DenseLayer *layer, float *output, const float *input)
+void compute_dense(const DenseLayer *layer, float *output, const float *input)
 {
    int i, j;
    int N, M;
@@ -106,7 +106,7 @@ static void compute_dense(const DenseLayer *layer, float *output, const float *i
    }
 }
 
-static void compute_gru(const GRULayer *gru, float *state, const float *input)
+void compute_gru(const GRULayer *gru, float *state, const float *input)
 {
    int i, j;
    int N, M;
@@ -175,4 +175,12 @@ void compute_rnn(RNNState *rnn, float *gains, float *vad, const float *input) {
   for (i=0;i<INPUT_SIZE;i++) denoise_input[i+rnn->model->vad_gru_size+rnn->model->noise_gru_size] = input[i];
   compute_gru(rnn->model->denoise_gru, rnn->denoise_gru_state, denoise_input);
   compute_dense(rnn->model->denoise_output, gains, rnn->denoise_gru_state);
+}
+
+void rnvad_compute_rnn(RNNState *rnn, float *vad, const float *input) {
+
+  float dense_out[MAX_NEURONS];
+  compute_dense(rnn->model->input_dense, dense_out, input);
+  compute_gru(rnn->model->vad_gru, rnn->vad_gru_state, dense_out);
+  compute_dense(rnn->model->vad_output, vad, rnn->vad_gru_state);
 }

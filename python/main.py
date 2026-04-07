@@ -1,6 +1,8 @@
 import os
 import sys
 import shutil
+import socket
+import time
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -28,13 +30,28 @@ def resource_path(rel: str) -> str:
 def load_ui(filename: str, parent=None):
     loader = QtUiTools.QUiLoader()
     ui_file = QtCore.QFile(resource_path(f"Nuummite/ui/{filename}"))
-    if not ui_file.open(QtCore.QFile.ReadOnly):
+    # PySide6 renamed open mode enum; QFile.ReadOnly is absent. Use OpenModeFlag.
+    if not ui_file.open(QtCore.QFile.OpenModeFlag.ReadOnly):
         raise RuntimeError(f"Cannot open UI file: {ui_file.fileName()}")
     widget = loader.load(ui_file, parent)
     ui_file.close()
     if widget is None:
         raise RuntimeError(f"Failed to load UI from {filename}")
     return widget
+
+
+def get_local_ip() -> str:
+    """
+    Best-effort local IPv4 detection without external traffic.
+    """
+    ip = "127.0.0.1"
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+    except OSError:
+        pass
+    return ip
 
 
 class ParticipantRow(QtCore.QObject):
@@ -97,11 +114,13 @@ class VolumeControlPanel(QtCore.QObject):
         self.gain_slider = self.widget.findChild(QtWidgets.QSlider, "gainSlider")
         self.ns_label = self.widget.findChild(QtWidgets.QLabel, "noiseSuppressionLabel")
         self.ns_slider = self.widget.findChild(QtWidgets.QSlider, "noiseSuppressionSlider")
-        self.ns_enable = self.widget.findChild(QtWidgets.QCheckBox, "noiseSuppressionEnableCheckbox")
+        self.input_label = self.widget.findChild(QtWidgets.QLabel, "inputSensitivityLabel")
+        self.input_slider = self.widget.findChild(QtWidgets.QSlider, "inputSensitivitySlider")
         self.test_button = self.widget.findChild(QtWidgets.QPushButton, "testMicButton")
         self.test_status = self.widget.findChild(QtWidgets.QLabel, "testStatusLabel")
         self.mic_bar = self.widget.findChild(QtWidgets.QProgressBar, "participantVolumeBar") or \
             self.widget.findChild(QtWidgets.QProgressBar, "micLevelBar")
+        self.reset_button = self.widget.findChild(QtWidgets.QPushButton, "restoreDefaultsButton")
 
         self.master_slider.setRange(0, 100)
         self.master_slider.setValue(100)
@@ -109,23 +128,31 @@ class VolumeControlPanel(QtCore.QObject):
         self.gain_slider.setValue(0)
         self.ns_slider.setRange(0, 100)
         self.ns_slider.setValue(70)
-        self.ns_enable.setChecked(True)
+        if self.input_slider:
+            self.input_slider.setRange(0, 100)
+            self.input_slider.setValue(50)
 
         self.master_slider.valueChanged.connect(lambda v: self.audio.set_master_volume(int(v)))
         self.gain_slider.valueChanged.connect(lambda v: self.audio.set_gain_db(int(v)))
         self.ns_slider.valueChanged.connect(lambda v: self.audio.set_noise_suppression(int(v)))
-        self.ns_enable.toggled.connect(self._on_ns_toggle)
+        if self.input_slider:
+            self.input_slider.valueChanged.connect(lambda v: self.audio.set_mic_sensitivity(int(v)))
         self.test_button.clicked.connect(self._test_mic)
-
-    def _on_ns_toggle(self, checked: bool):
-        self.audio.set_noise_suppression_enabled(checked)
-        self.ns_slider.setEnabled(checked)
-        self.ns_label.setEnabled(checked)
+        if self.reset_button:
+            self.reset_button.clicked.connect(self._reset_defaults)
 
     def _test_mic(self):
         level = self.audio.test_microphone_level(0.8)
         self.setMicLevel(level)
         self.test_status.setText(f"Mic level: {level}%")
+
+    def _reset_defaults(self):
+        self.master_slider.setValue(100)
+        self.gain_slider.setValue(0)
+        if self.input_slider:
+            self.input_slider.setValue(50)
+        self.ns_slider.setValue(70)
+        self.setMicLevel(self.audio.capture_level)
 
     def setMicLevel(self, level: int):
         if self.mic_bar:
@@ -202,9 +229,10 @@ class SettingsDialog(QtWidgets.QDialog):
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, my_id: str, audio: PyAudioEngine, discovery: PyPeerDiscovery):
+    def __init__(self, my_id: str, room_name: str, audio: PyAudioEngine, discovery: PyPeerDiscovery):
         super().__init__()
         self.my_id = my_id
+        self.current_room = room_name or "main"
         self.audio = audio
         self.discovery = discovery
 
@@ -247,7 +275,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.controls_layout.addWidget(self.volume_controls.widget)
 
         self.room_combo.clear()
-        self.room_combo.addItem("main")
+        self.room_combo.addItem(self.current_room)
         self.room_combo.setEnabled(False)
 
         self.join_leave_button.clicked.connect(self.close)
@@ -277,13 +305,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.system_level_bar.setRange(0, 100)
         self.system_level_bar.setValue(0)
 
-        self.main_status_bar.showMessage(f"Client {my_id} in P2P mesh")
+        self.main_status_bar.showMessage(f"Client {my_id} in room '{self.current_room}' (P2P mesh)")
         self.connected = True
         self.targets: Set[str] = set()
         self.muted: Set[str] = set()
         self.hear_targets: Set[str] = set()
         self.rows: Dict[str, ParticipantRow] = {}
         self.speaker_state: Dict[str, bool] = {}
+        self.last_voice_ts: Dict[str, float] = {}
 
         self.refresh_participants(False)
         self.set_connected_state(True)
@@ -450,13 +479,20 @@ class MainWindow(QtWidgets.QMainWindow):
             row.setVolume(mic_level)
             row.setMicStatus(not self.audio.tx_muted)
         speaking_state[self.my_id] = self_state
+        self.last_voice_ts[self.my_id] = time.monotonic()
 
         raw_level = self.audio.mixed_peak
         for cid, row in self.rows.items():
             if cid == self.my_id:
                 continue
             level = min(100, int((raw_level * 100) / 32767)) if raw_level else 0
-            is_active = level >= 2
+            now = time.monotonic()
+            is_active_instant = level >= 2
+            if is_active_instant:
+                self.last_voice_ts[cid] = now
+            last_ts = self.last_voice_ts.get(cid, 0.0)
+            # hangover to avoid UI flicker: keep "Mic: On" for 0.8s after last activity
+            is_active = (now - last_ts) < 0.8
             row.setVolume(level)
             row.setMicStatus(is_active)
             prev = self.speaker_state.get(cid, False)
@@ -481,13 +517,51 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 def run_app():
+    # Ensure bundled DLLs are discoverable before any native loads
+    dll_dirs = [
+        ROOT / "third_party" / "opus",
+        ROOT / "third_party" / "libportaudio",
+        ROOT / "third_party" / "libsodium",
+        ROOT / "third_party" / "rnnoise",
+        ROOT / "third_party" / "win_webrtc" / "bin",
+    ]
+    # Prepend to PATH so native LoadLibrary finds them without flags
+    existing_path = os.environ.get("PATH", "")
+    prepend = ";".join(str(d) for d in dll_dirs if d.exists())
+    if prepend:
+        os.environ["PATH"] = prepend + ";" + existing_path
+    for d in dll_dirs:
+        if d.exists():
+            os.add_dll_directory(str(d))
+    # Qt needs this set before QApplication is created for some OpenGL configs
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
+
     app = QtWidgets.QApplication(sys.argv)
-    # default client id
-    my_id = os.environ.get("VOICE_CLIENT_ID") or f"client-{os.getpid()}"
+
+    dialog = load_ui("Popup_message.ui")
+    name_edit = dialog.findChild(QtWidgets.QLineEdit, "nameEdit")
+    room_edit = dialog.findChild(QtWidgets.QLineEdit, "manualIpEdit") or \
+        dialog.findChild(QtWidgets.QLineEdit, "roomname")
+    local_ip_label = dialog.findChild(QtWidgets.QLabel, "localIpLabel")
+
+    if local_ip_label:
+        local_ip_label.setText(get_local_ip())
+
+    if dialog.exec() != QtWidgets.QDialog.Accepted:
+        sys.exit(0)
+
+    my_id = name_edit.text().strip() if name_edit else ""
+    room_name = room_edit.text().strip() if room_edit else "main"
+    room_name = room_name or "main"
+
+    if not my_id:
+        QtWidgets.QMessageBox.warning(None, "Error", "Name is required!")
+        sys.exit(1)
+
     audio = PyAudioEngine()
     discovery = PyPeerDiscovery()
-    discovery.start(my_id, audio.port())
-    win = MainWindow(my_id, audio, discovery)
+    discovery.start(my_id, audio.port(), room_name)
+    win = MainWindow(my_id, room_name, audio, discovery)
     win.show()
     sys.exit(app.exec())
 

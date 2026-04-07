@@ -52,12 +52,14 @@ cdef extern from "p2p/peer_discovery.h" namespace "":
         string id
         string ip
         uint16_t port
+        string room
 
     cdef cppclass PeerDiscovery:
         PeerDiscovery() except +
-        void start(const string&, uint16_t)
+        void start(const string&, uint16_t, const string&)
         void stop()
         vector[PeerInfo] peers() const
+        string currentRoom() const
 
 cdef class PyAudioEngine:
     cdef AudioEngine* thisptr
@@ -194,8 +196,8 @@ cdef class PyPeerDiscovery:
     def __dealloc__(self):
         del self.thisptr
 
-    def start(self, str my_id, uint16_t audio_port):
-        self.thisptr.start(my_id.encode("utf-8"), audio_port)
+    def start(self, str my_id, uint16_t audio_port, str room_name="main"):
+        self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
 
     def stop(self):
         self.thisptr.stop()
@@ -208,6 +210,10 @@ cdef class PyPeerDiscovery:
             result.append({
                 "id": p.id.decode("utf-8", errors="replace"),
                 "ip": p.ip.decode("utf-8", errors="replace"),
-                "port": p.port
+                "port": p.port,
+                "room": p.room.decode("utf-8", errors="replace"),
             })
         return result
+
+    def current_room(self):
+        return self.thisptr.currentRoom().decode("utf-8", errors="replace")

@@ -1,34 +1,62 @@
+# General
+.DS_Store
+Thumbs.db
+
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-*.pyd
+*.egg-info/
+.env
 .venv/
-.pytest_cache/
+pip-wheel-metadata/
+
+# Cython outputs (generated)
+python/audio_wrapper.c
+python/audio_wrapper.cpp
+python/audio_wrapper.cp*-win_amd64.*.pyd
 
 # Build / packaging
 build/
-build-*/
 dist/
-*.egg-info/
-
-# PyInstaller build cache
 *.spec
 
 # CMake
 CMakeFiles/
 CMakeCache.txt
 cmake-build-*/
+build-debug/
+build-release/
+build-ninja*/
 compile_commands.json
 Testing/
+CTestTestfile.cmake
+Makefile
+*.ninja
+*.ninja_deps
+*.ninja_log
 
-# VS/VSCode
-.vs/
-# keep .vscode for workspace settings
+# Visual Studio / MSVC
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj*
+*.VC.db
+*.idb
+*.pdb
+*.ipdb
+*.iobj
+*.ilk
+*.obj
+*.exp
+*.lib
+*.tlog
+*.lastbuildstate
 
 # Logs
 *.log
 
-# OS
-Thumbs.db
-Desktop.ini
+# IDEs
+.vscode/
+.idea/

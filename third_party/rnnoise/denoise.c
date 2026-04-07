@@ -64,6 +64,9 @@
 #ifndef TRAINING
 #define TRAINING 0
 #endif
+#ifndef M_PI
+# define M_PI		3.14159265358979323846	/* pi */
+#endif // !M_PI
 
 
 /* The built-in model, used if no file is given as input */
@@ -97,7 +100,7 @@ struct DenoiseState {
   RNNState rnn;
 };
 
-static void compute_band_energy(float *bandE, const kiss_fft_cpx *X) {
+void compute_band_energy(float *bandE, const kiss_fft_cpx *X) {
   int i;
   float sum[NB_BANDS] = {0};
   for (i=0;i<NB_BANDS-1;i++)
@@ -122,7 +125,7 @@ static void compute_band_energy(float *bandE, const kiss_fft_cpx *X) {
   }
 }
 
-static void compute_band_corr(float *bandE, const kiss_fft_cpx *X, const kiss_fft_cpx *P) {
+void compute_band_corr(float *bandE, const kiss_fft_cpx *X, const kiss_fft_cpx *P) {
   int i;
   float sum[NB_BANDS] = {0};
   for (i=0;i<NB_BANDS-1;i++)
@@ -147,7 +150,7 @@ static void compute_band_corr(float *bandE, const kiss_fft_cpx *X, const kiss_ff
   }
 }
 
-static void interp_band_gain(float *g, const float *bandE) {
+void interp_band_gain(float *g, const float *bandE) {
   int i;
   memset(g, 0, FREQ_SIZE);
   for (i=0;i<NB_BANDS-1;i++)
@@ -168,7 +171,7 @@ CommonState common;
 static void check_init() {
   int i;
   if (common.init) return;
-  common.kfft = rnn_fft_alloc_twiddles(2*FRAME_SIZE, NULL, NULL, NULL, 0);
+  common.kfft = opus_fft_alloc_twiddles(2*FRAME_SIZE, NULL, NULL, NULL, 0);
   for (i=0;i<FRAME_SIZE;i++)
     common.half_window[i] = sin(.5*M_PI*sin(.5*M_PI*(i+.5)/FRAME_SIZE) * sin(.5*M_PI*(i+.5)/FRAME_SIZE));
   for (i=0;i<NB_BANDS;i++) {
@@ -218,7 +221,7 @@ static void forward_transform(kiss_fft_cpx *out, const float *in) {
     x[i].r = in[i];
     x[i].i = 0;
   }
-  rnn_fft(common.kfft, x, y, 0);
+  opus_fft(common.kfft, x, y, 0);
   for (i=0;i<FREQ_SIZE;i++) {
     out[i] = y[i];
   }
@@ -236,7 +239,7 @@ static void inverse_transform(float *out, const kiss_fft_cpx *in) {
     x[i].r = x[WINDOW_SIZE - i].r;
     x[i].i = -x[WINDOW_SIZE - i].i;
   }
-  rnn_fft(common.kfft, x, y, 0);
+  opus_fft(common.kfft, x, y, 0);
   /* output in reverse order for IFFT. */
   out[0] = WINDOW_SIZE*y[0].r;
   for (i=1;i<WINDOW_SIZE;i++) {
@@ -255,10 +258,6 @@ static void apply_window(float *x) {
 
 int rnnoise_get_size() {
   return sizeof(DenoiseState);
-}
-
-int rnnoise_get_frame_size() {
-  return FRAME_SIZE;
 }
 
 int rnnoise_init(DenoiseState *st, RNNModel *model) {
@@ -325,12 +324,12 @@ static int compute_frame_features(DenoiseState *st, kiss_fft_cpx *X, kiss_fft_cp
   RNN_MOVE(st->pitch_buf, &st->pitch_buf[FRAME_SIZE], PITCH_BUF_SIZE-FRAME_SIZE);
   RNN_COPY(&st->pitch_buf[PITCH_BUF_SIZE-FRAME_SIZE], in, FRAME_SIZE);
   pre[0] = &st->pitch_buf[0];
-  rnn_pitch_downsample(pre, pitch_buf, PITCH_BUF_SIZE, 1);
-  rnn_pitch_search(pitch_buf+(PITCH_MAX_PERIOD>>1), pitch_buf, PITCH_FRAME_SIZE,
+  pitch_downsample(pre, pitch_buf, PITCH_BUF_SIZE, 1);
+  pitch_search(pitch_buf+(PITCH_MAX_PERIOD>>1), pitch_buf, PITCH_FRAME_SIZE,
                PITCH_MAX_PERIOD-3*PITCH_MIN_PERIOD, &pitch_index);
   pitch_index = PITCH_MAX_PERIOD-pitch_index;
 
-  gain = rnn_remove_doubling(pitch_buf, PITCH_MAX_PERIOD, PITCH_MIN_PERIOD,
+  gain = remove_doubling(pitch_buf, PITCH_MAX_PERIOD, PITCH_MIN_PERIOD,
           PITCH_FRAME_SIZE, &pitch_index, st->last_period, st->last_gain);
   st->last_period = pitch_index;
   st->last_gain = gain;
@@ -419,7 +418,7 @@ static void biquad(float *y, float mem[2], const float *x, const float *b, const
   }
 }
 
-static void pitch_filter(kiss_fft_cpx *X, const kiss_fft_cpx *P, const float *Ex, const float *Ep,
+void pitch_filter(kiss_fft_cpx *X, const kiss_fft_cpx *P, const float *Ex, const float *Ep,
                   const float *Exp, const float *g) {
   int i;
   float r[NB_BANDS];
@@ -525,7 +524,7 @@ int main(int argc, char **argv) {
   int vad_cnt=0;
   int gain_change_count=0;
   float speech_gain = 1, noise_gain = 1;
-  FILE *f1, *f2;
+  FILE *f1, *f2, *fout;
   int maxCount;
   DenoiseState *st;
   DenoiseState *noise_state;
@@ -533,12 +532,19 @@ int main(int argc, char **argv) {
   st = rnnoise_create(NULL);
   noise_state = rnnoise_create(NULL);
   noisy = rnnoise_create(NULL);
-  if (argc!=4) {
-    fprintf(stderr, "usage: %s <speech> <noise> <count>\n", argv[0]);
+  if (argc!= 5) {
+    fprintf(stderr, "usage: %s <speech> <noise> <count> <output_for_training>\n", argv[0]);
     return 1;
   }
   f1 = fopen(argv[1], "r");
   f2 = fopen(argv[2], "r");
+  fout = fopen(argv[4],"w");
+  if (f1==NULL || f2==NULL || fout==NULL)
+  {
+      printf("Cannot open file...\n");
+      return -1;
+  }
+
   maxCount = atoi(argv[3]);
   for(i=0;i<150;i++) {
     short tmp[FRAME_SIZE];
@@ -631,15 +637,16 @@ int main(int argc, char **argv) {
     }
     count++;
 #if 1
-    fwrite(features, sizeof(float), NB_FEATURES, stdout);
-    fwrite(g, sizeof(float), NB_BANDS, stdout);
-    fwrite(Ln, sizeof(float), NB_BANDS, stdout);
-    fwrite(&vad, sizeof(float), 1, stdout);
+    fwrite(features, sizeof(float), NB_FEATURES, fout);
+    fwrite(g, sizeof(float), NB_BANDS, fout);
+    fwrite(Ln, sizeof(float), NB_BANDS, fout);
+    fwrite(&vad, sizeof(float), 1, fout);
 #endif
   }
   fprintf(stderr, "matrix size: %d x %d\n", count, NB_FEATURES + 2*NB_BANDS + 1);
   fclose(f1);
   fclose(f2);
+  fclose(fout);
   return 0;
 }
 

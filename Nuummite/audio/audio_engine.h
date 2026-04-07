@@ -3,6 +3,7 @@
 
 #include "opus_codec.h"
 #include "p2p/rtp_transport.h"
+#include "libsodium_wrapper.h"
 
 #include <algorithm>
 #include <atomic>
@@ -16,12 +17,14 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include <winsock2.h>
 
 struct AudioDeviceInfo { int index; std::string name; };
 
 class AecProcessor;
+class RnNoiseProcessor;
 
 class AudioEngine {
 public:
@@ -90,6 +93,8 @@ private:
     std::thread listen_thread_;
     std::thread send_thread_;
 
+    std::unique_ptr<RnNoiseProcessor> rnnoise_;
+    
     int input_device_index_ = -1;
     int output_device_index_ = -1;
 

@@ -1,4 +1,5 @@
 #include "audio_packet.h"
+#include "libsodium_wrapper.h"
 
 #include <charconv>
 #include <string_view>
@@ -81,7 +82,28 @@ std::optional<VoicePacket> parse_voice_packet(const std::vector<uint8_t>& data) 
     packet.kind = VoicePacketKind::ClientAudio;
     packet.seq = static_cast<uint16_t>(seq & 0xFFFFu);
     packet.timestamp = static_cast<uint32_t>(timestamp & 0xFFFFFFFFu);
-    packet.payload.assign(data.begin() + static_cast<long long>(colon + 1), data.end());
+
+    // Verify signature
+    constexpr size_t SIG_SIZE = 32;
+    if (data.size() < colon + 1 + SIG_SIZE) {
+        return std::nullopt;
+    }
+
+    const uint8_t* signature = data.data() + colon + 1;
+    const uint8_t* payload_start = signature + SIG_SIZE;
+    size_t payload_len = data.size() - (colon + 1 + SIG_SIZE);
+
+    // We verify the hash of (header + payload)
+    std::vector<uint8_t> signed_content;
+    const uint8_t* header_begin = reinterpret_cast<const uint8_t*>(view.data());
+    signed_content.insert(signed_content.end(), header_begin, header_begin + colon); // header
+    signed_content.insert(signed_content.end(), payload_start, payload_start + payload_len); // payload
+
+    if (!SodiumWrapper::verifyPacket(signed_content.data(), signed_content.size(), signature)) {
+        return std::nullopt;
+    }
+
+    packet.payload.assign(payload_start, payload_start + payload_len);
     return packet;
 }
 
@@ -90,10 +112,22 @@ std::vector<uint8_t> build_client_audio_packet(const std::string& client_id,
                                                uint32_t timestamp,
                                                const std::vector<uint8_t>& payload) {
     std::string header = client_id + "|" + std::to_string(seq) + "|" + std::to_string(timestamp);
+    
+    // Compute signature (hash of header + payload)
+    std::vector<uint8_t> signed_content;
+    signed_content.insert(signed_content.end(), header.begin(), header.end());
+    signed_content.insert(signed_content.end(), payload.begin(), payload.end());
+    
+    uint8_t signature[32];
+    if (!SodiumWrapper::signPacket(signed_content.data(), signed_content.size(), signature)) {
+        std::memset(signature, 0, 32);
+    }
+
     std::vector<uint8_t> packet;
-    packet.reserve(header.size() + 1 + payload.size());
+    packet.reserve(header.size() + 1 + 32 + payload.size());
     packet.insert(packet.end(), header.begin(), header.end());
     packet.push_back(':');
+    packet.insert(packet.end(), signature, signature + 32);
     packet.insert(packet.end(), payload.begin(), payload.end());
     return packet;
 }
