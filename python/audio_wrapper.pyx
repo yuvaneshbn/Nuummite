@@ -24,6 +24,7 @@ cdef extern from "audio/audio_engine.h" namespace "":
         int inputDeviceIndex() const
         int outputDeviceIndex() const
         void setClientId(const string&)
+        void setRoomSecret(const string&)
         void setMasterVolume(int)
         void setOutputVolume(int)
         void setGainDb(int)
@@ -105,6 +106,9 @@ cdef class PyAudioEngine:
 
     def set_client_id(self, str client_id):
         self.thisptr.setClientId(client_id.encode("utf-8"))
+
+    def set_room_secret(self, str secret):
+        self.thisptr.setRoomSecret(secret.encode("utf-8"))
 
     def set_master_volume(self, int value):
         self.thisptr.setMasterVolume(value)

@@ -560,6 +560,8 @@ def run_app():
 
     audio = PyAudioEngine()
     discovery = PyPeerDiscovery()
+    # Derive per-room encryption key so only peers in the same room can decrypt audio
+    audio.set_room_secret(room_name)
     discovery.start(my_id, audio.port(), room_name)
     win = MainWindow(my_id, room_name, audio, discovery)
     win.show()

@@ -1,7 +1,10 @@
 #include "audio_packet.h"
 #include "libsodium_wrapper.h"
 
+#include <algorithm>
+#include <array>
 #include <charconv>
+#include <cstring>
 #include <string_view>
 
 namespace {
@@ -24,9 +27,11 @@ bool parseUnsigned(std::string_view text, T& out) {
     return true;
 }
 
-} // namespace
+constexpr uint8_t MAGIC[] = {'E', 'N', 'C', '1'};
+constexpr size_t MAGIC_SIZE = 4;
+constexpr size_t SIG_SIZE = 32; // legacy MAC size
 
-std::optional<VoicePacket> parse_voice_packet(const std::vector<uint8_t>& data) {
+std::optional<VoicePacket> parse_plain_packet(const std::vector<uint8_t>& data, bool expect_signature) {
     if (data.empty()) {
         return std::nullopt;
     }
@@ -34,6 +39,7 @@ std::optional<VoicePacket> parse_voice_packet(const std::vector<uint8_t>& data) 
     const std::string_view view(reinterpret_cast<const char*>(data.data()), data.size());
     VoicePacket packet;
 
+    // Mixed audio packets: MIXED|<seq>|<payload>
     if (view.rfind("MIXED|", 0) == 0) {
         const size_t seq_end = view.find('|', 6);
         if (seq_end == std::string_view::npos) {
@@ -83,28 +89,60 @@ std::optional<VoicePacket> parse_voice_packet(const std::vector<uint8_t>& data) 
     packet.seq = static_cast<uint16_t>(seq & 0xFFFFu);
     packet.timestamp = static_cast<uint32_t>(timestamp & 0xFFFFFFFFu);
 
-    // Verify signature
-    constexpr size_t SIG_SIZE = 32;
-    if (data.size() < colon + 1 + SIG_SIZE) {
-        return std::nullopt;
+    size_t payload_offset = colon + 1;
+    if (expect_signature) {
+        if (data.size() < payload_offset + SIG_SIZE) {
+            return std::nullopt;
+        }
+        const uint8_t* signature = data.data() + payload_offset;
+        payload_offset += SIG_SIZE;
+
+        const uint8_t* payload_start = data.data() + payload_offset;
+        const size_t payload_len = data.size() - payload_offset;
+
+        // Verify hash of (header + payload) with legacy MAC
+        std::vector<uint8_t> signed_content;
+        const uint8_t* header_begin = reinterpret_cast<const uint8_t*>(view.data());
+        signed_content.insert(signed_content.end(), header_begin, header_begin + colon); // header
+        signed_content.insert(signed_content.end(), payload_start, payload_start + payload_len); // payload
+
+        if (!SodiumWrapper::verifyPacket(signed_content.data(), signed_content.size(), signature)) {
+            return std::nullopt;
+        }
+        packet.payload.assign(payload_start, payload_start + payload_len);
+        return packet;
     }
 
-    const uint8_t* signature = data.data() + colon + 1;
-    const uint8_t* payload_start = signature + SIG_SIZE;
-    size_t payload_len = data.size() - (colon + 1 + SIG_SIZE);
-
-    // We verify the hash of (header + payload)
-    std::vector<uint8_t> signed_content;
-    const uint8_t* header_begin = reinterpret_cast<const uint8_t*>(view.data());
-    signed_content.insert(signed_content.end(), header_begin, header_begin + colon); // header
-    signed_content.insert(signed_content.end(), payload_start, payload_start + payload_len); // payload
-
-    if (!SodiumWrapper::verifyPacket(signed_content.data(), signed_content.size(), signature)) {
+    // Encrypted path: payload starts immediately after colon
+    if (payload_offset > data.size()) {
         return std::nullopt;
     }
-
-    packet.payload.assign(payload_start, payload_start + payload_len);
+    packet.payload.assign(data.begin() + static_cast<long long>(payload_offset), data.end());
     return packet;
+}
+
+} // namespace
+
+std::optional<VoicePacket> parse_voice_packet(const std::vector<uint8_t>& data) {
+    if (data.size() >= MAGIC_SIZE &&
+        std::equal(std::begin(MAGIC), std::end(MAGIC), data.begin())) {
+        if (data.size() < MAGIC_SIZE + SodiumWrapper::kNonceSize + SodiumWrapper::kMacSize) {
+            return std::nullopt;
+        }
+
+        const uint8_t* nonce = data.data() + MAGIC_SIZE;
+        const uint8_t* cipher = nonce + SodiumWrapper::kNonceSize;
+        const size_t cipher_len = data.size() - MAGIC_SIZE - SodiumWrapper::kNonceSize;
+
+        std::vector<uint8_t> plain;
+        if (!SodiumWrapper::decrypt(cipher, cipher_len, nonce, SodiumWrapper::kNonceSize, plain)) {
+            return std::nullopt;
+        }
+        return parse_plain_packet(plain, /*expect_signature=*/false);
+    }
+
+    // Legacy unsigned/plaintext path (kept for compatibility until all peers upgrade)
+    return parse_plain_packet(data, /*expect_signature=*/true);
 }
 
 std::vector<uint8_t> build_client_audio_packet(const std::string& client_id,
@@ -112,32 +150,47 @@ std::vector<uint8_t> build_client_audio_packet(const std::string& client_id,
                                                uint32_t timestamp,
                                                const std::vector<uint8_t>& payload) {
     std::string header = client_id + "|" + std::to_string(seq) + "|" + std::to_string(timestamp);
-    
-    // Compute signature (hash of header + payload)
-    std::vector<uint8_t> signed_content;
-    signed_content.insert(signed_content.end(), header.begin(), header.end());
-    signed_content.insert(signed_content.end(), payload.begin(), payload.end());
-    
-    uint8_t signature[32];
-    if (!SodiumWrapper::signPacket(signed_content.data(), signed_content.size(), signature)) {
-        std::memset(signature, 0, 32);
+
+    // Plaintext (header + ':' + payload) gets encrypted with secretbox
+    std::vector<uint8_t> plain;
+    plain.reserve(header.size() + 1 + payload.size());
+    plain.insert(plain.end(), header.begin(), header.end());
+    plain.push_back(':');
+    plain.insert(plain.end(), payload.begin(), payload.end());
+
+    std::array<uint8_t, SodiumWrapper::kNonceSize> nonce{};
+    std::vector<uint8_t> cipher;
+    if (!SodiumWrapper::encrypt(plain.data(), plain.size(), cipher, nonce)) {
+        return {};
     }
 
     std::vector<uint8_t> packet;
-    packet.reserve(header.size() + 1 + 32 + payload.size());
-    packet.insert(packet.end(), header.begin(), header.end());
-    packet.push_back(':');
-    packet.insert(packet.end(), signature, signature + 32);
-    packet.insert(packet.end(), payload.begin(), payload.end());
+    packet.reserve(MAGIC_SIZE + nonce.size() + cipher.size());
+    packet.insert(packet.end(), std::begin(MAGIC), std::end(MAGIC));
+    packet.insert(packet.end(), nonce.begin(), nonce.end());
+    packet.insert(packet.end(), cipher.begin(), cipher.end());
     return packet;
 }
 
 std::vector<uint8_t> build_mixed_audio_packet(uint16_t seq,
-                                              const std::vector<uint8_t>& payload) {
+                                               const std::vector<uint8_t>& payload) {
     std::string header = "MIXED|" + std::to_string(seq) + "|";
+
+    std::vector<uint8_t> plain;
+    plain.reserve(header.size() + payload.size());
+    plain.insert(plain.end(), header.begin(), header.end());
+    plain.insert(plain.end(), payload.begin(), payload.end());
+
+    std::array<uint8_t, SodiumWrapper::kNonceSize> nonce{};
+    std::vector<uint8_t> cipher;
+    if (!SodiumWrapper::encrypt(plain.data(), plain.size(), cipher, nonce)) {
+        return {};
+    }
+
     std::vector<uint8_t> packet;
-    packet.reserve(header.size() + payload.size());
-    packet.insert(packet.end(), header.begin(), header.end());
-    packet.insert(packet.end(), payload.begin(), payload.end());
+    packet.reserve(MAGIC_SIZE + nonce.size() + cipher.size());
+    packet.insert(packet.end(), std::begin(MAGIC), std::end(MAGIC));
+    packet.insert(packet.end(), nonce.begin(), nonce.end());
+    packet.insert(packet.end(), cipher.begin(), cipher.end());
     return packet;
 }

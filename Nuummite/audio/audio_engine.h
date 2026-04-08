@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <condition_variable>
 #include <deque>
@@ -38,6 +39,7 @@ public:
 
     int port() const { return port_; }
     void setClientId(const std::string& id) { client_id_ = id; }
+    void setRoomSecret(const std::string& secret) { SodiumWrapper::setKey(secret); }
     const std::string& clientId() const { return client_id_; }
 
     std::vector<AudioDeviceInfo> listInputDevices() const;
@@ -121,8 +123,9 @@ private:
     OpusCodec decoder_;
     std::mutex decoder_mutex_;
 
-    // Per-sender last frame for local mixing
+    // Per-sender last frame + timestamp (prevents repeating old frames = noise)
     std::unordered_map<std::string, std::vector<int16_t>> rx_last_pcm_;
+    std::unordered_map<std::string, std::chrono::steady_clock::time_point> rx_last_rx_time_;
     mutable std::mutex rx_mutex_;
     std::unordered_set<std::string> hear_targets_;
 

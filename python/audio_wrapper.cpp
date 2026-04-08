@@ -1606,7 +1606,7 @@ static const char* const __pyx_f[] = {
 struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine;
 struct __pyx_obj_6python_13audio_wrapper_PyPeerDiscovery;
 
-/* "python/audio_wrapper.pyx":64
+/* "python/audio_wrapper.pyx":65
  *         string currentRoom() const
  * 
  * cdef class PyAudioEngine:             # <<<<<<<<<<<<<<
@@ -1619,7 +1619,7 @@ struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine {
 };
 
 
-/* "python/audio_wrapper.pyx":190
+/* "python/audio_wrapper.pyx":194
  *         self.thisptr.setHearTargets(cpp_set)
  * 
  * cdef class PyPeerDiscovery:             # <<<<<<<<<<<<<<
@@ -2489,30 +2489,31 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_12set_output_d
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18input_device_index___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_19output_device_index___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14set_client_id(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_client_id); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_master_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_output_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sensitivity(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_noise_suppression(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gain(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_available(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_room_secret(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_secret); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_master_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_output_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_gain_db(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_mic_sensitivity(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_noise_suppression_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_auto_gain(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32set_echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_available(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38set_tx_muted(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8tx_muted___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microphone_level(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, double __pyx_v_duration_sec); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_destinations(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44stop(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46shutdown(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40test_microphone_level(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, double __pyx_v_duration_sec); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42start(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44update_destinations(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46stop(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48shutdown(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10is_running___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_13capture_level___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14capture_active___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10mixed_peak___get__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_targets(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_targets); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50set_hear_targets(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_targets); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_54__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery___cinit__(struct __pyx_obj_6python_13audio_wrapper_PyPeerDiscovery *__pyx_v_self); /* proto */
 static void __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_2__dealloc__(struct __pyx_obj_6python_13audio_wrapper_PyPeerDiscovery *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_4start(struct __pyx_obj_6python_13audio_wrapper_PyPeerDiscovery *__pyx_v_self, PyObject *__pyx_v_my_id, uint16_t __pyx_v_audio_port, PyObject *__pyx_v_room_name); /* proto */
@@ -2551,8 +2552,8 @@ typedef struct {
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_pop;
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values;
   PyObject *__pyx_tuple[2];
-  PyObject *__pyx_codeobj_tab[31];
-  PyObject *__pyx_string_tab[149];
+  PyObject *__pyx_codeobj_tab[32];
+  PyObject *__pyx_string_tab[153];
   PyObject *__pyx_number_tab[1];
 /* #### Code section: module_state_contents ### */
 /* CommonTypesMetaclass.module_state_decls */
@@ -2625,124 +2626,128 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_PyAudioEngine_set_noise_suppress_2 __pyx_string_tab[28]
 #define __pyx_n_u_PyAudioEngine_set_output_device __pyx_string_tab[29]
 #define __pyx_n_u_PyAudioEngine_set_output_volume __pyx_string_tab[30]
-#define __pyx_n_u_PyAudioEngine_set_tx_muted __pyx_string_tab[31]
-#define __pyx_n_u_PyAudioEngine_shutdown __pyx_string_tab[32]
-#define __pyx_n_u_PyAudioEngine_start __pyx_string_tab[33]
-#define __pyx_n_u_PyAudioEngine_stop __pyx_string_tab[34]
-#define __pyx_n_u_PyAudioEngine_test_microphone_le __pyx_string_tab[35]
-#define __pyx_n_u_PyAudioEngine_update_destination __pyx_string_tab[36]
-#define __pyx_n_u_PyPeerDiscovery __pyx_string_tab[37]
-#define __pyx_n_u_PyPeerDiscovery___reduce_cython __pyx_string_tab[38]
-#define __pyx_n_u_PyPeerDiscovery___setstate_cytho __pyx_string_tab[39]
-#define __pyx_n_u_PyPeerDiscovery_current_room __pyx_string_tab[40]
-#define __pyx_n_u_PyPeerDiscovery_peers __pyx_string_tab[41]
-#define __pyx_n_u_PyPeerDiscovery_start __pyx_string_tab[42]
-#define __pyx_n_u_PyPeerDiscovery_stop __pyx_string_tab[43]
-#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[44]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[45]
-#define __pyx_n_u_audio_port __pyx_string_tab[46]
-#define __pyx_n_u_client_id __pyx_string_tab[47]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[48]
-#define __pyx_n_u_cpp_dest __pyx_string_tab[49]
-#define __pyx_n_u_cpp_set __pyx_string_tab[50]
-#define __pyx_n_u_current_room __pyx_string_tab[51]
-#define __pyx_n_u_d __pyx_string_tab[52]
-#define __pyx_n_u_decode __pyx_string_tab[53]
-#define __pyx_n_u_dest __pyx_string_tab[54]
-#define __pyx_n_u_destinations __pyx_string_tab[55]
-#define __pyx_n_u_devs __pyx_string_tab[56]
-#define __pyx_n_u_duration_sec __pyx_string_tab[57]
-#define __pyx_n_u_echo_available __pyx_string_tab[58]
-#define __pyx_n_u_echo_enabled __pyx_string_tab[59]
-#define __pyx_n_u_enabled __pyx_string_tab[60]
-#define __pyx_n_u_encode __pyx_string_tab[61]
-#define __pyx_n_u_errors __pyx_string_tab[62]
-#define __pyx_n_u_func __pyx_string_tab[63]
-#define __pyx_n_u_getstate __pyx_string_tab[64]
-#define __pyx_n_u_i __pyx_string_tab[65]
-#define __pyx_n_u_id __pyx_string_tab[66]
-#define __pyx_n_u_idx __pyx_string_tab[67]
-#define __pyx_n_u_index __pyx_string_tab[68]
-#define __pyx_n_u_ip __pyx_string_tab[69]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[70]
-#define __pyx_n_u_items __pyx_string_tab[71]
-#define __pyx_n_u_list_input_devices __pyx_string_tab[72]
-#define __pyx_n_u_list_output_devices __pyx_string_tab[73]
-#define __pyx_n_u_main __pyx_string_tab[74]
-#define __pyx_n_u_main_2 __pyx_string_tab[75]
-#define __pyx_n_u_module __pyx_string_tab[76]
-#define __pyx_n_u_my_id __pyx_string_tab[77]
-#define __pyx_n_u_name __pyx_string_tab[78]
-#define __pyx_n_u_name_2 __pyx_string_tab[79]
-#define __pyx_n_u_p __pyx_string_tab[80]
-#define __pyx_n_u_peers __pyx_string_tab[81]
-#define __pyx_n_u_pop __pyx_string_tab[82]
-#define __pyx_n_u_port __pyx_string_tab[83]
-#define __pyx_n_u_ps __pyx_string_tab[84]
-#define __pyx_n_u_python_audio_wrapper __pyx_string_tab[85]
-#define __pyx_n_u_pyx_state __pyx_string_tab[86]
-#define __pyx_n_u_qualname __pyx_string_tab[87]
-#define __pyx_n_u_reduce __pyx_string_tab[88]
-#define __pyx_n_u_reduce_cython __pyx_string_tab[89]
-#define __pyx_n_u_reduce_ex __pyx_string_tab[90]
-#define __pyx_n_u_replace __pyx_string_tab[91]
-#define __pyx_n_u_result __pyx_string_tab[92]
-#define __pyx_n_u_room __pyx_string_tab[93]
-#define __pyx_n_u_room_name __pyx_string_tab[94]
-#define __pyx_n_u_self __pyx_string_tab[95]
-#define __pyx_n_u_set_auto_gain __pyx_string_tab[96]
-#define __pyx_n_u_set_client_id __pyx_string_tab[97]
-#define __pyx_n_u_set_echo_enabled __pyx_string_tab[98]
-#define __pyx_n_u_set_gain_db __pyx_string_tab[99]
-#define __pyx_n_u_set_hear_targets __pyx_string_tab[100]
-#define __pyx_n_u_set_input_device __pyx_string_tab[101]
-#define __pyx_n_u_set_master_volume __pyx_string_tab[102]
-#define __pyx_n_u_set_mic_sensitivity __pyx_string_tab[103]
-#define __pyx_n_u_set_name __pyx_string_tab[104]
-#define __pyx_n_u_set_noise_suppression __pyx_string_tab[105]
-#define __pyx_n_u_set_noise_suppression_enabled __pyx_string_tab[106]
-#define __pyx_n_u_set_output_device __pyx_string_tab[107]
-#define __pyx_n_u_set_output_volume __pyx_string_tab[108]
-#define __pyx_n_u_set_tx_muted __pyx_string_tab[109]
-#define __pyx_n_u_setdefault __pyx_string_tab[110]
-#define __pyx_n_u_setstate __pyx_string_tab[111]
-#define __pyx_n_u_setstate_cython __pyx_string_tab[112]
-#define __pyx_n_u_shutdown __pyx_string_tab[113]
-#define __pyx_n_u_start __pyx_string_tab[114]
-#define __pyx_n_u_stop __pyx_string_tab[115]
-#define __pyx_n_u_t __pyx_string_tab[116]
-#define __pyx_n_u_targets __pyx_string_tab[117]
-#define __pyx_n_u_test __pyx_string_tab[118]
-#define __pyx_n_u_test_microphone_level __pyx_string_tab[119]
-#define __pyx_n_u_update_destinations __pyx_string_tab[120]
-#define __pyx_n_u_value __pyx_string_tab[121]
-#define __pyx_n_u_values __pyx_string_tab[122]
-#define __pyx_kp_b_iso88591_8_t8_q __pyx_string_tab[123]
-#define __pyx_kp_b_iso88591_A_4xvQ_E_ar_a_1_as_7_as_7_gQiwa __pyx_string_tab[124]
-#define __pyx_kp_b_iso88591_A_D_8I_E_at5_AQ_81E_YVWWX_q __pyx_string_tab[125]
-#define __pyx_kp_b_iso88591_A_D_8J_E_at5_AQ_81E_YVWWX_q __pyx_string_tab[126]
-#define __pyx_kp_b_iso88591_A_E_z_Q_waq_q_HO1A __pyx_string_tab[127]
-#define __pyx_kp_b_iso88591_A_H __pyx_string_tab[128]
-#define __pyx_kp_b_iso88591_A_HA_Jat7_1_t86 __pyx_string_tab[129]
-#define __pyx_kp_b_iso88591_A_HA_Jat7_1_t8_aq __pyx_string_tab[130]
-#define __pyx_kp_b_iso88591_A_HE __pyx_string_tab[131]
-#define __pyx_kp_b_iso88591_A_HIQ __pyx_string_tab[132]
-#define __pyx_kp_b_iso88591_A_HJaq __pyx_string_tab[133]
-#define __pyx_kp_b_iso88591_A_HKq __pyx_string_tab[134]
-#define __pyx_kp_b_iso88591_A_HL __pyx_string_tab[135]
-#define __pyx_kp_b_iso88591_A_HL_2 __pyx_string_tab[136]
-#define __pyx_kp_b_iso88591_A_HO1A __pyx_string_tab[137]
-#define __pyx_kp_b_iso88591_A_H_AQ __pyx_string_tab[138]
-#define __pyx_kp_b_iso88591_A_H_aq __pyx_string_tab[139]
-#define __pyx_kp_b_iso88591_A_H_q __pyx_string_tab[140]
-#define __pyx_kp_b_iso88591_A_t8 __pyx_string_tab[141]
-#define __pyx_kp_b_iso88591_A_t85 __pyx_string_tab[142]
-#define __pyx_kp_b_iso88591_A_t8_1 __pyx_string_tab[143]
-#define __pyx_kp_b_iso88591_A_t8_1A __pyx_string_tab[144]
-#define __pyx_kp_b_iso88591_A_t8_q __pyx_string_tab[145]
-#define __pyx_kp_b_iso88591_A_t8_r __pyx_string_tab[146]
-#define __pyx_kp_b_iso88591_B_HF_5_q_iwaq __pyx_string_tab[147]
-#define __pyx_kp_b_iso88591_Q __pyx_string_tab[148]
+#define __pyx_n_u_PyAudioEngine_set_room_secret __pyx_string_tab[31]
+#define __pyx_n_u_PyAudioEngine_set_tx_muted __pyx_string_tab[32]
+#define __pyx_n_u_PyAudioEngine_shutdown __pyx_string_tab[33]
+#define __pyx_n_u_PyAudioEngine_start __pyx_string_tab[34]
+#define __pyx_n_u_PyAudioEngine_stop __pyx_string_tab[35]
+#define __pyx_n_u_PyAudioEngine_test_microphone_le __pyx_string_tab[36]
+#define __pyx_n_u_PyAudioEngine_update_destination __pyx_string_tab[37]
+#define __pyx_n_u_PyPeerDiscovery __pyx_string_tab[38]
+#define __pyx_n_u_PyPeerDiscovery___reduce_cython __pyx_string_tab[39]
+#define __pyx_n_u_PyPeerDiscovery___setstate_cytho __pyx_string_tab[40]
+#define __pyx_n_u_PyPeerDiscovery_current_room __pyx_string_tab[41]
+#define __pyx_n_u_PyPeerDiscovery_peers __pyx_string_tab[42]
+#define __pyx_n_u_PyPeerDiscovery_start __pyx_string_tab[43]
+#define __pyx_n_u_PyPeerDiscovery_stop __pyx_string_tab[44]
+#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[45]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[46]
+#define __pyx_n_u_audio_port __pyx_string_tab[47]
+#define __pyx_n_u_client_id __pyx_string_tab[48]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[49]
+#define __pyx_n_u_cpp_dest __pyx_string_tab[50]
+#define __pyx_n_u_cpp_set __pyx_string_tab[51]
+#define __pyx_n_u_current_room __pyx_string_tab[52]
+#define __pyx_n_u_d __pyx_string_tab[53]
+#define __pyx_n_u_decode __pyx_string_tab[54]
+#define __pyx_n_u_dest __pyx_string_tab[55]
+#define __pyx_n_u_destinations __pyx_string_tab[56]
+#define __pyx_n_u_devs __pyx_string_tab[57]
+#define __pyx_n_u_duration_sec __pyx_string_tab[58]
+#define __pyx_n_u_echo_available __pyx_string_tab[59]
+#define __pyx_n_u_echo_enabled __pyx_string_tab[60]
+#define __pyx_n_u_enabled __pyx_string_tab[61]
+#define __pyx_n_u_encode __pyx_string_tab[62]
+#define __pyx_n_u_errors __pyx_string_tab[63]
+#define __pyx_n_u_func __pyx_string_tab[64]
+#define __pyx_n_u_getstate __pyx_string_tab[65]
+#define __pyx_n_u_i __pyx_string_tab[66]
+#define __pyx_n_u_id __pyx_string_tab[67]
+#define __pyx_n_u_idx __pyx_string_tab[68]
+#define __pyx_n_u_index __pyx_string_tab[69]
+#define __pyx_n_u_ip __pyx_string_tab[70]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[71]
+#define __pyx_n_u_items __pyx_string_tab[72]
+#define __pyx_n_u_list_input_devices __pyx_string_tab[73]
+#define __pyx_n_u_list_output_devices __pyx_string_tab[74]
+#define __pyx_n_u_main __pyx_string_tab[75]
+#define __pyx_n_u_main_2 __pyx_string_tab[76]
+#define __pyx_n_u_module __pyx_string_tab[77]
+#define __pyx_n_u_my_id __pyx_string_tab[78]
+#define __pyx_n_u_name __pyx_string_tab[79]
+#define __pyx_n_u_name_2 __pyx_string_tab[80]
+#define __pyx_n_u_p __pyx_string_tab[81]
+#define __pyx_n_u_peers __pyx_string_tab[82]
+#define __pyx_n_u_pop __pyx_string_tab[83]
+#define __pyx_n_u_port __pyx_string_tab[84]
+#define __pyx_n_u_ps __pyx_string_tab[85]
+#define __pyx_n_u_python_audio_wrapper __pyx_string_tab[86]
+#define __pyx_n_u_pyx_state __pyx_string_tab[87]
+#define __pyx_n_u_qualname __pyx_string_tab[88]
+#define __pyx_n_u_reduce __pyx_string_tab[89]
+#define __pyx_n_u_reduce_cython __pyx_string_tab[90]
+#define __pyx_n_u_reduce_ex __pyx_string_tab[91]
+#define __pyx_n_u_replace __pyx_string_tab[92]
+#define __pyx_n_u_result __pyx_string_tab[93]
+#define __pyx_n_u_room __pyx_string_tab[94]
+#define __pyx_n_u_room_name __pyx_string_tab[95]
+#define __pyx_n_u_secret __pyx_string_tab[96]
+#define __pyx_n_u_self __pyx_string_tab[97]
+#define __pyx_n_u_set_auto_gain __pyx_string_tab[98]
+#define __pyx_n_u_set_client_id __pyx_string_tab[99]
+#define __pyx_n_u_set_echo_enabled __pyx_string_tab[100]
+#define __pyx_n_u_set_gain_db __pyx_string_tab[101]
+#define __pyx_n_u_set_hear_targets __pyx_string_tab[102]
+#define __pyx_n_u_set_input_device __pyx_string_tab[103]
+#define __pyx_n_u_set_master_volume __pyx_string_tab[104]
+#define __pyx_n_u_set_mic_sensitivity __pyx_string_tab[105]
+#define __pyx_n_u_set_name __pyx_string_tab[106]
+#define __pyx_n_u_set_noise_suppression __pyx_string_tab[107]
+#define __pyx_n_u_set_noise_suppression_enabled __pyx_string_tab[108]
+#define __pyx_n_u_set_output_device __pyx_string_tab[109]
+#define __pyx_n_u_set_output_volume __pyx_string_tab[110]
+#define __pyx_n_u_set_room_secret __pyx_string_tab[111]
+#define __pyx_n_u_set_tx_muted __pyx_string_tab[112]
+#define __pyx_n_u_setdefault __pyx_string_tab[113]
+#define __pyx_n_u_setstate __pyx_string_tab[114]
+#define __pyx_n_u_setstate_cython __pyx_string_tab[115]
+#define __pyx_n_u_shutdown __pyx_string_tab[116]
+#define __pyx_n_u_start __pyx_string_tab[117]
+#define __pyx_n_u_stop __pyx_string_tab[118]
+#define __pyx_n_u_t __pyx_string_tab[119]
+#define __pyx_n_u_targets __pyx_string_tab[120]
+#define __pyx_n_u_test __pyx_string_tab[121]
+#define __pyx_n_u_test_microphone_level __pyx_string_tab[122]
+#define __pyx_n_u_update_destinations __pyx_string_tab[123]
+#define __pyx_n_u_value __pyx_string_tab[124]
+#define __pyx_n_u_values __pyx_string_tab[125]
+#define __pyx_kp_b_iso88591_8_t8_q __pyx_string_tab[126]
+#define __pyx_kp_b_iso88591_A_4xvQ_E_ar_a_1_as_7_as_7_gQiwa __pyx_string_tab[127]
+#define __pyx_kp_b_iso88591_A_D_8I_E_at5_AQ_81E_YVWWX_q __pyx_string_tab[128]
+#define __pyx_kp_b_iso88591_A_D_8J_E_at5_AQ_81E_YVWWX_q __pyx_string_tab[129]
+#define __pyx_kp_b_iso88591_A_E_z_Q_waq_q_HO1A __pyx_string_tab[130]
+#define __pyx_kp_b_iso88591_A_H __pyx_string_tab[131]
+#define __pyx_kp_b_iso88591_A_HA_Jat7_1_t86 __pyx_string_tab[132]
+#define __pyx_kp_b_iso88591_A_HA_Jat7_1_t8_aq __pyx_string_tab[133]
+#define __pyx_kp_b_iso88591_A_HE __pyx_string_tab[134]
+#define __pyx_kp_b_iso88591_A_HIQ __pyx_string_tab[135]
+#define __pyx_kp_b_iso88591_A_HJaq __pyx_string_tab[136]
+#define __pyx_kp_b_iso88591_A_HKq __pyx_string_tab[137]
+#define __pyx_kp_b_iso88591_A_HL __pyx_string_tab[138]
+#define __pyx_kp_b_iso88591_A_HL_2 __pyx_string_tab[139]
+#define __pyx_kp_b_iso88591_A_HN_6 __pyx_string_tab[140]
+#define __pyx_kp_b_iso88591_A_HO1A __pyx_string_tab[141]
+#define __pyx_kp_b_iso88591_A_H_AQ __pyx_string_tab[142]
+#define __pyx_kp_b_iso88591_A_H_aq __pyx_string_tab[143]
+#define __pyx_kp_b_iso88591_A_H_q __pyx_string_tab[144]
+#define __pyx_kp_b_iso88591_A_t8 __pyx_string_tab[145]
+#define __pyx_kp_b_iso88591_A_t85 __pyx_string_tab[146]
+#define __pyx_kp_b_iso88591_A_t8_1 __pyx_string_tab[147]
+#define __pyx_kp_b_iso88591_A_t8_1A __pyx_string_tab[148]
+#define __pyx_kp_b_iso88591_A_t8_q __pyx_string_tab[149]
+#define __pyx_kp_b_iso88591_A_t8_r __pyx_string_tab[150]
+#define __pyx_kp_b_iso88591_B_HF_5_q_iwaq __pyx_string_tab[151]
+#define __pyx_kp_b_iso88591_Q __pyx_string_tab[152]
 #define __pyx_float_1_0 __pyx_number_tab[0]
 /* #### Code section: module_state_clear ### */
 #if CYTHON_USE_MODULE_STATE
@@ -2763,8 +2768,8 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery);
   Py_CLEAR(clear_module_state->__pyx_type_6python_13audio_wrapper_PyPeerDiscovery);
   for (int i=0; i<2; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<31; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<149; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<32; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<153; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
@@ -2793,8 +2798,8 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery);
   Py_VISIT(traverse_module_state->__pyx_type_6python_13audio_wrapper_PyPeerDiscovery);
   for (int i=0; i<2; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<31; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<149; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<32; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<153; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
@@ -3190,7 +3195,7 @@ static std::string __pyx_convert_string_from_py_6libcpp_6string_std__in_string(P
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":67
+/* "python/audio_wrapper.pyx":68
  *     cdef AudioEngine* thisptr
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -3230,7 +3235,7 @@ static int __pyx_pf_6python_13audio_wrapper_13PyAudioEngine___cinit__(struct __p
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "python/audio_wrapper.pyx":68
+  /* "python/audio_wrapper.pyx":69
  * 
  *     def __cinit__(self):
  *         self.thisptr = new AudioEngine()             # <<<<<<<<<<<<<<
@@ -3241,11 +3246,11 @@ static int __pyx_pf_6python_13audio_wrapper_13PyAudioEngine___cinit__(struct __p
     __pyx_t_1 = new ::AudioEngine();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 68, __pyx_L1_error)
+    __PYX_ERR(0, 69, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "python/audio_wrapper.pyx":67
+  /* "python/audio_wrapper.pyx":68
  *     cdef AudioEngine* thisptr
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -3263,7 +3268,7 @@ static int __pyx_pf_6python_13audio_wrapper_13PyAudioEngine___cinit__(struct __p
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":70
+/* "python/audio_wrapper.pyx":71
  *         self.thisptr = new AudioEngine()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -3286,7 +3291,7 @@ static void __pyx_pw_6python_13audio_wrapper_13PyAudioEngine_3__dealloc__(PyObje
 
 static void __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_2__dealloc__(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
 
-  /* "python/audio_wrapper.pyx":71
+  /* "python/audio_wrapper.pyx":72
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -3295,7 +3300,7 @@ static void __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_2__dealloc__(struct
 */
   delete __pyx_v_self->thisptr;
 
-  /* "python/audio_wrapper.pyx":70
+  /* "python/audio_wrapper.pyx":71
  *         self.thisptr = new AudioEngine()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -3306,7 +3311,7 @@ static void __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_2__dealloc__(struct
   /* function exit code */
 }
 
-/* "python/audio_wrapper.pyx":73
+/* "python/audio_wrapper.pyx":74
  *         del self.thisptr
  * 
  *     def port(self):             # <<<<<<<<<<<<<<
@@ -3366,7 +3371,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_4port(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("port", 0);
 
-  /* "python/audio_wrapper.pyx":74
+  /* "python/audio_wrapper.pyx":75
  * 
  *     def port(self):
  *         return self.thisptr.port()             # <<<<<<<<<<<<<<
@@ -3374,13 +3379,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_4port(struct _
  *     def list_input_devices(self):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->port()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->port()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":73
+  /* "python/audio_wrapper.pyx":74
  *         del self.thisptr
  * 
  *     def port(self):             # <<<<<<<<<<<<<<
@@ -3399,7 +3404,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_4port(struct _
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":76
+/* "python/audio_wrapper.pyx":77
  *         return self.thisptr.port()
  * 
  *     def list_input_devices(self):             # <<<<<<<<<<<<<<
@@ -3472,7 +3477,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_6list_input_de
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_input_devices", 0);
 
-  /* "python/audio_wrapper.pyx":77
+  /* "python/audio_wrapper.pyx":78
  * 
  *     def list_input_devices(self):
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listInputDevices()             # <<<<<<<<<<<<<<
@@ -3481,19 +3486,19 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_6list_input_de
 */
   __pyx_v_devs = __pyx_v_self->thisptr->listInputDevices();
 
-  /* "python/audio_wrapper.pyx":78
+  /* "python/audio_wrapper.pyx":79
  *     def list_input_devices(self):
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listInputDevices()
  *         result = []             # <<<<<<<<<<<<<<
  *         for i in range(devs.size()):
  *             d = devs[i]
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "python/audio_wrapper.pyx":79
+  /* "python/audio_wrapper.pyx":80
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listInputDevices()
  *         result = []
  *         for i in range(devs.size()):             # <<<<<<<<<<<<<<
@@ -3505,7 +3510,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_6list_input_de
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "python/audio_wrapper.pyx":80
+    /* "python/audio_wrapper.pyx":81
  *         result = []
  *         for i in range(devs.size()):
  *             d = devs[i]             # <<<<<<<<<<<<<<
@@ -3514,43 +3519,43 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_6list_input_de
 */
     __pyx_v_d = (__pyx_v_devs[__pyx_v_i]);
 
-    /* "python/audio_wrapper.pyx":81
+    /* "python/audio_wrapper.pyx":82
  *         for i in range(devs.size()):
  *             d = devs[i]
  *             result.append({"name": d.name.decode("utf-8", errors="replace"), "index": d.index})             # <<<<<<<<<<<<<<
  *         return result
  * 
 */
-    __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_d.name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_d.name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_6 = __pyx_t_7;
     __Pyx_INCREF(__pyx_t_6);
     __pyx_t_8 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u_utf_8};
-      __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 81, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 82, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_9, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 81, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_9, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 82, __pyx_L1_error)
       __pyx_t_5 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_decode, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_5) < (0)) __PYX_ERR(0, 81, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_5) < (0)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_d.index); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_d.index); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_index, __pyx_t_5) < (0)) __PYX_ERR(0, 81, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_index, __pyx_t_5) < (0)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "python/audio_wrapper.pyx":82
+  /* "python/audio_wrapper.pyx":83
  *             d = devs[i]
  *             result.append({"name": d.name.decode("utf-8", errors="replace"), "index": d.index})
  *         return result             # <<<<<<<<<<<<<<
@@ -3562,7 +3567,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_6list_input_de
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":76
+  /* "python/audio_wrapper.pyx":77
  *         return self.thisptr.port()
  * 
  *     def list_input_devices(self):             # <<<<<<<<<<<<<<
@@ -3586,7 +3591,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_6list_input_de
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":84
+/* "python/audio_wrapper.pyx":85
  *         return result
  * 
  *     def list_output_devices(self):             # <<<<<<<<<<<<<<
@@ -3659,7 +3664,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8list_output_d
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_output_devices", 0);
 
-  /* "python/audio_wrapper.pyx":85
+  /* "python/audio_wrapper.pyx":86
  * 
  *     def list_output_devices(self):
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listOutputDevices()             # <<<<<<<<<<<<<<
@@ -3668,19 +3673,19 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8list_output_d
 */
   __pyx_v_devs = __pyx_v_self->thisptr->listOutputDevices();
 
-  /* "python/audio_wrapper.pyx":86
+  /* "python/audio_wrapper.pyx":87
  *     def list_output_devices(self):
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listOutputDevices()
  *         result = []             # <<<<<<<<<<<<<<
  *         for i in range(devs.size()):
  *             d = devs[i]
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "python/audio_wrapper.pyx":87
+  /* "python/audio_wrapper.pyx":88
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listOutputDevices()
  *         result = []
  *         for i in range(devs.size()):             # <<<<<<<<<<<<<<
@@ -3692,7 +3697,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8list_output_d
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "python/audio_wrapper.pyx":88
+    /* "python/audio_wrapper.pyx":89
  *         result = []
  *         for i in range(devs.size()):
  *             d = devs[i]             # <<<<<<<<<<<<<<
@@ -3701,43 +3706,43 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8list_output_d
 */
     __pyx_v_d = (__pyx_v_devs[__pyx_v_i]);
 
-    /* "python/audio_wrapper.pyx":89
+    /* "python/audio_wrapper.pyx":90
  *         for i in range(devs.size()):
  *             d = devs[i]
  *             result.append({"name": d.name.decode("utf-8", errors="replace"), "index": d.index})             # <<<<<<<<<<<<<<
  *         return result
  * 
 */
-    __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_d.name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_d.name); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_6 = __pyx_t_7;
     __Pyx_INCREF(__pyx_t_6);
     __pyx_t_8 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u_utf_8};
-      __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_9, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_9, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 90, __pyx_L1_error)
       __pyx_t_5 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_decode, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_5) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_name, __pyx_t_5) < (0)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_d.index); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_d.index); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_index, __pyx_t_5) < (0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_index, __pyx_t_5) < (0)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "python/audio_wrapper.pyx":90
+  /* "python/audio_wrapper.pyx":91
  *             d = devs[i]
  *             result.append({"name": d.name.decode("utf-8", errors="replace"), "index": d.index})
  *         return result             # <<<<<<<<<<<<<<
@@ -3749,7 +3754,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8list_output_d
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":84
+  /* "python/audio_wrapper.pyx":85
  *         return result
  * 
  *     def list_output_devices(self):             # <<<<<<<<<<<<<<
@@ -3773,7 +3778,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8list_output_d
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":92
+/* "python/audio_wrapper.pyx":93
  *         return result
  * 
  *     def set_input_device(self, int idx):             # <<<<<<<<<<<<<<
@@ -3821,32 +3826,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_idx,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 92, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 93, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 93, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_input_device", 0) < (0)) __PYX_ERR(0, 92, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_input_device", 0) < (0)) __PYX_ERR(0, 93, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_input_device", 1, 1, 1, i); __PYX_ERR(0, 92, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_input_device", 1, 1, 1, i); __PYX_ERR(0, 93, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 93, __pyx_L3_error)
     }
-    __pyx_v_idx = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_idx == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_idx = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_idx == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_input_device", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 92, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_input_device", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 93, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3876,7 +3881,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10set_input_de
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_input_device", 0);
 
-  /* "python/audio_wrapper.pyx":93
+  /* "python/audio_wrapper.pyx":94
  * 
  *     def set_input_device(self, int idx):
  *         return self.thisptr.setInputDevice(idx)             # <<<<<<<<<<<<<<
@@ -3884,13 +3889,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10set_input_de
  *     def set_output_device(self, int idx):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->setInputDevice(__pyx_v_idx)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->setInputDevice(__pyx_v_idx)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":92
+  /* "python/audio_wrapper.pyx":93
  *         return result
  * 
  *     def set_input_device(self, int idx):             # <<<<<<<<<<<<<<
@@ -3909,7 +3914,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10set_input_de
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":95
+/* "python/audio_wrapper.pyx":96
  *         return self.thisptr.setInputDevice(idx)
  * 
  *     def set_output_device(self, int idx):             # <<<<<<<<<<<<<<
@@ -3957,32 +3962,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_idx,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 95, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 96, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 95, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 96, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_output_device", 0) < (0)) __PYX_ERR(0, 95, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_output_device", 0) < (0)) __PYX_ERR(0, 96, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_output_device", 1, 1, 1, i); __PYX_ERR(0, 95, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_output_device", 1, 1, 1, i); __PYX_ERR(0, 96, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 95, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 96, __pyx_L3_error)
     }
-    __pyx_v_idx = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_idx == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L3_error)
+    __pyx_v_idx = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_idx == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 96, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_output_device", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 95, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_output_device", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 96, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4012,7 +4017,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_12set_output_d
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_output_device", 0);
 
-  /* "python/audio_wrapper.pyx":96
+  /* "python/audio_wrapper.pyx":97
  * 
  *     def set_output_device(self, int idx):
  *         return self.thisptr.setOutputDevice(idx)             # <<<<<<<<<<<<<<
@@ -4020,13 +4025,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_12set_output_d
  *     @property
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->setOutputDevice(__pyx_v_idx)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->setOutputDevice(__pyx_v_idx)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":95
+  /* "python/audio_wrapper.pyx":96
  *         return self.thisptr.setInputDevice(idx)
  * 
  *     def set_output_device(self, int idx):             # <<<<<<<<<<<<<<
@@ -4045,7 +4050,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_12set_output_d
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":98
+/* "python/audio_wrapper.pyx":99
  *         return self.thisptr.setOutputDevice(idx)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -4077,7 +4082,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18input_device
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":100
+  /* "python/audio_wrapper.pyx":101
  *     @property
  *     def input_device_index(self):
  *         return self.thisptr.inputDeviceIndex()             # <<<<<<<<<<<<<<
@@ -4085,13 +4090,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18input_device
  *     @property
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->inputDeviceIndex()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->inputDeviceIndex()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":98
+  /* "python/audio_wrapper.pyx":99
  *         return self.thisptr.setOutputDevice(idx)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -4110,7 +4115,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18input_device
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":102
+/* "python/audio_wrapper.pyx":103
  *         return self.thisptr.inputDeviceIndex()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -4142,7 +4147,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_19output_devic
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":104
+  /* "python/audio_wrapper.pyx":105
  *     @property
  *     def output_device_index(self):
  *         return self.thisptr.outputDeviceIndex()             # <<<<<<<<<<<<<<
@@ -4150,13 +4155,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_19output_devic
  *     def set_client_id(self, str client_id):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->outputDeviceIndex()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->outputDeviceIndex()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":102
+  /* "python/audio_wrapper.pyx":103
  *         return self.thisptr.inputDeviceIndex()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -4175,7 +4180,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_19output_devic
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":106
+/* "python/audio_wrapper.pyx":107
  *         return self.thisptr.outputDeviceIndex()
  * 
  *     def set_client_id(self, str client_id):             # <<<<<<<<<<<<<<
@@ -4223,32 +4228,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_client_id,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 106, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 107, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 107, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_client_id", 0) < (0)) __PYX_ERR(0, 106, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_client_id", 0) < (0)) __PYX_ERR(0, 107, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_client_id", 1, 1, 1, i); __PYX_ERR(0, 106, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_client_id", 1, 1, 1, i); __PYX_ERR(0, 107, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 106, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 107, __pyx_L3_error)
     }
     __pyx_v_client_id = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_client_id", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 106, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_client_id", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 107, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4259,7 +4264,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_client_id), (&PyUnicode_Type), 1, "client_id", 1))) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_client_id), (&PyUnicode_Type), 1, "client_id", 1))) __PYX_ERR(0, 107, __pyx_L1_error)
   __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14set_client_id(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_client_id);
 
   /* function exit code */
@@ -4289,24 +4294,24 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14set_client_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_client_id", 0);
 
-  /* "python/audio_wrapper.pyx":107
+  /* "python/audio_wrapper.pyx":108
  * 
  *     def set_client_id(self, str client_id):
  *         self.thisptr.setClientId(client_id.encode("utf-8"))             # <<<<<<<<<<<<<<
  * 
- *     def set_master_volume(self, int value):
+ *     def set_room_secret(self, str secret):
 */
   if (unlikely(__pyx_v_client_id == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 107, __pyx_L1_error)
+    __PYX_ERR(0, 108, __pyx_L1_error)
   }
-  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_client_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_client_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->setClientId(__pyx_t_2);
 
-  /* "python/audio_wrapper.pyx":106
+  /* "python/audio_wrapper.pyx":107
  *         return self.thisptr.outputDeviceIndex()
  * 
  *     def set_client_id(self, str client_id):             # <<<<<<<<<<<<<<
@@ -4327,8 +4332,160 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14set_client_i
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":109
+/* "python/audio_wrapper.pyx":110
  *         self.thisptr.setClientId(client_id.encode("utf-8"))
+ * 
+ *     def set_room_secret(self, str secret):             # <<<<<<<<<<<<<<
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))
+ * 
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_room_secret(PyObject *__pyx_v_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_16set_room_secret, "PyAudioEngine.set_room_secret(self, str secret)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_17set_room_secret = {"set_room_secret", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_room_secret, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_16set_room_secret};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_room_secret(PyObject *__pyx_v_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_secret = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[1] = {0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("set_room_secret (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_secret,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 110, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 110, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_room_secret", 0) < (0)) __PYX_ERR(0, 110, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_room_secret", 1, 1, 1, i); __PYX_ERR(0, 110, __pyx_L3_error) }
+      }
+    } else if (unlikely(__pyx_nargs != 1)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 110, __pyx_L3_error)
+    }
+    __pyx_v_secret = ((PyObject*)values[0]);
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("set_room_secret", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 110, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("python.audio_wrapper.PyAudioEngine.set_room_secret", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_secret), (&PyUnicode_Type), 1, "secret", 1))) __PYX_ERR(0, 110, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_room_secret(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_secret);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  goto __pyx_L7_cleaned_up;
+  __pyx_L0:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __pyx_L7_cleaned_up:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_room_secret(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_secret) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  std::string __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("set_room_secret", 0);
+
+  /* "python/audio_wrapper.pyx":111
+ * 
+ *     def set_room_secret(self, str secret):
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))             # <<<<<<<<<<<<<<
+ * 
+ *     def set_master_volume(self, int value):
+*/
+  if (unlikely(__pyx_v_secret == Py_None)) {
+    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
+    __PYX_ERR(0, 111, __pyx_L1_error)
+  }
+  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_secret); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 111, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->thisptr->setRoomSecret(__pyx_t_2);
+
+  /* "python/audio_wrapper.pyx":110
+ *         self.thisptr.setClientId(client_id.encode("utf-8"))
+ * 
+ *     def set_room_secret(self, str secret):             # <<<<<<<<<<<<<<
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))
+ * 
+*/
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("python.audio_wrapper.PyAudioEngine.set_room_secret", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "python/audio_wrapper.pyx":113
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))
  * 
  *     def set_master_volume(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setMasterVolume(value)
@@ -4336,16 +4493,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14set_client_i
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_master_volume(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_master_volume(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_16set_master_volume, "PyAudioEngine.set_master_volume(self, int value)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_17set_master_volume = {"set_master_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_master_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_16set_master_volume};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_master_volume(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_18set_master_volume, "PyAudioEngine.set_master_volume(self, int value)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_19set_master_volume = {"set_master_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_master_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_18set_master_volume};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_master_volume(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -4375,32 +4532,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 109, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 113, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 109, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 113, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_master_volume", 0) < (0)) __PYX_ERR(0, 109, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_master_volume", 0) < (0)) __PYX_ERR(0, 113, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_master_volume", 1, 1, 1, i); __PYX_ERR(0, 109, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_master_volume", 1, 1, 1, i); __PYX_ERR(0, 113, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 109, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 113, __pyx_L3_error)
     }
-    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L3_error)
+    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_master_volume", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 109, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_master_volume", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 113, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4411,7 +4568,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_master_volume(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_master_volume(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -4421,12 +4578,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_master_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_master_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_master_volume", 0);
 
-  /* "python/audio_wrapper.pyx":110
+  /* "python/audio_wrapper.pyx":114
  * 
  *     def set_master_volume(self, int value):
  *         self.thisptr.setMasterVolume(value)             # <<<<<<<<<<<<<<
@@ -4435,8 +4592,8 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_master_v
 */
   __pyx_v_self->thisptr->setMasterVolume(__pyx_v_value);
 
-  /* "python/audio_wrapper.pyx":109
- *         self.thisptr.setClientId(client_id.encode("utf-8"))
+  /* "python/audio_wrapper.pyx":113
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))
  * 
  *     def set_master_volume(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setMasterVolume(value)
@@ -4450,7 +4607,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_master_v
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":112
+/* "python/audio_wrapper.pyx":116
  *         self.thisptr.setMasterVolume(value)
  * 
  *     def set_output_volume(self, int value):             # <<<<<<<<<<<<<<
@@ -4459,16 +4616,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_16set_master_v
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_output_volume(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_output_volume(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_18set_output_volume, "PyAudioEngine.set_output_volume(self, int value)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_19set_output_volume = {"set_output_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_output_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_18set_output_volume};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_output_volume(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_20set_output_volume, "PyAudioEngine.set_output_volume(self, int value)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_21set_output_volume = {"set_output_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_output_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_20set_output_volume};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_output_volume(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -4498,32 +4655,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 112, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 116, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 112, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 116, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_output_volume", 0) < (0)) __PYX_ERR(0, 112, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_output_volume", 0) < (0)) __PYX_ERR(0, 116, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_output_volume", 1, 1, 1, i); __PYX_ERR(0, 112, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_output_volume", 1, 1, 1, i); __PYX_ERR(0, 116, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 112, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 116, __pyx_L3_error)
     }
-    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L3_error)
+    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 116, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_output_volume", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 112, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_output_volume", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 116, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4534,7 +4691,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_output_volume(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_output_volume(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -4544,12 +4701,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_output_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_output_volume(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_output_volume", 0);
 
-  /* "python/audio_wrapper.pyx":113
+  /* "python/audio_wrapper.pyx":117
  * 
  *     def set_output_volume(self, int value):
  *         self.thisptr.setOutputVolume(value)             # <<<<<<<<<<<<<<
@@ -4558,7 +4715,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_output_v
 */
   __pyx_v_self->thisptr->setOutputVolume(__pyx_v_value);
 
-  /* "python/audio_wrapper.pyx":112
+  /* "python/audio_wrapper.pyx":116
  *         self.thisptr.setMasterVolume(value)
  * 
  *     def set_output_volume(self, int value):             # <<<<<<<<<<<<<<
@@ -4573,7 +4730,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_output_v
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":115
+/* "python/audio_wrapper.pyx":119
  *         self.thisptr.setOutputVolume(value)
  * 
  *     def set_gain_db(self, int value):             # <<<<<<<<<<<<<<
@@ -4582,16 +4739,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_18set_output_v
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_gain_db(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_gain_db(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db, "PyAudioEngine.set_gain_db(self, int value)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_21set_gain_db = {"set_gain_db", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_gain_db, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_gain_db(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_22set_gain_db, "PyAudioEngine.set_gain_db(self, int value)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_23set_gain_db = {"set_gain_db", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_gain_db, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_22set_gain_db};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_gain_db(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -4621,32 +4778,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 115, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 119, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 115, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 119, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_gain_db", 0) < (0)) __PYX_ERR(0, 115, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_gain_db", 0) < (0)) __PYX_ERR(0, 119, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_gain_db", 1, 1, 1, i); __PYX_ERR(0, 115, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_gain_db", 1, 1, 1, i); __PYX_ERR(0, 119, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 115, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 119, __pyx_L3_error)
     }
-    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 115, __pyx_L3_error)
+    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 119, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_gain_db", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 115, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_gain_db", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 119, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4657,7 +4814,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_gain_db(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -4667,12 +4824,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_gain_db(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_gain_db", 0);
 
-  /* "python/audio_wrapper.pyx":116
+  /* "python/audio_wrapper.pyx":120
  * 
  *     def set_gain_db(self, int value):
  *         self.thisptr.setGainDb(value)             # <<<<<<<<<<<<<<
@@ -4681,7 +4838,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db(
 */
   __pyx_v_self->thisptr->setGainDb(__pyx_v_value);
 
-  /* "python/audio_wrapper.pyx":115
+  /* "python/audio_wrapper.pyx":119
  *         self.thisptr.setOutputVolume(value)
  * 
  *     def set_gain_db(self, int value):             # <<<<<<<<<<<<<<
@@ -4696,7 +4853,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db(
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":118
+/* "python/audio_wrapper.pyx":122
  *         self.thisptr.setGainDb(value)
  * 
  *     def set_mic_sensitivity(self, int value):             # <<<<<<<<<<<<<<
@@ -4705,16 +4862,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_mic_sensitivity(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_mic_sensitivity(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sensitivity, "PyAudioEngine.set_mic_sensitivity(self, int value)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_23set_mic_sensitivity = {"set_mic_sensitivity", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_mic_sensitivity, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sensitivity};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_mic_sensitivity(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_24set_mic_sensitivity, "PyAudioEngine.set_mic_sensitivity(self, int value)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_25set_mic_sensitivity = {"set_mic_sensitivity", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_mic_sensitivity, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_24set_mic_sensitivity};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_mic_sensitivity(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -4744,32 +4901,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 118, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 122, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 122, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_mic_sensitivity", 0) < (0)) __PYX_ERR(0, 118, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_mic_sensitivity", 0) < (0)) __PYX_ERR(0, 122, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_mic_sensitivity", 1, 1, 1, i); __PYX_ERR(0, 118, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_mic_sensitivity", 1, 1, 1, i); __PYX_ERR(0, 122, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 122, __pyx_L3_error)
     }
-    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L3_error)
+    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 122, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_mic_sensitivity", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 118, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_mic_sensitivity", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 122, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4780,7 +4937,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sensitivity(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_mic_sensitivity(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -4790,12 +4947,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sensitivity(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_mic_sensitivity(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_mic_sensitivity", 0);
 
-  /* "python/audio_wrapper.pyx":119
+  /* "python/audio_wrapper.pyx":123
  * 
  *     def set_mic_sensitivity(self, int value):
  *         self.thisptr.setMicSensitivity(value)             # <<<<<<<<<<<<<<
@@ -4804,7 +4961,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sens
 */
   __pyx_v_self->thisptr->setMicSensitivity(__pyx_v_value);
 
-  /* "python/audio_wrapper.pyx":118
+  /* "python/audio_wrapper.pyx":122
  *         self.thisptr.setGainDb(value)
  * 
  *     def set_mic_sensitivity(self, int value):             # <<<<<<<<<<<<<<
@@ -4819,7 +4976,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sens
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":121
+/* "python/audio_wrapper.pyx":125
  *         self.thisptr.setMicSensitivity(value)
  * 
  *     def set_noise_suppression(self, int value):             # <<<<<<<<<<<<<<
@@ -4828,16 +4985,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sens
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_noise_suppression(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_24set_noise_suppression, "PyAudioEngine.set_noise_suppression(self, int value)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_25set_noise_suppression = {"set_noise_suppression", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_noise_suppression, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_24set_noise_suppression};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_noise_suppression(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression, "PyAudioEngine.set_noise_suppression(self, int value)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression = {"set_noise_suppression", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -4867,32 +5024,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_value,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 121, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 125, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 121, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 125, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_noise_suppression", 0) < (0)) __PYX_ERR(0, 121, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_noise_suppression", 0) < (0)) __PYX_ERR(0, 125, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_noise_suppression", 1, 1, 1, i); __PYX_ERR(0, 121, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_noise_suppression", 1, 1, 1, i); __PYX_ERR(0, 125, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 121, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 125, __pyx_L3_error)
     }
-    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L3_error)
+    __pyx_v_value = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_value == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 125, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_noise_suppression", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 121, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_noise_suppression", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 125, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4903,7 +5060,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_noise_suppression(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_value);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -4913,12 +5070,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_noise_suppression(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, int __pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_noise_suppression", 0);
 
-  /* "python/audio_wrapper.pyx":122
+  /* "python/audio_wrapper.pyx":126
  * 
  *     def set_noise_suppression(self, int value):
  *         self.thisptr.setNoiseSuppression(value)             # <<<<<<<<<<<<<<
@@ -4927,7 +5084,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_noise_su
 */
   __pyx_v_self->thisptr->setNoiseSuppression(__pyx_v_value);
 
-  /* "python/audio_wrapper.pyx":121
+  /* "python/audio_wrapper.pyx":125
  *         self.thisptr.setMicSensitivity(value)
  * 
  *     def set_noise_suppression(self, int value):             # <<<<<<<<<<<<<<
@@ -4942,7 +5099,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_noise_su
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":124
+/* "python/audio_wrapper.pyx":128
  *         self.thisptr.setNoiseSuppression(value)
  * 
  *     def set_noise_suppression_enabled(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -4951,16 +5108,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_24set_noise_su
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression_enabled(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_noise_suppression_enabled(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression_enabled, "PyAudioEngine.set_noise_suppression_enabled(self, bool enabled)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression_enabled = {"set_noise_suppression_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression_enabled};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression_enabled(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_28set_noise_suppression_enabled, "PyAudioEngine.set_noise_suppression_enabled(self, bool enabled)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_29set_noise_suppression_enabled = {"set_noise_suppression_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_noise_suppression_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_28set_noise_suppression_enabled};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_noise_suppression_enabled(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -4990,32 +5147,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_enabled,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 124, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 128, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 124, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 128, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_noise_suppression_enabled", 0) < (0)) __PYX_ERR(0, 124, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_noise_suppression_enabled", 0) < (0)) __PYX_ERR(0, 128, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_noise_suppression_enabled", 1, 1, 1, i); __PYX_ERR(0, 124, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_noise_suppression_enabled", 1, 1, 1, i); __PYX_ERR(0, 128, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 124, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 128, __pyx_L3_error)
     }
-    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L3_error)
+    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_noise_suppression_enabled", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 124, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_noise_suppression_enabled", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 128, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5026,7 +5183,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression_enabled(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_noise_suppression_enabled(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -5036,12 +5193,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_noise_suppression_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_noise_suppression_enabled", 0);
 
-  /* "python/audio_wrapper.pyx":125
+  /* "python/audio_wrapper.pyx":129
  * 
  *     def set_noise_suppression_enabled(self, bool enabled):
  *         self.thisptr.setNoiseSuppressionEnabled(enabled)             # <<<<<<<<<<<<<<
@@ -5050,7 +5207,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_su
 */
   __pyx_v_self->thisptr->setNoiseSuppressionEnabled(__pyx_v_enabled);
 
-  /* "python/audio_wrapper.pyx":124
+  /* "python/audio_wrapper.pyx":128
  *         self.thisptr.setNoiseSuppression(value)
  * 
  *     def set_noise_suppression_enabled(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5065,7 +5222,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_su
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":127
+/* "python/audio_wrapper.pyx":131
  *         self.thisptr.setNoiseSuppressionEnabled(enabled)
  * 
  *     def set_auto_gain(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5074,16 +5231,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_26set_noise_su
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_auto_gain(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_auto_gain(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gain, "PyAudioEngine.set_auto_gain(self, bool enabled)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_29set_auto_gain = {"set_auto_gain", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_auto_gain, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gain};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_auto_gain(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_30set_auto_gain, "PyAudioEngine.set_auto_gain(self, bool enabled)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_31set_auto_gain = {"set_auto_gain", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_auto_gain, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_30set_auto_gain};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_auto_gain(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5113,32 +5270,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_enabled,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 127, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 131, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 127, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_auto_gain", 0) < (0)) __PYX_ERR(0, 127, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_auto_gain", 0) < (0)) __PYX_ERR(0, 131, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_auto_gain", 1, 1, 1, i); __PYX_ERR(0, 127, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_auto_gain", 1, 1, 1, i); __PYX_ERR(0, 131, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 127, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 131, __pyx_L3_error)
     }
-    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
+    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_auto_gain", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 127, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_auto_gain", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 131, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5149,7 +5306,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gain(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_auto_gain(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -5159,12 +5316,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gain(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_auto_gain(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_auto_gain", 0);
 
-  /* "python/audio_wrapper.pyx":128
+  /* "python/audio_wrapper.pyx":132
  * 
  *     def set_auto_gain(self, bool enabled):
  *         self.thisptr.setAutoGain(enabled)             # <<<<<<<<<<<<<<
@@ -5173,7 +5330,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gai
 */
   __pyx_v_self->thisptr->setAutoGain(__pyx_v_enabled);
 
-  /* "python/audio_wrapper.pyx":127
+  /* "python/audio_wrapper.pyx":131
  *         self.thisptr.setNoiseSuppressionEnabled(enabled)
  * 
  *     def set_auto_gain(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5188,7 +5345,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gai
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":130
+/* "python/audio_wrapper.pyx":134
  *         self.thisptr.setAutoGain(enabled)
  * 
  *     def set_echo_enabled(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5197,16 +5354,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gai
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_echo_enabled(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33set_echo_enabled(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_30set_echo_enabled, "PyAudioEngine.set_echo_enabled(self, bool enabled)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_31set_echo_enabled = {"set_echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_30set_echo_enabled};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_echo_enabled(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_32set_echo_enabled, "PyAudioEngine.set_echo_enabled(self, bool enabled)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_33set_echo_enabled = {"set_echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33set_echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_32set_echo_enabled};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33set_echo_enabled(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5236,32 +5393,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_enabled,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 130, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 134, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 130, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 134, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_echo_enabled", 0) < (0)) __PYX_ERR(0, 130, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_echo_enabled", 0) < (0)) __PYX_ERR(0, 134, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_echo_enabled", 1, 1, 1, i); __PYX_ERR(0, 130, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_echo_enabled", 1, 1, 1, i); __PYX_ERR(0, 134, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 130, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 134, __pyx_L3_error)
     }
-    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L3_error)
+    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 134, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_echo_enabled", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 130, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_echo_enabled", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 134, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5272,7 +5429,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_echo_enabled(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32set_echo_enabled(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -5282,12 +5439,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32set_echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_echo_enabled", 0);
 
-  /* "python/audio_wrapper.pyx":131
+  /* "python/audio_wrapper.pyx":135
  * 
  *     def set_echo_enabled(self, bool enabled):
  *         self.thisptr.setEchoEnabled(enabled)             # <<<<<<<<<<<<<<
@@ -5296,7 +5453,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_echo_ena
 */
   __pyx_v_self->thisptr->setEchoEnabled(__pyx_v_enabled);
 
-  /* "python/audio_wrapper.pyx":130
+  /* "python/audio_wrapper.pyx":134
  *         self.thisptr.setAutoGain(enabled)
  * 
  *     def set_echo_enabled(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5311,7 +5468,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_echo_ena
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":133
+/* "python/audio_wrapper.pyx":137
  *         self.thisptr.setEchoEnabled(enabled)
  * 
  *     def echo_available(self):             # <<<<<<<<<<<<<<
@@ -5320,16 +5477,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_30set_echo_ena
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33echo_available(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_available(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_32echo_available, "PyAudioEngine.echo_available(self)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_33echo_available = {"echo_available", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33echo_available, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_32echo_available};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33echo_available(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_34echo_available, "PyAudioEngine.echo_available(self)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_35echo_available = {"echo_available", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_available, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_34echo_available};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_available(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5355,14 +5512,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   const Py_ssize_t __pyx_kwds_len = unlikely(__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
   if (unlikely(__pyx_kwds_len < 0)) return NULL;
   if (unlikely(__pyx_kwds_len > 0)) {__Pyx_RejectKeywords("echo_available", __pyx_kwds); return NULL;}
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_available(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_available(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_available(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_available(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5371,7 +5528,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_availab
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("echo_available", 0);
 
-  /* "python/audio_wrapper.pyx":134
+  /* "python/audio_wrapper.pyx":138
  * 
  *     def echo_available(self):
  *         return self.thisptr.echoAvailable()             # <<<<<<<<<<<<<<
@@ -5379,13 +5536,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_availab
  *     def echo_enabled(self):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->echoAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->echoAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":133
+  /* "python/audio_wrapper.pyx":137
  *         self.thisptr.setEchoEnabled(enabled)
  * 
  *     def echo_available(self):             # <<<<<<<<<<<<<<
@@ -5404,7 +5561,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_availab
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":136
+/* "python/audio_wrapper.pyx":140
  *         return self.thisptr.echoAvailable()
  * 
  *     def echo_enabled(self):             # <<<<<<<<<<<<<<
@@ -5413,16 +5570,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_32echo_availab
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_enabled(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37echo_enabled(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled, "PyAudioEngine.echo_enabled(self)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_35echo_enabled = {"echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_enabled(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_36echo_enabled, "PyAudioEngine.echo_enabled(self)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_37echo_enabled = {"echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_36echo_enabled};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37echo_enabled(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5448,14 +5605,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   const Py_ssize_t __pyx_kwds_len = unlikely(__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
   if (unlikely(__pyx_kwds_len < 0)) return NULL;
   if (unlikely(__pyx_kwds_len > 0)) {__Pyx_RejectKeywords("echo_enabled", __pyx_kwds); return NULL;}
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36echo_enabled(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36echo_enabled(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5464,7 +5621,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("echo_enabled", 0);
 
-  /* "python/audio_wrapper.pyx":137
+  /* "python/audio_wrapper.pyx":141
  * 
  *     def echo_enabled(self):
  *         return self.thisptr.echoEnabled()             # <<<<<<<<<<<<<<
@@ -5472,13 +5629,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled
  *     def set_tx_muted(self, bool enabled):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->echoEnabled()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->echoEnabled()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":136
+  /* "python/audio_wrapper.pyx":140
  *         return self.thisptr.echoAvailable()
  * 
  *     def echo_enabled(self):             # <<<<<<<<<<<<<<
@@ -5497,7 +5654,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":139
+/* "python/audio_wrapper.pyx":143
  *         return self.thisptr.echoEnabled()
  * 
  *     def set_tx_muted(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5506,16 +5663,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37set_tx_muted(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39set_tx_muted(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted, "PyAudioEngine.set_tx_muted(self, bool enabled)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_37set_tx_muted = {"set_tx_muted", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37set_tx_muted, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37set_tx_muted(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_38set_tx_muted, "PyAudioEngine.set_tx_muted(self, bool enabled)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_39set_tx_muted = {"set_tx_muted", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39set_tx_muted, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_38set_tx_muted};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39set_tx_muted(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5545,32 +5702,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_enabled,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 139, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 143, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 139, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 143, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_tx_muted", 0) < (0)) __PYX_ERR(0, 139, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_tx_muted", 0) < (0)) __PYX_ERR(0, 143, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_tx_muted", 1, 1, 1, i); __PYX_ERR(0, 139, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_tx_muted", 1, 1, 1, i); __PYX_ERR(0, 143, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 139, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 143, __pyx_L3_error)
     }
-    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L3_error)
+    __pyx_v_enabled = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_enabled == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_tx_muted", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 139, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_tx_muted", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 143, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5581,7 +5738,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38set_tx_muted(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_enabled);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -5591,12 +5748,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38set_tx_muted(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, bool __pyx_v_enabled) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_tx_muted", 0);
 
-  /* "python/audio_wrapper.pyx":140
+  /* "python/audio_wrapper.pyx":144
  * 
  *     def set_tx_muted(self, bool enabled):
  *         self.thisptr.setTxMuted(enabled)             # <<<<<<<<<<<<<<
@@ -5605,7 +5762,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted
 */
   __pyx_v_self->thisptr->setTxMuted(__pyx_v_enabled);
 
-  /* "python/audio_wrapper.pyx":139
+  /* "python/audio_wrapper.pyx":143
  *         return self.thisptr.echoEnabled()
  * 
  *     def set_tx_muted(self, bool enabled):             # <<<<<<<<<<<<<<
@@ -5620,7 +5777,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":142
+/* "python/audio_wrapper.pyx":146
  *         self.thisptr.setTxMuted(enabled)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -5652,7 +5809,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8tx_muted___ge
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":144
+  /* "python/audio_wrapper.pyx":148
  *     @property
  *     def tx_muted(self):
  *         return self.thisptr.isTxMuted()             # <<<<<<<<<<<<<<
@@ -5660,13 +5817,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8tx_muted___ge
  *     def test_microphone_level(self, double duration_sec=1.0):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->isTxMuted()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->isTxMuted()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":142
+  /* "python/audio_wrapper.pyx":146
  *         self.thisptr.setTxMuted(enabled)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -5685,7 +5842,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8tx_muted___ge
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":146
+/* "python/audio_wrapper.pyx":150
  *         return self.thisptr.isTxMuted()
  * 
  *     def test_microphone_level(self, double duration_sec=1.0):             # <<<<<<<<<<<<<<
@@ -5694,16 +5851,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_8tx_muted___ge
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39test_microphone_level(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41test_microphone_level(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_38test_microphone_level, "PyAudioEngine.test_microphone_level(self, double duration_sec=1.0)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_39test_microphone_level = {"test_microphone_level", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39test_microphone_level, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_38test_microphone_level};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39test_microphone_level(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_40test_microphone_level, "PyAudioEngine.test_microphone_level(self, double duration_sec=1.0)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_41test_microphone_level = {"test_microphone_level", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41test_microphone_level, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_40test_microphone_level};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41test_microphone_level(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5733,37 +5890,37 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_duration_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 146, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 150, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 146, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 150, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "test_microphone_level", 0) < (0)) __PYX_ERR(0, 146, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "test_microphone_level", 0) < (0)) __PYX_ERR(0, 150, __pyx_L3_error)
     } else {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 146, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 150, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     if (values[0]) {
-      __pyx_v_duration_sec = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_duration_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 146, __pyx_L3_error)
+      __pyx_v_duration_sec = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_duration_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 150, __pyx_L3_error)
     } else {
       __pyx_v_duration_sec = ((double)1.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("test_microphone_level", 0, 0, 1, __pyx_nargs); __PYX_ERR(0, 146, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("test_microphone_level", 0, 0, 1, __pyx_nargs); __PYX_ERR(0, 150, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5774,7 +5931,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microphone_level(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_duration_sec);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40test_microphone_level(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_duration_sec);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -5784,7 +5941,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microphone_level(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, double __pyx_v_duration_sec) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40test_microphone_level(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, double __pyx_v_duration_sec) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5793,7 +5950,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microph
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test_microphone_level", 0);
 
-  /* "python/audio_wrapper.pyx":147
+  /* "python/audio_wrapper.pyx":151
  * 
  *     def test_microphone_level(self, double duration_sec=1.0):
  *         return self.thisptr.testMicrophoneLevel(duration_sec)             # <<<<<<<<<<<<<<
@@ -5801,13 +5958,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microph
  *     def start(self, list destinations):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->testMicrophoneLevel(__pyx_v_duration_sec)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->testMicrophoneLevel(__pyx_v_duration_sec)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":146
+  /* "python/audio_wrapper.pyx":150
  *         return self.thisptr.isTxMuted()
  * 
  *     def test_microphone_level(self, double duration_sec=1.0):             # <<<<<<<<<<<<<<
@@ -5826,7 +5983,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microph
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":149
+/* "python/audio_wrapper.pyx":153
  *         return self.thisptr.testMicrophoneLevel(duration_sec)
  * 
  *     def start(self, list destinations):             # <<<<<<<<<<<<<<
@@ -5835,16 +5992,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_38test_microph
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41start(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43start(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_40start, "PyAudioEngine.start(self, list destinations)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_41start = {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41start, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_40start};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41start(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_42start, "PyAudioEngine.start(self, list destinations)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_43start = {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43start, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_42start};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43start(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5874,32 +6031,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_destinations,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 149, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 153, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 149, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 153, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start", 0) < (0)) __PYX_ERR(0, 149, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start", 0) < (0)) __PYX_ERR(0, 153, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, i); __PYX_ERR(0, 149, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, i); __PYX_ERR(0, 153, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 149, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 153, __pyx_L3_error)
     }
     __pyx_v_destinations = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 149, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("start", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 153, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5910,8 +6067,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_destinations), (&PyList_Type), 1, "destinations", 1))) __PYX_ERR(0, 149, __pyx_L1_error)
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_destinations);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_destinations), (&PyList_Type), 1, "destinations", 1))) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42start(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_destinations);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5930,7 +6087,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42start(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations) {
   std::vector<std::string>  __pyx_v_cpp_dest;
   PyObject *__pyx_v_dest = NULL;
   PyObject *__pyx_r = NULL;
@@ -5946,7 +6103,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("start", 0);
 
-  /* "python/audio_wrapper.pyx":151
+  /* "python/audio_wrapper.pyx":155
  *     def start(self, list destinations):
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:             # <<<<<<<<<<<<<<
@@ -5955,7 +6112,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
 */
   if (unlikely(__pyx_v_destinations == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 151, __pyx_L1_error)
+    __PYX_ERR(0, 155, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_destinations; __Pyx_INCREF(__pyx_t_1);
   __pyx_t_2 = 0;
@@ -5963,18 +6120,18 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 151, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 155, __pyx_L1_error)
       #endif
       if (__pyx_t_2 >= __pyx_temp) break;
     }
     __pyx_t_3 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_2, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_2;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 155, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_dest, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "python/audio_wrapper.pyx":152
+    /* "python/audio_wrapper.pyx":156
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:
  *             cpp_dest.push_back(dest.encode("utf-8"))             # <<<<<<<<<<<<<<
@@ -5988,19 +6145,19 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_utf_8};
       __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_encode, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
-    __pyx_t_6 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_6 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     try {
       __pyx_v_cpp_dest.push_back(__pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 152, __pyx_L1_error)
+      __PYX_ERR(0, 156, __pyx_L1_error)
     }
 
-    /* "python/audio_wrapper.pyx":151
+    /* "python/audio_wrapper.pyx":155
  *     def start(self, list destinations):
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:             # <<<<<<<<<<<<<<
@@ -6010,7 +6167,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "python/audio_wrapper.pyx":153
+  /* "python/audio_wrapper.pyx":157
  *         for dest in destinations:
  *             cpp_dest.push_back(dest.encode("utf-8"))
  *         return self.thisptr.start(cpp_dest)             # <<<<<<<<<<<<<<
@@ -6018,13 +6175,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
  *     def update_destinations(self, list destinations):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->start(__pyx_v_cpp_dest)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->start(__pyx_v_cpp_dest)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":149
+  /* "python/audio_wrapper.pyx":153
  *         return self.thisptr.testMicrophoneLevel(duration_sec)
  * 
  *     def start(self, list destinations):             # <<<<<<<<<<<<<<
@@ -6046,7 +6203,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":155
+/* "python/audio_wrapper.pyx":159
  *         return self.thisptr.start(cpp_dest)
  * 
  *     def update_destinations(self, list destinations):             # <<<<<<<<<<<<<<
@@ -6055,16 +6212,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_40start(struct
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43update_destinations(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45update_destinations(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_42update_destinations, "PyAudioEngine.update_destinations(self, list destinations)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_43update_destinations = {"update_destinations", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43update_destinations, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_42update_destinations};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43update_destinations(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_44update_destinations, "PyAudioEngine.update_destinations(self, list destinations)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_45update_destinations = {"update_destinations", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45update_destinations, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_44update_destinations};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45update_destinations(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6094,32 +6251,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_destinations,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 155, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 159, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 155, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 159, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "update_destinations", 0) < (0)) __PYX_ERR(0, 155, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "update_destinations", 0) < (0)) __PYX_ERR(0, 159, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("update_destinations", 1, 1, 1, i); __PYX_ERR(0, 155, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("update_destinations", 1, 1, 1, i); __PYX_ERR(0, 159, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 155, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 159, __pyx_L3_error)
     }
     __pyx_v_destinations = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("update_destinations", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 155, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("update_destinations", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 159, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6130,8 +6287,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_destinations), (&PyList_Type), 1, "destinations", 1))) __PYX_ERR(0, 155, __pyx_L1_error)
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_destinations(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_destinations);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_destinations), (&PyList_Type), 1, "destinations", 1))) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44update_destinations(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_destinations);
 
   /* function exit code */
   goto __pyx_L0;
@@ -6150,7 +6307,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_destinations(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44update_destinations(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_destinations) {
   std::vector<std::string>  __pyx_v_cpp_dest;
   PyObject *__pyx_v_dest = NULL;
   PyObject *__pyx_r = NULL;
@@ -6166,7 +6323,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("update_destinations", 0);
 
-  /* "python/audio_wrapper.pyx":157
+  /* "python/audio_wrapper.pyx":161
  *     def update_destinations(self, list destinations):
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:             # <<<<<<<<<<<<<<
@@ -6175,7 +6332,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
 */
   if (unlikely(__pyx_v_destinations == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 157, __pyx_L1_error)
+    __PYX_ERR(0, 161, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_destinations; __Pyx_INCREF(__pyx_t_1);
   __pyx_t_2 = 0;
@@ -6183,18 +6340,18 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 157, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 161, __pyx_L1_error)
       #endif
       if (__pyx_t_2 >= __pyx_temp) break;
     }
     __pyx_t_3 = __Pyx_PyList_GetItemRefFast(__pyx_t_1, __pyx_t_2, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_2;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_dest, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "python/audio_wrapper.pyx":158
+    /* "python/audio_wrapper.pyx":162
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:
  *             cpp_dest.push_back(dest.encode("utf-8"))             # <<<<<<<<<<<<<<
@@ -6208,19 +6365,19 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_utf_8};
       __pyx_t_3 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_encode, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
-    __pyx_t_6 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_6 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     try {
       __pyx_v_cpp_dest.push_back(__pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 158, __pyx_L1_error)
+      __PYX_ERR(0, 162, __pyx_L1_error)
     }
 
-    /* "python/audio_wrapper.pyx":157
+    /* "python/audio_wrapper.pyx":161
  *     def update_destinations(self, list destinations):
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:             # <<<<<<<<<<<<<<
@@ -6230,7 +6387,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "python/audio_wrapper.pyx":159
+  /* "python/audio_wrapper.pyx":163
  *         for dest in destinations:
  *             cpp_dest.push_back(dest.encode("utf-8"))
  *         return self.thisptr.updateDestinations(cpp_dest)             # <<<<<<<<<<<<<<
@@ -6238,13 +6395,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
  *     def stop(self):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->updateDestinations(__pyx_v_cpp_dest)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->updateDestinations(__pyx_v_cpp_dest)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":155
+  /* "python/audio_wrapper.pyx":159
  *         return self.thisptr.start(cpp_dest)
  * 
  *     def update_destinations(self, list destinations):             # <<<<<<<<<<<<<<
@@ -6266,7 +6423,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":161
+/* "python/audio_wrapper.pyx":165
  *         return self.thisptr.updateDestinations(cpp_dest)
  * 
  *     def stop(self):             # <<<<<<<<<<<<<<
@@ -6275,16 +6432,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_42update_desti
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45stop(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47stop(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_44stop, "PyAudioEngine.stop(self)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_45stop = {"stop", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45stop, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_44stop};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45stop(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_46stop, "PyAudioEngine.stop(self)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_47stop = {"stop", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47stop, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_46stop};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47stop(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6310,19 +6467,19 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   const Py_ssize_t __pyx_kwds_len = unlikely(__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
   if (unlikely(__pyx_kwds_len < 0)) return NULL;
   if (unlikely(__pyx_kwds_len > 0)) {__Pyx_RejectKeywords("stop", __pyx_kwds); return NULL;}
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44stop(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46stop(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44stop(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46stop(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("stop", 0);
 
-  /* "python/audio_wrapper.pyx":162
+  /* "python/audio_wrapper.pyx":166
  * 
  *     def stop(self):
  *         self.thisptr.stop()             # <<<<<<<<<<<<<<
@@ -6331,7 +6488,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44stop(struct 
 */
   __pyx_v_self->thisptr->stop();
 
-  /* "python/audio_wrapper.pyx":161
+  /* "python/audio_wrapper.pyx":165
  *         return self.thisptr.updateDestinations(cpp_dest)
  * 
  *     def stop(self):             # <<<<<<<<<<<<<<
@@ -6346,7 +6503,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44stop(struct 
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":164
+/* "python/audio_wrapper.pyx":168
  *         self.thisptr.stop()
  * 
  *     def shutdown(self):             # <<<<<<<<<<<<<<
@@ -6355,16 +6512,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_44stop(struct 
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47shutdown(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49shutdown(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_46shutdown, "PyAudioEngine.shutdown(self)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_47shutdown = {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_46shutdown};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47shutdown(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_48shutdown, "PyAudioEngine.shutdown(self)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_49shutdown = {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_48shutdown};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49shutdown(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6390,19 +6547,19 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   const Py_ssize_t __pyx_kwds_len = unlikely(__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
   if (unlikely(__pyx_kwds_len < 0)) return NULL;
   if (unlikely(__pyx_kwds_len > 0)) {__Pyx_RejectKeywords("shutdown", __pyx_kwds); return NULL;}
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46shutdown(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48shutdown(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46shutdown(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48shutdown(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("shutdown", 0);
 
-  /* "python/audio_wrapper.pyx":165
+  /* "python/audio_wrapper.pyx":169
  * 
  *     def shutdown(self):
  *         self.thisptr.shutdown()             # <<<<<<<<<<<<<<
@@ -6411,7 +6568,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46shutdown(str
 */
   __pyx_v_self->thisptr->shutdown();
 
-  /* "python/audio_wrapper.pyx":164
+  /* "python/audio_wrapper.pyx":168
  *         self.thisptr.stop()
  * 
  *     def shutdown(self):             # <<<<<<<<<<<<<<
@@ -6426,7 +6583,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_46shutdown(str
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":167
+/* "python/audio_wrapper.pyx":171
  *         self.thisptr.shutdown()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6458,7 +6615,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10is_running__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":169
+  /* "python/audio_wrapper.pyx":173
  *     @property
  *     def is_running(self):
  *         return self.thisptr.isRunning()             # <<<<<<<<<<<<<<
@@ -6466,13 +6623,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10is_running__
  *     @property
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->isRunning()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->isRunning()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":167
+  /* "python/audio_wrapper.pyx":171
  *         self.thisptr.shutdown()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6491,7 +6648,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10is_running__
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":171
+/* "python/audio_wrapper.pyx":175
  *         return self.thisptr.isRunning()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6523,7 +6680,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_13capture_leve
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":173
+  /* "python/audio_wrapper.pyx":177
  *     @property
  *     def capture_level(self):
  *         return self.thisptr.captureLevel()             # <<<<<<<<<<<<<<
@@ -6531,13 +6688,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_13capture_leve
  *     @property
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->captureLevel()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->thisptr->captureLevel()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":171
+  /* "python/audio_wrapper.pyx":175
  *         return self.thisptr.isRunning()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6556,7 +6713,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_13capture_leve
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":175
+/* "python/audio_wrapper.pyx":179
  *         return self.thisptr.captureLevel()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6588,7 +6745,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14capture_acti
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":177
+  /* "python/audio_wrapper.pyx":181
  *     @property
  *     def capture_active(self):
  *         return self.thisptr.captureActive()             # <<<<<<<<<<<<<<
@@ -6596,13 +6753,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14capture_acti
  *     @property
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->captureActive()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->thisptr->captureActive()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":175
+  /* "python/audio_wrapper.pyx":179
  *         return self.thisptr.captureLevel()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6621,7 +6778,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_14capture_acti
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":179
+/* "python/audio_wrapper.pyx":183
  *         return self.thisptr.captureActive()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6653,7 +6810,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10mixed_peak__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "python/audio_wrapper.pyx":181
+  /* "python/audio_wrapper.pyx":185
  *     @property
  *     def mixed_peak(self):
  *         return self.thisptr.mixedPeak()             # <<<<<<<<<<<<<<
@@ -6661,13 +6818,13 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10mixed_peak__
  *     def set_hear_targets(self, set targets):
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->mixedPeak()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->thisptr->mixedPeak()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 185, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":179
+  /* "python/audio_wrapper.pyx":183
  *         return self.thisptr.captureActive()
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -6686,7 +6843,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10mixed_peak__
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":183
+/* "python/audio_wrapper.pyx":187
  *         return self.thisptr.mixedPeak()
  * 
  *     def set_hear_targets(self, set targets):             # <<<<<<<<<<<<<<
@@ -6695,16 +6852,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_10mixed_peak__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49set_hear_targets(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51set_hear_targets(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_48set_hear_targets, "PyAudioEngine.set_hear_targets(self, set targets)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_49set_hear_targets = {"set_hear_targets", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49set_hear_targets, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_48set_hear_targets};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49set_hear_targets(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_50set_hear_targets, "PyAudioEngine.set_hear_targets(self, set targets)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_51set_hear_targets = {"set_hear_targets", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51set_hear_targets, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_50set_hear_targets};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51set_hear_targets(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6734,32 +6891,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_targets,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 183, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 187, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 183, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 187, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_hear_targets", 0) < (0)) __PYX_ERR(0, 183, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "set_hear_targets", 0) < (0)) __PYX_ERR(0, 187, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_hear_targets", 1, 1, 1, i); __PYX_ERR(0, 183, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("set_hear_targets", 1, 1, 1, i); __PYX_ERR(0, 187, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 183, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 187, __pyx_L3_error)
     }
     __pyx_v_targets = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_hear_targets", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 183, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_hear_targets", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 187, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6770,8 +6927,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_targets), (&PySet_Type), 1, "targets", 1))) __PYX_ERR(0, 183, __pyx_L1_error)
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_targets(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_targets);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_targets), (&PySet_Type), 1, "targets", 1))) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50set_hear_targets(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v_targets);
 
   /* function exit code */
   goto __pyx_L0;
@@ -6790,7 +6947,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_targets(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_targets) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50set_hear_targets(struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, PyObject *__pyx_v_targets) {
   std::unordered_set<std::string>  __pyx_v_cpp_set;
   PyObject *__pyx_v_t = NULL;
   PyObject *__pyx_r = NULL;
@@ -6810,7 +6967,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_hear_targets", 0);
 
-  /* "python/audio_wrapper.pyx":185
+  /* "python/audio_wrapper.pyx":189
  *     def set_hear_targets(self, set targets):
  *         cdef unordered_set[string] cpp_set
  *         for t in targets:             # <<<<<<<<<<<<<<
@@ -6818,7 +6975,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
  *                 cpp_set.insert(t.encode("utf-8"))
 */
   __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_set_iterator(__pyx_v_targets, 1, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_set_iterator(__pyx_v_targets, 1, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_1);
   __pyx_t_1 = __pyx_t_5;
@@ -6826,12 +6983,12 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
   while (1) {
     __pyx_t_6 = __Pyx_set_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_5, __pyx_t_4);
     if (unlikely(__pyx_t_6 == 0)) break;
-    if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 185, __pyx_L1_error)
+    if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 189, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "python/audio_wrapper.pyx":186
+    /* "python/audio_wrapper.pyx":190
  *         cdef unordered_set[string] cpp_set
  *         for t in targets:
  *             if isinstance(t, str):             # <<<<<<<<<<<<<<
@@ -6841,7 +6998,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
     __pyx_t_7 = PyUnicode_Check(__pyx_v_t); 
     if (__pyx_t_7) {
 
-      /* "python/audio_wrapper.pyx":187
+      /* "python/audio_wrapper.pyx":191
  *         for t in targets:
  *             if isinstance(t, str):
  *                 cpp_set.insert(t.encode("utf-8"))             # <<<<<<<<<<<<<<
@@ -6855,19 +7012,19 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
         PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_mstate_global->__pyx_kp_u_utf_8};
         __pyx_t_5 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_encode, __pyx_callargs+__pyx_t_9, (2-__pyx_t_9) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 187, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
       }
-      __pyx_t_10 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
+      __pyx_t_10 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       try {
         __pyx_v_cpp_set.insert(__pyx_t_10);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 187, __pyx_L1_error)
+        __PYX_ERR(0, 191, __pyx_L1_error)
       }
 
-      /* "python/audio_wrapper.pyx":186
+      /* "python/audio_wrapper.pyx":190
  *         cdef unordered_set[string] cpp_set
  *         for t in targets:
  *             if isinstance(t, str):             # <<<<<<<<<<<<<<
@@ -6878,7 +7035,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "python/audio_wrapper.pyx":188
+  /* "python/audio_wrapper.pyx":192
  *             if isinstance(t, str):
  *                 cpp_set.insert(t.encode("utf-8"))
  *         self.thisptr.setHearTargets(cpp_set)             # <<<<<<<<<<<<<<
@@ -6887,7 +7044,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
 */
   __pyx_v_self->thisptr->setHearTargets(__pyx_v_cpp_set);
 
-  /* "python/audio_wrapper.pyx":183
+  /* "python/audio_wrapper.pyx":187
  *         return self.thisptr.mixedPeak()
  * 
  *     def set_hear_targets(self, set targets):             # <<<<<<<<<<<<<<
@@ -6918,16 +7075,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_48set_hear_tar
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51__reduce_cython__(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cython__, "PyAudioEngine.__reduce_cython__(self)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_51__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cython__};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51__reduce_cython__(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_52__reduce_cython__, "PyAudioEngine.__reduce_cython__(self)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_53__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_52__reduce_cython__};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6953,14 +7110,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   const Py_ssize_t __pyx_kwds_len = unlikely(__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
   if (unlikely(__pyx_kwds_len < 0)) return NULL;
   if (unlikely(__pyx_kwds_len > 0)) {__Pyx_RejectKeywords("__reduce_cython__", __pyx_kwds); return NULL;}
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cython__(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__reduce_cython__(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
@@ -7000,16 +7157,16 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cyt
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__setstate_cython__(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_55__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_52__setstate_cython__, "PyAudioEngine.__setstate_cython__(self, __pyx_state)");
-static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_53__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_52__setstate_cython__};
-static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__setstate_cython__(PyObject *__pyx_v_self, 
+PyDoc_STRVAR(__pyx_doc_6python_13audio_wrapper_13PyAudioEngine_54__setstate_cython__, "PyAudioEngine.__setstate_cython__(self, __pyx_state)");
+static PyMethodDef __pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_55__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_55__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_54__setstate_cython__};
+static PyObject *__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_55__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7075,7 +7232,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__setstate_cython__(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_6python_13audio_wrapper_13PyAudioEngine_54__setstate_cython__(((struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *)__pyx_v_self), __pyx_v___pyx_state);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -7085,7 +7242,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_54__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6python_13audio_wrapper_PyAudioEngine *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
@@ -7117,7 +7274,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_13PyAudioEngine_52__setstate_c
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":193
+/* "python/audio_wrapper.pyx":197
  *     cdef PeerDiscovery* thisptr
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -7157,7 +7314,7 @@ static int __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery___cinit__(struct _
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "python/audio_wrapper.pyx":194
+  /* "python/audio_wrapper.pyx":198
  * 
  *     def __cinit__(self):
  *         self.thisptr = new PeerDiscovery()             # <<<<<<<<<<<<<<
@@ -7168,11 +7325,11 @@ static int __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery___cinit__(struct _
     __pyx_t_1 = new ::PeerDiscovery();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 194, __pyx_L1_error)
+    __PYX_ERR(0, 198, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "python/audio_wrapper.pyx":193
+  /* "python/audio_wrapper.pyx":197
  *     cdef PeerDiscovery* thisptr
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -7190,7 +7347,7 @@ static int __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery___cinit__(struct _
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":196
+/* "python/audio_wrapper.pyx":200
  *         self.thisptr = new PeerDiscovery()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -7213,7 +7370,7 @@ static void __pyx_pw_6python_13audio_wrapper_15PyPeerDiscovery_3__dealloc__(PyOb
 
 static void __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_2__dealloc__(struct __pyx_obj_6python_13audio_wrapper_PyPeerDiscovery *__pyx_v_self) {
 
-  /* "python/audio_wrapper.pyx":197
+  /* "python/audio_wrapper.pyx":201
  * 
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -7222,7 +7379,7 @@ static void __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_2__dealloc__(stru
 */
   delete __pyx_v_self->thisptr;
 
-  /* "python/audio_wrapper.pyx":196
+  /* "python/audio_wrapper.pyx":200
  *         self.thisptr = new PeerDiscovery()
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -7233,7 +7390,7 @@ static void __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_2__dealloc__(stru
   /* function exit code */
 }
 
-/* "python/audio_wrapper.pyx":199
+/* "python/audio_wrapper.pyx":203
  *         del self.thisptr
  * 
  *     def start(self, str my_id, uint16_t audio_port, str room_name="main"):             # <<<<<<<<<<<<<<
@@ -7283,53 +7440,53 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_my_id,&__pyx_mstate_global->__pyx_n_u_audio_port,&__pyx_mstate_global->__pyx_n_u_room_name,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 199, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 203, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 203, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 203, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 203, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start", 0) < (0)) __PYX_ERR(0, 199, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "start", 0) < (0)) __PYX_ERR(0, 203, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_main));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start", 0, 2, 3, i); __PYX_ERR(0, 199, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("start", 0, 2, 3, i); __PYX_ERR(0, 203, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 203, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 203, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 203, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_main));
     }
     __pyx_v_my_id = ((PyObject*)values[0]);
-    __pyx_v_audio_port = __Pyx_PyLong_As_uint16_t(values[1]); if (unlikely((__pyx_v_audio_port == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L3_error)
+    __pyx_v_audio_port = __Pyx_PyLong_As_uint16_t(values[1]); if (unlikely((__pyx_v_audio_port == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 203, __pyx_L3_error)
     __pyx_v_room_name = ((PyObject*)values[2]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("start", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 199, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("start", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 203, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7340,8 +7497,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_my_id), (&PyUnicode_Type), 1, "my_id", 1))) __PYX_ERR(0, 199, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_room_name), (&PyUnicode_Type), 1, "room_name", 1))) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_my_id), (&PyUnicode_Type), 1, "my_id", 1))) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_room_name), (&PyUnicode_Type), 1, "room_name", 1))) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_r = __pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_4start(((struct __pyx_obj_6python_13audio_wrapper_PyPeerDiscovery *)__pyx_v_self), __pyx_v_my_id, __pyx_v_audio_port, __pyx_v_room_name);
 
   /* function exit code */
@@ -7372,7 +7529,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_4start(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("start", 0);
 
-  /* "python/audio_wrapper.pyx":200
+  /* "python/audio_wrapper.pyx":204
  * 
  *     def start(self, str my_id, uint16_t audio_port, str room_name="main"):
  *         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))             # <<<<<<<<<<<<<<
@@ -7381,23 +7538,23 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_4start(struc
 */
   if (unlikely(__pyx_v_my_id == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 200, __pyx_L1_error)
+    __PYX_ERR(0, 204, __pyx_L1_error)
   }
-  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_my_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_my_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (unlikely(__pyx_v_room_name == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 200, __pyx_L1_error)
+    __PYX_ERR(0, 204, __pyx_L1_error)
   }
-  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_room_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_AsUTF8String(__pyx_v_room_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_3 = __pyx_convert_string_from_py_6libcpp_6string_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->thisptr->start(__pyx_t_2, __pyx_v_audio_port, __pyx_t_3);
 
-  /* "python/audio_wrapper.pyx":199
+  /* "python/audio_wrapper.pyx":203
  *         del self.thisptr
  * 
  *     def start(self, str my_id, uint16_t audio_port, str room_name="main"):             # <<<<<<<<<<<<<<
@@ -7418,7 +7575,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_4start(struc
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":202
+/* "python/audio_wrapper.pyx":206
  *         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
  * 
  *     def stop(self):             # <<<<<<<<<<<<<<
@@ -7474,7 +7631,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_6stop(struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("stop", 0);
 
-  /* "python/audio_wrapper.pyx":203
+  /* "python/audio_wrapper.pyx":207
  * 
  *     def stop(self):
  *         self.thisptr.stop()             # <<<<<<<<<<<<<<
@@ -7483,7 +7640,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_6stop(struct
 */
   __pyx_v_self->thisptr->stop();
 
-  /* "python/audio_wrapper.pyx":202
+  /* "python/audio_wrapper.pyx":206
  *         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
  * 
  *     def stop(self):             # <<<<<<<<<<<<<<
@@ -7498,7 +7655,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_6stop(struct
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":205
+/* "python/audio_wrapper.pyx":209
  *         self.thisptr.stop()
  * 
  *     def peers(self):             # <<<<<<<<<<<<<<
@@ -7571,7 +7728,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_8peers(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("peers", 0);
 
-  /* "python/audio_wrapper.pyx":206
+  /* "python/audio_wrapper.pyx":210
  * 
  *     def peers(self):
  *         cdef vector[PeerInfo] ps = self.thisptr.peers()             # <<<<<<<<<<<<<<
@@ -7580,19 +7737,19 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_8peers(struc
 */
   __pyx_v_ps = __pyx_v_self->thisptr->peers();
 
-  /* "python/audio_wrapper.pyx":207
+  /* "python/audio_wrapper.pyx":211
  *     def peers(self):
  *         cdef vector[PeerInfo] ps = self.thisptr.peers()
  *         result = []             # <<<<<<<<<<<<<<
  *         for i in range(ps.size()):
  *             p = ps[i]
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "python/audio_wrapper.pyx":208
+  /* "python/audio_wrapper.pyx":212
  *         cdef vector[PeerInfo] ps = self.thisptr.peers()
  *         result = []
  *         for i in range(ps.size()):             # <<<<<<<<<<<<<<
@@ -7604,7 +7761,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_8peers(struc
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "python/audio_wrapper.pyx":209
+    /* "python/audio_wrapper.pyx":213
  *         result = []
  *         for i in range(ps.size()):
  *             p = ps[i]             # <<<<<<<<<<<<<<
@@ -7613,113 +7770,113 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_8peers(struc
 */
     __pyx_v_p = (__pyx_v_ps[__pyx_v_i]);
 
-    /* "python/audio_wrapper.pyx":211
+    /* "python/audio_wrapper.pyx":215
  *             p = ps[i]
  *             result.append({
  *                 "id": p.id.decode("utf-8", errors="replace"),             # <<<<<<<<<<<<<<
  *                 "ip": p.ip.decode("utf-8", errors="replace"),
  *                 "port": p.port,
 */
-    __pyx_t_1 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_p.id); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_p.id); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_6 = __pyx_t_7;
     __Pyx_INCREF(__pyx_t_6);
     __pyx_t_8 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u_utf_8};
-      __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 211, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 215, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_9, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 211, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_9, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
       __pyx_t_5 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_decode, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 211, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 215, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_5) < (0)) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_id, __pyx_t_5) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "python/audio_wrapper.pyx":212
+    /* "python/audio_wrapper.pyx":216
  *             result.append({
  *                 "id": p.id.decode("utf-8", errors="replace"),
  *                 "ip": p.ip.decode("utf-8", errors="replace"),             # <<<<<<<<<<<<<<
  *                 "port": p.port,
  *                 "room": p.room.decode("utf-8", errors="replace"),
 */
-    __pyx_t_9 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_p.ip); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_9 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_p.ip); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __pyx_t_7 = __pyx_t_9;
     __Pyx_INCREF(__pyx_t_7);
     __pyx_t_8 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_7, __pyx_mstate_global->__pyx_kp_u_utf_8};
-      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 212, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 216, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_6, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 212, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_6, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 216, __pyx_L1_error)
       __pyx_t_5 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_decode, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_6);
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 212, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 216, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_ip, __pyx_t_5) < (0)) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_ip, __pyx_t_5) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "python/audio_wrapper.pyx":213
+    /* "python/audio_wrapper.pyx":217
  *                 "id": p.id.decode("utf-8", errors="replace"),
  *                 "ip": p.ip.decode("utf-8", errors="replace"),
  *                 "port": p.port,             # <<<<<<<<<<<<<<
  *                 "room": p.room.decode("utf-8", errors="replace"),
  *             })
 */
-    __pyx_t_5 = __Pyx_PyLong_From_uint16_t(__pyx_v_p.port); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 213, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyLong_From_uint16_t(__pyx_v_p.port); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_port, __pyx_t_5) < (0)) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_port, __pyx_t_5) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "python/audio_wrapper.pyx":214
+    /* "python/audio_wrapper.pyx":218
  *                 "ip": p.ip.decode("utf-8", errors="replace"),
  *                 "port": p.port,
  *                 "room": p.room.decode("utf-8", errors="replace"),             # <<<<<<<<<<<<<<
  *             })
  *         return result
 */
-    __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_p.room); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 214, __pyx_L1_error)
+    __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_p.room); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 218, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_9 = __pyx_t_6;
     __Pyx_INCREF(__pyx_t_9);
     __pyx_t_8 = 0;
     {
       PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_9, __pyx_mstate_global->__pyx_kp_u_utf_8};
-      __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 214, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_7, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 214, __pyx_L1_error)
+      if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_7, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 218, __pyx_L1_error)
       __pyx_t_5 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_decode, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_7);
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 214, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
-    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_room, __pyx_t_5) < (0)) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_room, __pyx_t_5) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "python/audio_wrapper.pyx":210
+    /* "python/audio_wrapper.pyx":214
  *         for i in range(ps.size()):
  *             p = ps[i]
  *             result.append({             # <<<<<<<<<<<<<<
  *                 "id": p.id.decode("utf-8", errors="replace"),
  *                 "ip": p.ip.decode("utf-8", errors="replace"),
 */
-    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_1); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 214, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "python/audio_wrapper.pyx":216
+  /* "python/audio_wrapper.pyx":220
  *                 "room": p.room.decode("utf-8", errors="replace"),
  *             })
  *         return result             # <<<<<<<<<<<<<<
@@ -7731,7 +7888,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_8peers(struc
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":205
+  /* "python/audio_wrapper.pyx":209
  *         self.thisptr.stop()
  * 
  *     def peers(self):             # <<<<<<<<<<<<<<
@@ -7755,7 +7912,7 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_8peers(struc
   return __pyx_r;
 }
 
-/* "python/audio_wrapper.pyx":218
+/* "python/audio_wrapper.pyx":222
  *         return result
  * 
  *     def current_room(self):             # <<<<<<<<<<<<<<
@@ -7818,34 +7975,34 @@ static PyObject *__pyx_pf_6python_13audio_wrapper_15PyPeerDiscovery_10current_ro
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("current_room", 0);
 
-  /* "python/audio_wrapper.pyx":219
+  /* "python/audio_wrapper.pyx":223
  * 
  *     def current_room(self):
  *         return self.thisptr.currentRoom().decode("utf-8", errors="replace")             # <<<<<<<<<<<<<<
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_self->thisptr->currentRoom()); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_6libcpp_6string_std__in_string(__pyx_v_self->thisptr->currentRoom()); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = __pyx_t_3;
   __Pyx_INCREF(__pyx_t_2);
   __pyx_t_4 = 0;
   {
     PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_utf_8};
-    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_5, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 219, __pyx_L1_error)
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_errors, __pyx_mstate_global->__pyx_n_u_replace, __pyx_t_5, __pyx_callargs+2, 0) < (0)) __PYX_ERR(0, 223, __pyx_L1_error)
     __pyx_t_1 = __Pyx_Object_VectorcallMethod_CallFromBuilder((PyObject*)__pyx_mstate_global->__pyx_n_u_decode, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "python/audio_wrapper.pyx":218
+  /* "python/audio_wrapper.pyx":222
  *         return result
  * 
  *     def current_room(self):             # <<<<<<<<<<<<<<
@@ -8149,25 +8306,26 @@ static PyMethodDef __pyx_methods_6python_13audio_wrapper_PyAudioEngine[] = {
   {"set_input_device", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_11set_input_device, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_10set_input_device},
   {"set_output_device", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_13set_output_device, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_12set_output_device},
   {"set_client_id", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_15set_client_id, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_14set_client_id},
-  {"set_master_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_master_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_16set_master_volume},
-  {"set_output_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_output_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_18set_output_volume},
-  {"set_gain_db", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_gain_db, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_20set_gain_db},
-  {"set_mic_sensitivity", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_mic_sensitivity, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_22set_mic_sensitivity},
-  {"set_noise_suppression", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_noise_suppression, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_24set_noise_suppression},
-  {"set_noise_suppression_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression_enabled},
-  {"set_auto_gain", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_auto_gain, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_28set_auto_gain},
-  {"set_echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_30set_echo_enabled},
-  {"echo_available", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33echo_available, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_32echo_available},
-  {"echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_34echo_enabled},
-  {"set_tx_muted", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37set_tx_muted, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_36set_tx_muted},
-  {"test_microphone_level", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39test_microphone_level, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_38test_microphone_level},
-  {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41start, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_40start},
-  {"update_destinations", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43update_destinations, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_42update_destinations},
-  {"stop", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45stop, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_44stop},
-  {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_46shutdown},
-  {"set_hear_targets", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49set_hear_targets, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_48set_hear_targets},
-  {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_50__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_52__setstate_cython__},
+  {"set_room_secret", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_17set_room_secret, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_16set_room_secret},
+  {"set_master_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_19set_master_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_18set_master_volume},
+  {"set_output_volume", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_21set_output_volume, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_20set_output_volume},
+  {"set_gain_db", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_23set_gain_db, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_22set_gain_db},
+  {"set_mic_sensitivity", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_25set_mic_sensitivity, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_24set_mic_sensitivity},
+  {"set_noise_suppression", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_26set_noise_suppression},
+  {"set_noise_suppression_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_29set_noise_suppression_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_28set_noise_suppression_enabled},
+  {"set_auto_gain", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_31set_auto_gain, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_30set_auto_gain},
+  {"set_echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_33set_echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_32set_echo_enabled},
+  {"echo_available", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_35echo_available, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_34echo_available},
+  {"echo_enabled", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_37echo_enabled, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_36echo_enabled},
+  {"set_tx_muted", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_39set_tx_muted, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_38set_tx_muted},
+  {"test_microphone_level", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_41test_microphone_level, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_40test_microphone_level},
+  {"start", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_43start, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_42start},
+  {"update_destinations", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_45update_destinations, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_44update_destinations},
+  {"stop", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_47stop, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_46stop},
+  {"shutdown", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_49shutdown, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_48shutdown},
+  {"set_hear_targets", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_51set_hear_targets, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_50set_hear_targets},
+  {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_53__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_52__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_6python_13audio_wrapper_13PyAudioEngine_55__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_6python_13audio_wrapper_13PyAudioEngine_54__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -8464,15 +8622,15 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_6python_13audio_wrapper_PyAudioEngine_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine)) __PYX_ERR(0, 64, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_6python_13audio_wrapper_PyAudioEngine_spec, __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_6python_13audio_wrapper_PyAudioEngine_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine)) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_6python_13audio_wrapper_PyAudioEngine_spec, __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 65, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine = &__pyx_type_6python_13audio_wrapper_PyAudioEngine;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 65, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine);
@@ -8482,18 +8640,18 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_PyAudioEngine, (PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_PyAudioEngine, (PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine) < (0)) __PYX_ERR(0, 65, __pyx_L1_error)
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_6python_13audio_wrapper_PyPeerDiscovery_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery)) __PYX_ERR(0, 190, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_6python_13audio_wrapper_PyPeerDiscovery_spec, __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_6python_13audio_wrapper_PyPeerDiscovery_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery)) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_6python_13audio_wrapper_PyPeerDiscovery_spec, __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 194, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery = &__pyx_type_6python_13audio_wrapper_PyPeerDiscovery;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 194, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery);
@@ -8503,8 +8661,8 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery, (PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery, (PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery) < (0)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -8805,350 +8963,365 @@ __Pyx_RefNannySetupContext("PyInit_audio_wrapper", 0);
   (void)__Pyx_modinit_function_import_code(__pyx_mstate);
   /*--- Execution code ---*/
 
-  /* "python/audio_wrapper.pyx":73
+  /* "python/audio_wrapper.pyx":74
  *         del self.thisptr
  * 
  *     def port(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.port()
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_5port, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_port, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_5port, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_port, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_port, __pyx_t_2) < (0)) __PYX_ERR(0, 73, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_port, __pyx_t_2) < (0)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":76
+  /* "python/audio_wrapper.pyx":77
  *         return self.thisptr.port()
  * 
  *     def list_input_devices(self):             # <<<<<<<<<<<<<<
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listInputDevices()
  *         result = []
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_7list_input_devices, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_list_input_devices, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_7list_input_devices, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_list_input_devices, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_list_input_devices, __pyx_t_2) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_list_input_devices, __pyx_t_2) < (0)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":84
+  /* "python/audio_wrapper.pyx":85
  *         return result
  * 
  *     def list_output_devices(self):             # <<<<<<<<<<<<<<
  *         cdef vector[AudioDeviceInfo] devs = self.thisptr.listOutputDevices()
  *         result = []
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_9list_output_devices, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_list_output_device, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_9list_output_devices, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_list_output_device, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_list_output_devices, __pyx_t_2) < (0)) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_list_output_devices, __pyx_t_2) < (0)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":92
+  /* "python/audio_wrapper.pyx":93
  *         return result
  * 
  *     def set_input_device(self, int idx):             # <<<<<<<<<<<<<<
  *         return self.thisptr.setInputDevice(idx)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_11set_input_device, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_input_device, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_11set_input_device, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_input_device, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_input_device, __pyx_t_2) < (0)) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_input_device, __pyx_t_2) < (0)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":95
+  /* "python/audio_wrapper.pyx":96
  *         return self.thisptr.setInputDevice(idx)
  * 
  *     def set_output_device(self, int idx):             # <<<<<<<<<<<<<<
  *         return self.thisptr.setOutputDevice(idx)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_13set_output_device, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_output_device, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_13set_output_device, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_output_device, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_output_device, __pyx_t_2) < (0)) __PYX_ERR(0, 95, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_output_device, __pyx_t_2) < (0)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":106
+  /* "python/audio_wrapper.pyx":107
  *         return self.thisptr.outputDeviceIndex()
  * 
  *     def set_client_id(self, str client_id):             # <<<<<<<<<<<<<<
  *         self.thisptr.setClientId(client_id.encode("utf-8"))
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_15set_client_id, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_client_id, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_15set_client_id, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_client_id, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[5])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_client_id, __pyx_t_2) < (0)) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_client_id, __pyx_t_2) < (0)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":109
+  /* "python/audio_wrapper.pyx":110
  *         self.thisptr.setClientId(client_id.encode("utf-8"))
+ * 
+ *     def set_room_secret(self, str secret):             # <<<<<<<<<<<<<<
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))
+ * 
+*/
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_17set_room_secret, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_room_secret, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
+  #endif
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_room_secret, __pyx_t_2) < (0)) __PYX_ERR(0, 110, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "python/audio_wrapper.pyx":113
+ *         self.thisptr.setRoomSecret(secret.encode("utf-8"))
  * 
  *     def set_master_volume(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setMasterVolume(value)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_17set_master_volume, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_master_volume, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_19set_master_volume, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_master_volume, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_master_volume, __pyx_t_2) < (0)) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_master_volume, __pyx_t_2) < (0)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":112
+  /* "python/audio_wrapper.pyx":116
  *         self.thisptr.setMasterVolume(value)
  * 
  *     def set_output_volume(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setOutputVolume(value)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_19set_output_volume, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_output_volume, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_21set_output_volume, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_output_volume, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_output_volume, __pyx_t_2) < (0)) __PYX_ERR(0, 112, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_output_volume, __pyx_t_2) < (0)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":115
+  /* "python/audio_wrapper.pyx":119
  *         self.thisptr.setOutputVolume(value)
  * 
  *     def set_gain_db(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setGainDb(value)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_21set_gain_db, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_gain_db, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_23set_gain_db, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_gain_db, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_gain_db, __pyx_t_2) < (0)) __PYX_ERR(0, 115, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_gain_db, __pyx_t_2) < (0)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":118
+  /* "python/audio_wrapper.pyx":122
  *         self.thisptr.setGainDb(value)
  * 
  *     def set_mic_sensitivity(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setMicSensitivity(value)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_23set_mic_sensitivity, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_mic_sensitivit, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_25set_mic_sensitivity, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_mic_sensitivit, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_mic_sensitivity, __pyx_t_2) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_mic_sensitivity, __pyx_t_2) < (0)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":121
+  /* "python/audio_wrapper.pyx":125
  *         self.thisptr.setMicSensitivity(value)
  * 
  *     def set_noise_suppression(self, int value):             # <<<<<<<<<<<<<<
  *         self.thisptr.setNoiseSuppression(value)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_25set_noise_suppression, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_noise_suppress, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_noise_suppress, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_noise_suppression, __pyx_t_2) < (0)) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_noise_suppression, __pyx_t_2) < (0)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":124
+  /* "python/audio_wrapper.pyx":128
  *         self.thisptr.setNoiseSuppression(value)
  * 
  *     def set_noise_suppression_enabled(self, bool enabled):             # <<<<<<<<<<<<<<
  *         self.thisptr.setNoiseSuppressionEnabled(enabled)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_27set_noise_suppression_enabled, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_noise_suppress_2, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_29set_noise_suppression_enabled, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_noise_suppress_2, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_noise_suppression_enabled, __pyx_t_2) < (0)) __PYX_ERR(0, 124, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_noise_suppression_enabled, __pyx_t_2) < (0)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":127
+  /* "python/audio_wrapper.pyx":131
  *         self.thisptr.setNoiseSuppressionEnabled(enabled)
  * 
  *     def set_auto_gain(self, bool enabled):             # <<<<<<<<<<<<<<
  *         self.thisptr.setAutoGain(enabled)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_29set_auto_gain, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_auto_gain, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_31set_auto_gain, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_auto_gain, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_auto_gain, __pyx_t_2) < (0)) __PYX_ERR(0, 127, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_auto_gain, __pyx_t_2) < (0)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":130
+  /* "python/audio_wrapper.pyx":134
  *         self.thisptr.setAutoGain(enabled)
  * 
  *     def set_echo_enabled(self, bool enabled):             # <<<<<<<<<<<<<<
  *         self.thisptr.setEchoEnabled(enabled)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_31set_echo_enabled, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_echo_enabled, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_33set_echo_enabled, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_echo_enabled, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_echo_enabled, __pyx_t_2) < (0)) __PYX_ERR(0, 130, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_echo_enabled, __pyx_t_2) < (0)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":133
+  /* "python/audio_wrapper.pyx":137
  *         self.thisptr.setEchoEnabled(enabled)
  * 
  *     def echo_available(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.echoAvailable()
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_33echo_available, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_echo_available, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_35echo_available, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_echo_available, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_echo_available, __pyx_t_2) < (0)) __PYX_ERR(0, 133, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_echo_available, __pyx_t_2) < (0)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":136
+  /* "python/audio_wrapper.pyx":140
  *         return self.thisptr.echoAvailable()
  * 
  *     def echo_enabled(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.echoEnabled()
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_35echo_enabled, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_echo_enabled, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_37echo_enabled, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_echo_enabled, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_echo_enabled, __pyx_t_2) < (0)) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_echo_enabled, __pyx_t_2) < (0)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":139
+  /* "python/audio_wrapper.pyx":143
  *         return self.thisptr.echoEnabled()
  * 
  *     def set_tx_muted(self, bool enabled):             # <<<<<<<<<<<<<<
  *         self.thisptr.setTxMuted(enabled)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_37set_tx_muted, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_tx_muted, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_39set_tx_muted, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_tx_muted, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_tx_muted, __pyx_t_2) < (0)) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_tx_muted, __pyx_t_2) < (0)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":146
+  /* "python/audio_wrapper.pyx":150
  *         return self.thisptr.isTxMuted()
  * 
  *     def test_microphone_level(self, double duration_sec=1.0):             # <<<<<<<<<<<<<<
  *         return self.thisptr.testMicrophoneLevel(duration_sec)
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_39test_microphone_level, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_test_microphone_le, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_41test_microphone_level, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_test_microphone_le, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[0]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_test_microphone_level, __pyx_t_2) < (0)) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_test_microphone_level, __pyx_t_2) < (0)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":149
+  /* "python/audio_wrapper.pyx":153
  *         return self.thisptr.testMicrophoneLevel(duration_sec)
  * 
  *     def start(self, list destinations):             # <<<<<<<<<<<<<<
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_41start, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_start, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_43start, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_start, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":155
+  /* "python/audio_wrapper.pyx":159
  *         return self.thisptr.start(cpp_dest)
  * 
  *     def update_destinations(self, list destinations):             # <<<<<<<<<<<<<<
  *         cdef vector[string] cpp_dest
  *         for dest in destinations:
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_43update_destinations, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_update_destination, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_45update_destinations, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_update_destination, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_update_destinations, __pyx_t_2) < (0)) __PYX_ERR(0, 155, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_update_destinations, __pyx_t_2) < (0)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":161
+  /* "python/audio_wrapper.pyx":165
  *         return self.thisptr.updateDestinations(cpp_dest)
  * 
  *     def stop(self):             # <<<<<<<<<<<<<<
  *         self.thisptr.stop()
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_45stop, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_stop, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_47stop, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_stop, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_stop, __pyx_t_2) < (0)) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_stop, __pyx_t_2) < (0)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":164
+  /* "python/audio_wrapper.pyx":168
  *         self.thisptr.stop()
  * 
  *     def shutdown(self):             # <<<<<<<<<<<<<<
  *         self.thisptr.shutdown()
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_47shutdown, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_shutdown, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_49shutdown, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_shutdown, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_shutdown, __pyx_t_2) < (0)) __PYX_ERR(0, 164, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_shutdown, __pyx_t_2) < (0)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":183
+  /* "python/audio_wrapper.pyx":187
  *         return self.thisptr.mixedPeak()
  * 
  *     def set_hear_targets(self, set targets):             # <<<<<<<<<<<<<<
  *         cdef unordered_set[string] cpp_set
  *         for t in targets:
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_49set_hear_targets, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_hear_targets, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_51set_hear_targets, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine_set_hear_targets, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_hear_targets, __pyx_t_2) < (0)) __PYX_ERR(0, 183, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyAudioEngine, __pyx_mstate_global->__pyx_n_u_set_hear_targets, __pyx_t_2) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":1
@@ -9156,7 +9329,7 @@ __Pyx_RefNannySetupContext("PyInit_audio_wrapper", 0);
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
  * def __setstate_cython__(self, __pyx_state):
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_51__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine___reduce_cython, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_53__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine___reduce_cython, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
@@ -9170,7 +9343,7 @@ __Pyx_RefNannySetupContext("PyInit_audio_wrapper", 0);
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_53__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine___setstate_cython, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_13PyAudioEngine_55__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyAudioEngine___setstate_cython, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[25])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
@@ -9178,64 +9351,64 @@ __Pyx_RefNannySetupContext("PyInit_audio_wrapper", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_2) < (0)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":199
+  /* "python/audio_wrapper.pyx":203
  *         del self.thisptr
  * 
  *     def start(self, str my_id, uint16_t audio_port, str room_name="main"):             # <<<<<<<<<<<<<<
  *         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_5start, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_start, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[25])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_5start, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_start, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[26])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[1]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_start, __pyx_t_2) < (0)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":202
+  /* "python/audio_wrapper.pyx":206
  *         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
  * 
  *     def stop(self):             # <<<<<<<<<<<<<<
  *         self.thisptr.stop()
  * 
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_7stop, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_stop, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[26])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_7stop, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_stop, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[27])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_stop, __pyx_t_2) < (0)) __PYX_ERR(0, 202, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_stop, __pyx_t_2) < (0)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":205
+  /* "python/audio_wrapper.pyx":209
  *         self.thisptr.stop()
  * 
  *     def peers(self):             # <<<<<<<<<<<<<<
  *         cdef vector[PeerInfo] ps = self.thisptr.peers()
  *         result = []
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_9peers, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_peers, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[27])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_9peers, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_peers, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[28])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_peers, __pyx_t_2) < (0)) __PYX_ERR(0, 205, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_peers, __pyx_t_2) < (0)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "python/audio_wrapper.pyx":218
+  /* "python/audio_wrapper.pyx":222
  *         return result
  * 
  *     def current_room(self):             # <<<<<<<<<<<<<<
  *         return self.thisptr.currentRoom().decode("utf-8", errors="replace")
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_11current_room, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_current_room, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[28])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_11current_room, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery_current_room, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[29])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_current_room, __pyx_t_2) < (0)) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_6python_13audio_wrapper_PyPeerDiscovery, __pyx_mstate_global->__pyx_n_u_current_room, __pyx_t_2) < (0)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":1
@@ -9243,7 +9416,7 @@ __Pyx_RefNannySetupContext("PyInit_audio_wrapper", 0);
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
  * def __setstate_cython__(self, __pyx_state):
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_13__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery___reduce_cython, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[29])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_13__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery___reduce_cython, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[30])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
@@ -9257,7 +9430,7 @@ __Pyx_RefNannySetupContext("PyInit_audio_wrapper", 0);
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     raise TypeError, "no default __reduce__ due to non-trivial __cinit__"
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_15__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery___setstate_cytho, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[30])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_6python_13audio_wrapper_15PyPeerDiscovery_15__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_PyPeerDiscovery___setstate_cytho, NULL, __pyx_mstate_global->__pyx_n_u_python_audio_wrapper, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[31])); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_2);
@@ -9328,25 +9501,25 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "python/audio_wrapper.pyx":146
+  /* "python/audio_wrapper.pyx":150
  *         return self.thisptr.isTxMuted()
  * 
  *     def test_microphone_level(self, double duration_sec=1.0):             # <<<<<<<<<<<<<<
  *         return self.thisptr.testMicrophoneLevel(duration_sec)
  * 
 */
-  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(1, __pyx_mstate_global->__pyx_float_1_0); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[0] = PyTuple_Pack(1, __pyx_mstate_global->__pyx_float_1_0); if (unlikely(!__pyx_mstate_global->__pyx_tuple[0])) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[0]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[0]);
 
-  /* "python/audio_wrapper.pyx":199
+  /* "python/audio_wrapper.pyx":203
  *         del self.thisptr
  * 
  *     def start(self, str my_id, uint16_t audio_port, str room_name="main"):             # <<<<<<<<<<<<<<
  *         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
  * 
 */
-  __pyx_mstate_global->__pyx_tuple[1] = PyTuple_Pack(1, __pyx_mstate_global->__pyx_n_u_main); if (unlikely(!__pyx_mstate_global->__pyx_tuple[1])) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[1] = PyTuple_Pack(1, __pyx_mstate_global->__pyx_n_u_main); if (unlikely(!__pyx_mstate_global->__pyx_tuple[1])) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[1]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
   #if CYTHON_IMMORTAL_CONSTANTS
@@ -9379,31 +9552,31 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 8; } index[] = {{1},{179},{8},{7},{6},{2},{9},{50},{24},{14},{5},{13},{31},{33},{28},{26},{32},{33},{18},{27},{27},{30},{25},{30},{30},{31},{33},{35},{43},{31},{31},{26},{22},{19},{18},{35},{33},{15},{33},{35},{28},{21},{21},{20},{20},{18},{10},{9},{18},{8},{7},{12},{1},{6},{4},{12},{4},{12},{14},{12},{7},{6},{6},{8},{12},{1},{2},{3},{5},{2},{13},{5},{18},{19},{4},{8},{10},{5},{4},{8},{1},{5},{3},{4},{2},{20},{11},{12},{10},{17},{13},{7},{6},{4},{9},{4},{13},{13},{16},{11},{16},{16},{17},{19},{12},{21},{29},{17},{17},{12},{10},{12},{19},{8},{5},{4},{1},{7},{8},{21},{19},{5},{6},{19},{112},{79},{79},{46},{14},{37},{38},{11},{11},{13},{13},{19},{13},{13},{14},{14},{14},{13},{13},{15},{16},{13},{23},{32},{9}};
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1269 bytes) */
-const char* const cstring = "BZh91AY&SYG\366j\306\000\000\242\377\377t\324\367\354m\357\247\305\277}\361\340\277\377\377\360@@@@@@@@@@@@@\000P\004\376]\233\0225%\000\206\030J)\246SD\233\322xS\324\310\233F\325\007\251\351\036\246@d\032\000\310hz\2154\323\305\017\323&\251\352\034\0324h\032\r\001\223\020\031\032\031\000\001\246\231\000\000\014\020\000Jh\202i\251=4\032F\223)\372P\000\r\000\006\200\000\000\000\003@ph\321\240h4\006L@dhd\000\006\232d\000\0000@\001$BhML\236A#2\231\031\000\000\000\320\003A\240\000\032i\220\364\235\361n\3573~\3077\240\267_~&\376|\343\2208\"\230d&d\005%\372`\203E$\256t2\262\231\022P\202\236z\327\003H\2451`9\005\003\"\2551UJ\302Y1\321\233\1776W\374=\016\243\177f\014\355j\364\277[\3450\365\030\360\347jE\034\323L\222\334p\375\334\007\347\333\263L\267cR\347\375\333\304\277\327\257=\333\270$\243\236 \022\347L\314\351#\031\363>\274\201\225\276-\230\341C\0223k\022\230\2506\035g\201\240\337&\300!^/L~P!\306Ui\321rS2b\020\270aUe/\004\223\275\314\231\227\027i\315\271X\225\264\013\177d\237i\206g\332XkX+\316\253\0046\240R\253V\025\220\334\214\276\301\216\333\014\206S\001fi\243\222`\335\2646\300\337\274HK\206o\t\260\353y\371\006;\345I\025\302\033\250\273\221A\246jrC\024$\205\024\211\t\006\n$\341G\"\006\260\343\350\203\241\r\204\200r\331\020Y\006\026\014\210)QC\245\201\321 \0273\315\227m\326ok\n\224\342\350ii\nf\340\325#\"\022]b\023\025\226\211\260@=\250\222sI\0010n!\270\027\360^d\360\311p\273H#\367\"|\221G\010\353\n\301\036\022\027m7\252?\242\275k\033\264f\356\326\341RqA\253\"i\260\351&J\374g\336\0331V0J\023\0075\361\315\206j\326\025Gv\010\302\262\351\247^\026(\231\230\354]o\222I*\221\003\250t\222e&\230`C\354u\226K^\235\331jk\242n\354\2463\335x\314\322\304o\271\031Qm\371=F\r\000\214\234\262\020.T\251\331BL\346\225\261W\222\244\242&\255\256\222E\202\315v\037v\0033t2I\2372l\032\327\363\303\366\3076\255rA\013\026\314R\026i\252\006\300&Ai\200\272\365\303\200\306\345\225\030\330\272i\362\230\254tA\327' \205D\013\365\340\230R\365\241,\n`\315\\3M\357\245\220)\2607isq\253$w\336\235-\233\3576""\310\351\3213\033J\022\016Y%b\245\223\233\002\2420\242\036d\330D\007\031R\032q\025vK\375@\351$&J\0300\343\232\222\253\231EQ\004\2514\235tD&#UA-'\220Lf\244\261\335\032Q\023f\033\220\316;m:\261\240q\013\006\020\212\241\220!\007\020\260\216w\304\210jr[xL\314j\263l5\026\272\313y\317\rz\013n\251\336\227\037y\205\202a\234kt\222I\255[#\301\360\273:\3171\234r\rc\031\010\307\210\372\315\327\352B7\360#pW\026\305\245\322\237B\272\032\214\007K\001\t\331\274L\362\213h\340\366\340\236d\2234\273]p\031M\334\300\331\321\342\253.\322K\222\242\262X9Gz)%\020\233\204\236\201CJ\235\376|\373\333l\330\314B.ZE\323L\240\232dg\371\"T\n\327BO\271\3657\201\307\232{(\034@Cb\312\022@\2042I\016\"\013\344\246\301\306\357AP\226\240\035\323\343y\230f\251\25490eF\211R)\250\232\211%c\212\250\035\212\251\320\002xfVV\372\2500\232\245\271\357\232b\334\020\256O\242ex\022\210f\310\360\tU\204\264F\301\230\334\221xa1\222\254nE'p\030\304\017\257\022\006(w\365\n2\217\243\003^\355As\204\004\335\255\301\226\006\3563 \232\226\315\224\364\354\277\303j:\322iA\336'\341\235F\217V\322A\266\205\347R]@\371|\322\t\020=\305\002|EC,F?\260\246\024>\374\344:y6\024\235\356Yg9\244%{\\P\366\364\323\353RBJ\2257h\320(\362\305L\243\321\245e\262\030\316\301\375So\337F\030\271?\202\344\317)\352\217vs&\203<\370T\250\227A\313\036S\037\302#\272\237\222y\022x\216.~\337_]\"\262\225\303\213\025e\231x-\370\203U*4\224\022\2717\257(\214P\322-\345AY\205\316j?4\312P\231:Bxj\177\342\356H\247\n\022\010\376\315X\300";
-    PyObject *data = __Pyx_DecompressString(cstring, 1269, 2);
+    const struct { const unsigned int length: 8; } index[] = {{1},{179},{8},{7},{6},{2},{9},{50},{24},{14},{5},{13},{31},{33},{28},{26},{32},{33},{18},{27},{27},{30},{25},{30},{30},{31},{33},{35},{43},{31},{31},{29},{26},{22},{19},{18},{35},{33},{15},{33},{35},{28},{21},{21},{20},{20},{18},{10},{9},{18},{8},{7},{12},{1},{6},{4},{12},{4},{12},{14},{12},{7},{6},{6},{8},{12},{1},{2},{3},{5},{2},{13},{5},{18},{19},{4},{8},{10},{5},{4},{8},{1},{5},{3},{4},{2},{20},{11},{12},{10},{17},{13},{7},{6},{4},{9},{6},{4},{13},{13},{16},{11},{16},{16},{17},{19},{12},{21},{29},{17},{17},{15},{12},{10},{12},{19},{8},{5},{4},{1},{7},{8},{21},{19},{5},{6},{19},{112},{79},{79},{46},{14},{37},{38},{11},{11},{13},{13},{19},{13},{19},{13},{14},{14},{14},{13},{13},{15},{16},{13},{23},{32},{9}};
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1306 bytes) */
+const char* const cstring = "BZh91AY&SY'\246\034\341\000\000\246\377\377t\324\367\354m\357\247\305\277}\361\340\277\377\377\360@@@@@@@@@@@@@\000P\005\036M\252d\352\343l\325\252\307\006\022\211\031Sh\247\206\236\223B\215=4\322\032=Fe\000hhh<\246j\031\250\323M\244?M\nz\202PM\0052\236\2045\032d\3651\032\000\000\000\000\000\000\000\r\000i\352S@\232\215\032\032i\242d\311\223\000\000\023\010\3010#\000&\000\023\034\0324h\032\r\001\223\020\031\032\031\000\001\246\231\000\000\014\020\000I\022\032\023T\363M4\324\236L\247\250hh4\000\003@\000\000\000i\352d='tZwY\277c\233\260\r/\275!\275\253P\344\r\371\023\014$\314\200\234\277<\020V\000X\350eT\361\230\231I\"\223U+}\245'LT\016A@\271R\014E\022l$G,\335X:\263C\344\347t\330:\3643\265\253\321\016\250I\352u\240`\347R\216\274\262\262T\222\323\206\333\3353a\242\215\"\272\216\244k\303D\245\226\255g\276UU\202\314\020\002\255\225\000b\252\230\243A\261\340\n\231{}ii \251\006}\202($\315\246O\353\232\013\355\\h\202\\]A\371(C\214\250\3135\211D\272\324\205\220(\244\235\340\000\357c&e\304\362\272\365E\350\231f.\316\251\275\326s\351()\020\344\331\333o\203\206*\251\267\212\212\370jh\233.<\363\207\334\374\033%\tJ\306\206A\212\300\262\002\323\t\006k\253x2\237;\313\264Sl\223HR\256\233\262\346\036bA{\022\020\231%\025\346\362\025B\252\362`\233\016\342Xa\263(j(\225\220\014\026\203\002E\224+`\300r\225\025\331V\"\324 -66\013uu\027\352\212\223\357s\264\242\204\362\341\246W#\022J\305Cz&\211d\2402\222?#\350\022\206\322\033A\267\273r\013\325\037h\2678$6\243\204z\216\021\333\013\000\214&\023\326\215\331,\313u(\372Y\221?t\232\\\nC\314JH\205J\352\220J\355\324o\014\270\226\305U]P4.\305\220DJQ\326\2032\003\326\222\325\236z\330\232\200\227\245\333\323\000%QD\234\211\300\030\203F\224\312'\250\345:e\224mW\332;\006\240&\314\213\0025\313\304D\2153\364\304\242yn\206\261\217@%\014^\356h\245R\227\315\030uZ\244\032\206i\224\220V\026\216\000\247Jv\241\223\332\314\34335\302t84+%A\201\267n\375SZ\214o\260B\245\267 %\236*a\260\t\220a0\026^\260p\030\334\252\203\033\026E>b\332\235\020u\263rB\232\005\372pD'zD""\226\005\020f\246\031\342\367\322\270'\2501c\274b*\276\307\027\2615\025\275\245\222\031q\262E\204\311\006\276\n\266(YX\312\024\024+5\032\010AG\r\324\246\351\016\364v\017\201'\000C\004L\225\255YZ6\237\026I\340\311\232eY\333)\2310\241E\001.\263\312\021\031\247*wF9\230\224\022\320'\035Xf\246`\310\024\nx1\026\023\003\014\031\005@\306\263\322B\nm\re\322\225\212)a*(\274\330i\233\227K\246.\215\361t\356\033L\255\202\003#\343eUUT\265,\246\377\201\261\234\345\243\216@\300\"\370\3059\007\300b\275\231\206-\270\206 \215\252\362\274\245\312\311\344#\214\274\250\312\265\024VD\341d\301\355\231\201\255\270V\202J\211-l\356\030\020\263v&U.1\nE\320\037RB\220L\352Gy\010\001J\020\032\336\017*R\252\263+\373:\332i|!\220QK\213H\271R\t\212\220>O\222\222\230R\231\2116\223^\252mW\261\216\244\211WI\t\2511\020\t\010L\000\234@\242TS#d\253\320\323\026d\257\001\231[\025\320W\"\317\030k\240a4\221d+b\211\"\022\366\025\020:\324O\300\021\034Q))}\0101\032\014:\257\231E\270\220\254OY\231\340K g\271\340\022\321\210\302#\214g7%/\014&.\243\033\222$\356\003\026\203\354H@\266\035\335rl\303\327\003b\315qm$\004]\260\340\315\003N2\3414\355\2371\350\333|\270\241.\265[\003\031\t\231X\220\273\223\020!\221\004\306\215O\020r}\022\203\320>$\302q\212&h\316^aN\362\031~\345Mx\254\251y\230\344\274dy#,\n\037\016\211\370\224x\375\n\227f\322(\305\216y\006W\306\246\242\261V\273\316\341\375R\346)\257\277\037\360^\234\362\234RK\267\270t\3513\330\276\246\202\306\223\346\374\3077\035s\000~G\366\2257#8?\036\016\335\204\216$\325S\177\177Q\024\236\032\276`\246\232\rd\304\216N\375\305D\201CX\267\025\005\202\373\234\324e6\216p\321\263ugI\377\305\334\221N\024$\t\351\2078@";
+    PyObject *data = __Pyx_DecompressString(cstring, 1306, 2);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1119 bytes) */
-const char* const cstring = "x\332\255U\275o\333F\024\207\n\0035\002\0031\203\270I\340\016\024RT-\022+0\3404\032\202\004j\355 N\213\324\352\320\264\323\341\304;I\327Rw\324\335Q\226:e\364\310\221#G\216\032=z\364\250\221c\376\224\276#%Z\374p\333\241\002\310\273w\357\335\373\370\361\375\236^\277\027\232\332z\204\265\375\303\\\217\004\267\231\262\tuY\237J\254\251;\267\225\226\314\321T\032#n\237\235\234\035\034u\216l\314\211-\351\037\324\321\312V~\337q\261RT\331b`\367}\346j\306m=\367\250j\333\247\003{.|\233SJl-l\017\3546/\350\021\345\266\242\332l\354\026\346\\h\254\231\340\010\2563>l\331\204I\010\302\246\324\334~\203]E\333\230\020\004v\2240\205\373.\245\334\274\207\016S\331\216p\001\025\014\260\357j\033!I\211\357P\204l\342\247.\270\340\007P\321\224a\027\264\016\343L#\344\245\245?\303>a\002\235K\354yT\266\275\371\354\245)\236\017\225\360\245C_\371zp\3209\233w\215\325\t\0372N\013B;\017\346\244\356\020*\253\241N\005\345\335f@\235\221@x\212\231k\312\250\321\255\352+j\\\2464b\334\3635\"t\312\034\252j\364\302\327\267\032xB\352\342\t\344\211\260\257\005\032b\306\253*\307e\224CLRU\335\236\246\321\032w\210\364\253\212\021\305\022i,\207\000PU\273Y\\U;\306\n\272\023M\205\353\217\353\324\314\001\334\271b\320CL\317\253\006\\@\343 \345{\236\244JA\353\375\007\223\333K,\000}\253\372\266d\365\014\215}]\361;\3625\021\347\345\304\000\257\362w\323\302+\236h\252R\010\244\360\240\341(r\351\224\272E\023\337#\246%\tX2\236r\017>\301\031\245\362\230)GL\251\234\227\304\272>/\033\324tz\321\304\361\2454M$\205\030\227u\036H\345\034\326\345\226\017\205g|\317\3409\206)\205\336\323\231\376\005\270\257\346\334a\242\355\010\t\210C\225*\243\266i\365\274{a\003\210@Gj\211\035\332\307\316\237\216\347\2458\230\025*\330\314\221\020\352\010B\215v\023)\370\316\212\3702\033Y\212:E\no\262!_\214\033*\245\220\n\241\201\317\035\004\277\341\032.\304\030ad\3068\2413\346!\246P^\002\323t\254\252d\257\241\367\330\320\014eoX\005\361]\360<\236C\315\034\217a\233\275\275\024gOx\006\025Oe3\260]\230\201f2\316\320*\265\211\217\335\354\346\315T\255\264B~@gf""\353\271\000-\220\006f\261A\321<itE\335Aa\312\024\346Jy\222l\314\216\362\264(\317\207\312D\250\231\001i{\256@\250\245\367?r\276\302\362\n\2577\231\014\373\325\177\321\006)P\rA\326$O\373\334\364\265^U\210PJbTK\345\032\362N\261\353\323\364\245\226[\235\313F\262}\367B\007\235\345\376\263x\262h|\354&\333\217\243\243h\026O\027\275d\333\n\254d{\347\342$\330\013p \303\275\020';\273\301gA38Lv\356\005\255\320Jv\277\000\225\n[\221\025}\033\277X4k\016\036\206\rch\226\275p\030\365\"\026\237/\360'\010<1\361\236\306\307\213\355e\347\364\332*\005\324\341\363\250a\002n\005\335\240\227\005\274\027v\242\303\350$~\260h,\036]\266\256\276\274\376}\371\353\207\345\207\337\222\222\273w\327\315\377\301\335\247\364\266\225\354\334\275\370+\264\302\307a/\331}\020\234\2078\234D\237G\223\270a\334\277\r~\006']\023\034\204\345\375o\342Flew\337\006\335d\347~\360\016.\350\350E\334\214\017Wx\207\337\001>\315\1771Z\356\267c\034OV\216\203\223\320ZoO\303\336zk\256\345&?B^\215\265\360S\324\210\036\305\255\205\265hn\036\345N\212Y\177\025u\243^.}\035\341h\222Kyod\271\277\212\255\033\341y\264\241ym\262\317\305\345\376\223\3700\356\336\250_f>\327\202\314q\267\226[\337_5\263\264\336\204Mpj\320\275\263xz\311\256\316\257\361\365\344c#\331\272s\361$\350\375\r\230\3276\314";
-    PyObject *data = __Pyx_DecompressString(cstring, 1119, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1142 bytes) */
+const char* const cstring = "x\332\255U\277o\333F\024\206\n\0035\002\0031\203\270i\340\016\024RT-\222(0\340$\032\202\004j\355 N\013\327\352\320\264\323\341\304;I\327Rw\324\335Q\226:e\364\310\221#G\216\032=z\364\250\221c\376\224\276#%Z\374\341\266C\r\230\274\273\367\356\275\367=\276\357\323\233S\241\251\255GX\333?\314\365Hp\233)\233P\227\365\251\304\232\272s[i\311\034M\245q\342\366\331\361\331\323\303\316\241\2159\261%\375\203:Z\331\312\357;.V\212*[\014\354\276\317\\\315\270\255\347\036Um\373d`\317\205osJ\211\255\205\355\201\337\346\005=\242\334VT\233\205\335\302\234\013\2155\023\034\301u\306\207-\2330\tI\330\224\232\333o\261\253h\033\023\202\300\217\022\246p\337\245\224\233\347\320a*[\021.\000\301\000\373\256\266\021\222\224\370\016E\310&~\032\202\013\376\024\020M\031v\301\3520\3164B^\n\375\031\366\t\023\350\\b\317\243\262\355\315g\257\014x>T\302\227\016}\355\353\301\323\316\331\274k\274\216\371\220qZ\330\264\363dN\032\016\241\262\031p*\200w\233\003uF\002\341)f\256\201Qc[\341+Z\\\2464b\334\3635\"t\312\034\252j\354\302\327\267:xB\352\342\t\324\211\260\257\005\032b\306\253&\307e\224CNR5\335^\246\261\232p\210\364\253\206\021\305\022i,\207\320\240\252u\023\\\325:\306\n\246\023M\205\353\217\353\314\314\201\276s\305`\206\230\236W\035\270\200\301A\312\367<I\225\202\321\373\017.\267C,4\372V\363m\305J!\306P\255#i\315\027\32134\366u%\351\310\327D\234\227\253\206f\226Ch\341\025O4Ui\177\244\360`\032)r\351\224\272E\027\337#f^\tx2\236\022\023\276\317\031\245\362\210)GL\251\234\227\266u$(;\324\320\240\350\342\370R\232\t3\355(\333<\330\225kX\303-\037\n\317\304\236\301\377\021H\030:\2453\375\013\010\203\232s\207\211\266#$|\016@\2512\336\033\036\344\243\r\013\350\010\214\253\226\330\241}\354\374\351x^\332\007\363\006\004\2335\022B\035A\250\261nv\n\206@\021_fz\006_\265\310\357M\252\344/\023\206J)\244Bh\340s\007\301\337p\335.\304\030ad\3068\2413\346!\246P\016\201i:VU%\250\341\376\330p\020eOx\013\342\273\020y<\007\314\034\217a\231=\275\264\317\236\360LW<\225\td\273 \220F6ghU\332\304\307nv\363Fr+\243\220\037\320""\231Yz.\264\026\030\005Bm\272\230\016\277\211\221\021@QwP\020\242\202\364\224\305fC^\312\202R\226\220\212h\324\310D:\244\253V\324*\300?\312BE\010*\324/\221}\223\336\260^\375zm0\005\325\260f\315\374t\370\315\260\353\025`\204Rf\243Z~\3270z\212]\237\246\017\265\334\352\\6\222\355\273\027:\350,\367\237\305\223E\343c7\331~\024\035F\263x\272\350%\333V`%\333;\027\307\301^\200\003\031\356\2058\331\331\r>\013\232\301A\262s/h\205V\262\373\005\230T\330\212\254\350\273\370\345\242Ys\360e\3300\216\346\265\027\016\243^\304\342\363\005\376\004\211'&\337\223\370h\261\275\354\234\\[\245\204:|\0365L\302\255\240\033\364\262\204\367\302Nt\020\035\307\017\026\215\305\303\313\326\325W\327\277/\177\375\260\374\360[R\n\367\376\272\371?\204\373\224\336\266\222\235\273\027\177\205V\370(\354%\273\017\202\363\020\207\223\350\363h\0227L\370w\301\317\020\244k\222\303fy\377\333\270\021[\331\335wA7\331\271\037\274\207\013:z\0317\343\203U\277\303\027\320\237\346\2778-\367\3331\216'\253\300\301qh\255\227'ao\2754\327r\227\037\241\256\306z\363S\324\210\036\306\255\205\265hn\036\345AN\243f\364\"\205\236\037\025\201|\035u\243^\276\373&\302\321$\337\345\343\222\301y\035[7\233\347\321\206\345\215\001\224o\227\373\217\343\203\270{c~\225\305\\od\376)\254\345\326\367W\315\254\254\267a\023\202\232\206\337Y<\271dW\347\327\370z\362\261\221l\335\271x\034\364\376\006dhRN";
+    PyObject *data = __Pyx_DecompressString(cstring, 1142, 1);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (2706 bytes) */
-const char* const bytes = "?Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.add_notedisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__python/audio_wrapper.pyx<stringsource>utf-8PyAudioEnginePyAudioEngine.__reduce_cython__PyAudioEngine.__setstate_cython__PyAudioEngine.echo_availablePyAudioEngine.echo_enabledPyAudioEngine.list_input_devicesPyAudioEngine.list_output_devicesPyAudioEngine.portPyAudioEngine.set_auto_gainPyAudioEngine.set_client_idPyAudioEngine.set_echo_enabledPyAudioEngine.set_gain_dbPyAudioEngine.set_hear_targetsPyAudioEngine.set_input_devicePyAudioEngine.set_master_volumePyAudioEngine.set_mic_sensitivityPyAudioEngine.set_noise_suppressionPyAudioEngine.set_noise_suppression_enabledPyAudioEngine.set_output_devicePyAudioEngine.set_output_volumePyAudioEngine.set_tx_mutedPyAudioEngine.shutdownPyAudioEngine.startPyAudioEngine.stopPyAudioEngine.test_microphone_levelPyAudioEngine.update_destinationsPyPeerDiscoveryPyPeerDiscovery.__reduce_cython__PyPeerDiscovery.__setstate_cython__PyPeerDiscovery.current_roomPyPeerDiscovery.peersPyPeerDiscovery.startPyPeerDiscovery.stop__Pyx_PyDict_NextRefasyncio.coroutinesaudio_portclient_idcline_in_tracebackcpp_destcpp_setcurrent_roomddecodedestdestinationsdevsduration_sececho_availableecho_enabledenabledencodeerrors__func____getstate__iididxindexip_is_coroutineitemslist_input_deviceslist_output_devicesmain__main____module__my_idname__name__ppeerspopportpspython.audio_wrapper__pyx_state__qualname____reduce____reduce_cython____reduce_ex__replaceresultroomroom_nameselfset_auto_gainset_client_idset_echo_enabledset_gain_dbset_hear_targetsset_input_deviceset_master_volumeset_mic_sensitivity__set_name__set_noise_suppressionset_noise_suppression_enabledset_output_deviceset_output_volumeset_tx_mutedsetdefault__setstate____setstate_cython__shutdownstartstopttargets__test__test_microphone_levelupdate_destinatio""nsvaluevalues\320\0048\270\001\330\010\017\210t\2208\320\033/\250q\260\001\200A\330\010#\2404\240x\250v\260Q\330\010\021\220\021\330\010\014\210E\220\025\220a\220r\230\025\230a\330\014\020\220\002\220!\2201\330\014\022\220'\230\021\330\020\026\220a\220s\230'\240\021\240)\2507\260!\330\020\026\220a\220s\230'\240\021\240)\2507\260!\330\020\030\230\001\230\021\330\020\030\230\001\230\025\230g\240Q\240i\250w\260a\340\010\017\210q\200A\330\010,\250D\260\010\3208I\310\021\330\010\021\220\021\330\010\014\210E\220\025\220a\220t\2305\240\001\330\014\020\220\004\220A\220Q\330\014\022\220'\230\022\2308\2401\240E\250\027\260\001\260\031\270'\300\034\310Y\320VW\320WX\330\010\017\210q\200A\330\010,\250D\260\010\3208J\310!\330\010\021\220\021\330\010\014\210E\220\025\220a\220t\2305\240\001\330\014\020\220\004\220A\220Q\330\014\022\220'\230\022\2308\2401\240E\250\027\260\001\260\031\270'\300\034\310Y\320VW\320WX\330\010\017\210q\200A\340\010\014\210E\220\021\330\014\017\210z\230\021\230#\230Q\330\020\027\220w\230a\230q\240\007\240q\250\001\330\010\014\210H\220O\2401\240A\200A\330\010\014\210H\320\024(\250\001\250\021\200A\340\010\014\210H\220A\330\014\024\220J\230a\230t\2407\250!\2501\330\010\017\210t\2208\2306\240\021\240!\200A\340\010\014\210H\220A\330\014\024\220J\230a\230t\2407\250!\2501\330\010\017\210t\2208\320\033.\250a\250q\200A\330\010\014\210H\220E\230\021\200A\330\010\014\210H\220I\230Q\200A\330\010\014\210H\220J\230a\230q\200A\330\010\014\210H\220K\230q\240\001\200A\330\010\014\210H\220L\240\001\240\031\250'\260\021\260!\200A\330\010\014\210H\220L\240\001\240\021\200A\330\010\014\210H\220O\2401\240A\200A\330\010\014\210H\320\024$\240A\240Q\200A\330\010\014\210H\320\024&\240a\240q\200A\330\010\014\210H\320\024/\250q\260\001\200A\330\010\017\210t\2208\230>\250\021\200A\330\010\017\210t\2208\2305\240\001\200A\330\010\017\210t\2208\230?\250!\2501\200A\330\010\017\210t\2208\320\033+\2501\250A\200A\330\010\017\210t\2208\230<\240q\200A\330\010\017\210t\2208\230<\240r\250\027""\260\001\260\031\270'\300\021\320\004B\300!\330\010\014\210H\220F\230!\2305\240\007\240q\250\n\260,\270i\300w\310a\310q\200\001\330\004\n\210+\220Q";
+    #else /* compression: none (2775 bytes) */
+const char* const bytes = "?Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.add_notedisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__python/audio_wrapper.pyx<stringsource>utf-8PyAudioEnginePyAudioEngine.__reduce_cython__PyAudioEngine.__setstate_cython__PyAudioEngine.echo_availablePyAudioEngine.echo_enabledPyAudioEngine.list_input_devicesPyAudioEngine.list_output_devicesPyAudioEngine.portPyAudioEngine.set_auto_gainPyAudioEngine.set_client_idPyAudioEngine.set_echo_enabledPyAudioEngine.set_gain_dbPyAudioEngine.set_hear_targetsPyAudioEngine.set_input_devicePyAudioEngine.set_master_volumePyAudioEngine.set_mic_sensitivityPyAudioEngine.set_noise_suppressionPyAudioEngine.set_noise_suppression_enabledPyAudioEngine.set_output_devicePyAudioEngine.set_output_volumePyAudioEngine.set_room_secretPyAudioEngine.set_tx_mutedPyAudioEngine.shutdownPyAudioEngine.startPyAudioEngine.stopPyAudioEngine.test_microphone_levelPyAudioEngine.update_destinationsPyPeerDiscoveryPyPeerDiscovery.__reduce_cython__PyPeerDiscovery.__setstate_cython__PyPeerDiscovery.current_roomPyPeerDiscovery.peersPyPeerDiscovery.startPyPeerDiscovery.stop__Pyx_PyDict_NextRefasyncio.coroutinesaudio_portclient_idcline_in_tracebackcpp_destcpp_setcurrent_roomddecodedestdestinationsdevsduration_sececho_availableecho_enabledenabledencodeerrors__func____getstate__iididxindexip_is_coroutineitemslist_input_deviceslist_output_devicesmain__main____module__my_idname__name__ppeerspopportpspython.audio_wrapper__pyx_state__qualname____reduce____reduce_cython____reduce_ex__replaceresultroomroom_namesecretselfset_auto_gainset_client_idset_echo_enabledset_gain_dbset_hear_targetsset_input_deviceset_master_volumeset_mic_sensitivity__set_name__set_noise_suppressionset_noise_suppression_enabledset_output_deviceset_output_volumeset_room_secretset_tx_mutedsetdefault__setstate____setstate_cython__shutdownstartstopttar""gets__test__test_microphone_levelupdate_destinationsvaluevalues\320\0048\270\001\330\010\017\210t\2208\320\033/\250q\260\001\200A\330\010#\2404\240x\250v\260Q\330\010\021\220\021\330\010\014\210E\220\025\220a\220r\230\025\230a\330\014\020\220\002\220!\2201\330\014\022\220'\230\021\330\020\026\220a\220s\230'\240\021\240)\2507\260!\330\020\026\220a\220s\230'\240\021\240)\2507\260!\330\020\030\230\001\230\021\330\020\030\230\001\230\025\230g\240Q\240i\250w\260a\340\010\017\210q\200A\330\010,\250D\260\010\3208I\310\021\330\010\021\220\021\330\010\014\210E\220\025\220a\220t\2305\240\001\330\014\020\220\004\220A\220Q\330\014\022\220'\230\022\2308\2401\240E\250\027\260\001\260\031\270'\300\034\310Y\320VW\320WX\330\010\017\210q\200A\330\010,\250D\260\010\3208J\310!\330\010\021\220\021\330\010\014\210E\220\025\220a\220t\2305\240\001\330\014\020\220\004\220A\220Q\330\014\022\220'\230\022\2308\2401\240E\250\027\260\001\260\031\270'\300\034\310Y\320VW\320WX\330\010\017\210q\200A\340\010\014\210E\220\021\330\014\017\210z\230\021\230#\230Q\330\020\027\220w\230a\230q\240\007\240q\250\001\330\010\014\210H\220O\2401\240A\200A\330\010\014\210H\320\024(\250\001\250\021\200A\340\010\014\210H\220A\330\014\024\220J\230a\230t\2407\250!\2501\330\010\017\210t\2208\2306\240\021\240!\200A\340\010\014\210H\220A\330\014\024\220J\230a\230t\2407\250!\2501\330\010\017\210t\2208\320\033.\250a\250q\200A\330\010\014\210H\220E\230\021\200A\330\010\014\210H\220I\230Q\200A\330\010\014\210H\220J\230a\230q\200A\330\010\014\210H\220K\230q\240\001\200A\330\010\014\210H\220L\240\001\240\031\250'\260\021\260!\200A\330\010\014\210H\220L\240\001\240\021\200A\330\010\014\210H\220N\240!\2406\250\027\260\001\260\021\200A\330\010\014\210H\220O\2401\240A\200A\330\010\014\210H\320\024$\240A\240Q\200A\330\010\014\210H\320\024&\240a\240q\200A\330\010\014\210H\320\024/\250q\260\001\200A\330\010\017\210t\2208\230>\250\021\200A\330\010\017\210t\2208\2305\240\001\200A\330\010\017\210t\2208\230?\250!\2501\200A\330\010\017""\210t\2208\320\033+\2501\250A\200A\330\010\017\210t\2208\230<\240q\200A\330\010\017\210t\2208\230<\240r\250\027\260\001\260\031\270'\300\021\320\004B\300!\330\010\014\210H\220F\230!\2305\240\007\240q\250\n\260,\270i\300w\310a\310q\200\001\330\004\n\210+\220Q";
     PyObject *data = NULL;
     CYTHON_UNUSED_VAR(__Pyx_DecompressString);
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 123; i++) {
+    for (int i = 0; i < 126; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
       if (likely(string) && i >= 11) PyUnicode_InternInPlace(&string);
@@ -9414,7 +9587,7 @@ const char* const bytes = "?Note that Cython is deliberately stricter than PEP-4
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 123; i < 149; i++) {
+    for (int i = 126; i < 153; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
@@ -9425,15 +9598,15 @@ const char* const bytes = "?Note that Cython is deliberately stricter than PEP-4
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 149; i++) {
+    for (Py_ssize_t i = 0; i < 153; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 123;
-      for (Py_ssize_t i=0; i<26; ++i) {
+      PyObject **table = stringtab + 126;
+      for (Py_ssize_t i=0; i<27; ++i) {
         #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
         #if PY_VERSION_HEX < 0x030E0000
         if (_Py_IsOwnedByCurrentThread(table[i]) && Py_REFCNT(table[i]) == 1)
@@ -9505,159 +9678,164 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   PyObject* tuple_dedup_map = PyDict_New();
   if (unlikely(!tuple_dedup_map)) return -1;
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 73};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 74};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
     __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_port, __pyx_mstate->__pyx_kp_b_iso88591_A_t85, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 76};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 77};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_devs, __pyx_mstate->__pyx_n_u_result, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_d};
     __pyx_mstate_global->__pyx_codeobj_tab[1] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_list_input_devices, __pyx_mstate->__pyx_kp_b_iso88591_A_D_8I_E_at5_AQ_81E_YVWWX_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[1])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 84};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 85};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_devs, __pyx_mstate->__pyx_n_u_result, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_d};
     __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_list_output_devices, __pyx_mstate->__pyx_kp_b_iso88591_A_D_8J_E_at5_AQ_81E_YVWWX_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 92};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 93};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_idx};
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_input_device, __pyx_mstate->__pyx_kp_b_iso88591_A_t8_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 95};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 96};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_idx};
     __pyx_mstate_global->__pyx_codeobj_tab[4] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_output_device, __pyx_mstate->__pyx_kp_b_iso88591_A_t8_1A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[4])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 106};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 107};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_client_id};
     __pyx_mstate_global->__pyx_codeobj_tab[5] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_client_id, __pyx_mstate->__pyx_kp_b_iso88591_A_HL, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[5])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 109};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_value};
-    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_master_volume, __pyx_mstate->__pyx_kp_b_iso88591_A_H_AQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 110};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_secret};
+    __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_room_secret, __pyx_mstate->__pyx_kp_b_iso88591_A_HN_6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 112};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 113};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_value};
-    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_output_volume, __pyx_mstate->__pyx_kp_b_iso88591_A_H_AQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_master_volume, __pyx_mstate->__pyx_kp_b_iso88591_A_H_AQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 115};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 116};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_value};
-    __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_gain_db, __pyx_mstate->__pyx_kp_b_iso88591_A_HJaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_output_volume, __pyx_mstate->__pyx_kp_b_iso88591_A_H_AQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 118};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 119};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_value};
-    __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_mic_sensitivity, __pyx_mstate->__pyx_kp_b_iso88591_A_H_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_gain_db, __pyx_mstate->__pyx_kp_b_iso88591_A_HJaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 121};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 122};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_value};
-    __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_noise_suppression, __pyx_mstate->__pyx_kp_b_iso88591_A_H, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_mic_sensitivity, __pyx_mstate->__pyx_kp_b_iso88591_A_H_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 124};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 125};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_value};
+    __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_noise_suppression, __pyx_mstate->__pyx_kp_b_iso88591_A_H, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 128};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_enabled};
-    __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_noise_suppression_enabled, __pyx_mstate->__pyx_kp_b_iso88591_A_H_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_noise_suppression_enabled, __pyx_mstate->__pyx_kp_b_iso88591_A_H_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 127};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 131};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_enabled};
-    __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_auto_gain, __pyx_mstate->__pyx_kp_b_iso88591_A_HL_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_auto_gain, __pyx_mstate->__pyx_kp_b_iso88591_A_HL_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 130};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 134};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_enabled};
-    __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_echo_enabled, __pyx_mstate->__pyx_kp_b_iso88591_A_HO1A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_echo_enabled, __pyx_mstate->__pyx_kp_b_iso88591_A_HO1A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 133};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 137};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_echo_available, __pyx_mstate->__pyx_kp_b_iso88591_A_t8, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_echo_available, __pyx_mstate->__pyx_kp_b_iso88591_A_t8, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 136};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 140};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_echo_enabled, __pyx_mstate->__pyx_kp_b_iso88591_A_t8_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_echo_enabled, __pyx_mstate->__pyx_kp_b_iso88591_A_t8_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 139};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 143};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_enabled};
-    __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_tx_muted, __pyx_mstate->__pyx_kp_b_iso88591_A_HKq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_tx_muted, __pyx_mstate->__pyx_kp_b_iso88591_A_HKq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 146};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 150};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_duration_sec};
-    __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_test_microphone_level, __pyx_mstate->__pyx_kp_b_iso88591_8_t8_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_test_microphone_level, __pyx_mstate->__pyx_kp_b_iso88591_8_t8_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 149};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 153};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_destinations, __pyx_mstate->__pyx_n_u_cpp_dest, __pyx_mstate->__pyx_n_u_dest};
-    __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_A_HA_Jat7_1_t86, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_A_HA_Jat7_1_t86, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 155};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 159};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_destinations, __pyx_mstate->__pyx_n_u_cpp_dest, __pyx_mstate->__pyx_n_u_dest};
-    __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_update_destinations, __pyx_mstate->__pyx_kp_b_iso88591_A_HA_Jat7_1_t8_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[20] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_update_destinations, __pyx_mstate->__pyx_kp_b_iso88591_A_HA_Jat7_1_t8_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[20])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 161};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 165};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[20] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_stop, __pyx_mstate->__pyx_kp_b_iso88591_A_HE, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[20])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_stop, __pyx_mstate->__pyx_kp_b_iso88591_A_HE, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 164};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 168};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_shutdown, __pyx_mstate->__pyx_kp_b_iso88591_A_HIQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[22] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_shutdown, __pyx_mstate->__pyx_kp_b_iso88591_A_HIQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[22])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 183};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 187};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_targets, __pyx_mstate->__pyx_n_u_cpp_set, __pyx_mstate->__pyx_n_u_t};
-    __pyx_mstate_global->__pyx_codeobj_tab[22] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_hear_targets, __pyx_mstate->__pyx_kp_b_iso88591_A_E_z_Q_waq_q_HO1A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[22])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[23] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_set_hear_targets, __pyx_mstate->__pyx_kp_b_iso88591_A_E_z_Q_waq_q_HO1A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[23])) goto bad;
   }
   {
     const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[23] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_reduce_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[23])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[24] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_reduce_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[24])) goto bad;
   }
   {
     const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 3};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_pyx_state};
-    __pyx_mstate_global->__pyx_codeobj_tab[24] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[24])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[25] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[25])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 199};
+    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 203};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_my_id, __pyx_mstate->__pyx_n_u_audio_port, __pyx_mstate->__pyx_n_u_room_name};
-    __pyx_mstate_global->__pyx_codeobj_tab[25] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_B_HF_5_q_iwaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[25])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[26] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_start, __pyx_mstate->__pyx_kp_b_iso88591_B_HF_5_q_iwaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[26])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 202};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 206};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[26] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_stop, __pyx_mstate->__pyx_kp_b_iso88591_A_HE, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[26])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[27] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_stop, __pyx_mstate->__pyx_kp_b_iso88591_A_HE, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[27])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 205};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 5, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 209};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_ps, __pyx_mstate->__pyx_n_u_result, __pyx_mstate->__pyx_n_u_i, __pyx_mstate->__pyx_n_u_p};
-    __pyx_mstate_global->__pyx_codeobj_tab[27] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_peers, __pyx_mstate->__pyx_kp_b_iso88591_A_4xvQ_E_ar_a_1_as_7_as_7_gQiwa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[27])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[28] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_peers, __pyx_mstate->__pyx_kp_b_iso88591_A_4xvQ_E_ar_a_1_as_7_as_7_gQiwa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[28])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 218};
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 222};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[28] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_current_room, __pyx_mstate->__pyx_kp_b_iso88591_A_t8_r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[28])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[29] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_python_audio_wrapper_pyx, __pyx_mstate->__pyx_n_u_current_room, __pyx_mstate->__pyx_kp_b_iso88591_A_t8_r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[29])) goto bad;
   }
   {
     const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self};
-    __pyx_mstate_global->__pyx_codeobj_tab[29] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_reduce_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[29])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[30] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_reduce_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[30])) goto bad;
   }
   {
     const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 3};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_pyx_state};
-    __pyx_mstate_global->__pyx_codeobj_tab[30] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[30])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[31] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_stringsource, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[31])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;

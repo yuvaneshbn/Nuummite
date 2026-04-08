@@ -678,7 +678,6 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     const auto packet = parse_voice_packet(data);
     if (!packet.has_value() || packet->kind != VoicePacketKind::ClientAudio ||
         packet->sender_id.empty() || packet->sender_id == client_id_) {
-        // No spoofing: parse_voice_packet returns nullopt if signature fails
         return;
     }
 
@@ -696,28 +695,54 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
 
     std::lock_guard<std::mutex> lock(rx_mutex_);
     rx_last_pcm_[packet->sender_id] = std::move(pcm);
+    rx_last_rx_time_[packet->sender_id] = std::chrono::steady_clock::now();
 }
 
 std::vector<int16_t> AudioEngine::mixFrame() {
+    const auto now = std::chrono::steady_clock::now();
+
     std::vector<int32_t> sum(FRAME, 0);
+    int active_speakers = 0;
 
     {
         std::lock_guard<std::mutex> lock(rx_mutex_);
-        for (const auto& [id, pcm] : rx_last_pcm_) {
+        for (auto it = rx_last_pcm_.begin(); it != rx_last_pcm_.end(); ) {
+            const std::string& id = it->first;
+            const auto& pcm = it->second;
+
+            auto time_it = rx_last_rx_time_.find(id);
+            const bool expired = (time_it == rx_last_rx_time_.end()) ||
+                (std::chrono::duration_cast<std::chrono::milliseconds>(now - time_it->second).count() > 600);
+
+            if (expired) {
+                it = rx_last_pcm_.erase(it);
+                rx_last_rx_time_.erase(id);
+                continue;
+            }
+
             if (hear_targets_.count(id)) {
                 for (int i = 0; i < FRAME && i < static_cast<int>(pcm.size()); ++i) {
-                    sum[i] += pcm[i];   // prevent overflow
+                    sum[i] += pcm[i];
                 }
+                ++active_speakers;
             }
+            ++it;
         }
     }
 
     std::vector<int16_t> mix(FRAME);
     for (int i = 0; i < FRAME; ++i) {
-        mix[i] = static_cast<int16_t>(std::clamp(sum[i], -32768, 32767));
+        mix[i] = static_cast<int16_t>(sum[i]);
     }
 
-    // Apply master + output volume
+    // Dynamic gain reduction when multiple people speak (removes distortion)
+    float mix_gain = (active_speakers > 1) ? (0.85f / active_speakers) : 1.0f;
+
+    for (auto& sample : mix) {
+        const int32_t val = static_cast<int32_t>(sample * mix_gain);
+        sample = static_cast<int16_t>(std::clamp(val, -32768, 32767));
+    }
+
     float master = 1.0f;
     float output = 1.0f;
     {
@@ -733,7 +758,7 @@ std::vector<int16_t> AudioEngine::mixFrame() {
         }
     }
 
-    // AEC reverse path (only if enabled)
+    // AEC reverse (if enabled)
     if (echo_enabled_.load() && aec_) {
         try {
             std::lock_guard<std::mutex> lock(echo_mutex_);
@@ -741,7 +766,6 @@ std::vector<int16_t> AudioEngine::mixFrame() {
                 aec_->process_render(mix.data(), FRAME);
             }
         } catch (...) {
-            std::cerr << "[AUDIO] Echo reverse error, disabling echo canceller\n";
             echo_enabled_.store(false);
         }
     }
@@ -923,6 +947,10 @@ void AudioEngine::sendLoop() {
         if (opus.empty()) continue;
 
         std::vector<uint8_t> packet = build_client_audio_packet(client_id_, seq_, timestamp_, opus);
+        if (packet.empty()) {
+            continue; // encryption failed; drop frame rather than leak plaintext
+        }
+
         seq_ = static_cast<uint16_t>((seq_ + 1) & 0xFFFF);
         timestamp_ += FRAME;
         const int sent = transport_.sendPacket(send_sock_, packet);
