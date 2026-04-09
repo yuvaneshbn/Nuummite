@@ -447,7 +447,7 @@ bool AudioEngine::setOutputDevice(int device_index) {
 
 void AudioEngine::setMasterVolume(int value) {
     std::lock_guard<std::mutex> lock(config_mutex_);
-    master_volume_ = std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.0f);
+    master_volume_ = std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.5f);
 }
 
 void AudioEngine::setOutputVolume(int value) {

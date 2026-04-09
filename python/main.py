@@ -127,10 +127,13 @@ class VolumeControlPanel(QtCore.QObject):
         self.gain_slider.setRange(-20, 20)
         self.gain_slider.setValue(0)
         self.ns_slider.setRange(0, 100)
+        self.master_slider.setRange(0, 200)
+        self.master_slider.setValue(120)  # +1.6x (~+4 dB) default loudness
+        self.gain_slider.setValue(0)
         self.ns_slider.setValue(70)
         if self.input_slider:
             self.input_slider.setRange(0, 100)
-            self.input_slider.setValue(50)
+            self.input_slider.setValue(55)
 
         self.master_slider.valueChanged.connect(lambda v: self.audio.set_master_volume(int(v)))
         self.gain_slider.valueChanged.connect(lambda v: self.audio.set_gain_db(int(v)))
@@ -147,10 +150,10 @@ class VolumeControlPanel(QtCore.QObject):
         self.test_status.setText(f"Mic level: {level}%")
 
     def _reset_defaults(self):
-        self.master_slider.setValue(100)
+        self.master_slider.setValue(120)
         self.gain_slider.setValue(0)
         if self.input_slider:
-            self.input_slider.setValue(50)
+            self.input_slider.setValue(55)
         self.ns_slider.setValue(70)
         self.setMicLevel(self.audio.capture_level)
 
@@ -537,6 +540,7 @@ def run_app():
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("Fusion")
 
     dialog = load_ui("Popup_message.ui")
     name_edit = dialog.findChild(QtWidgets.QLineEdit, "nameEdit")
