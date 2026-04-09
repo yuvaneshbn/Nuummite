@@ -316,6 +316,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.rows: Dict[str, ParticipantRow] = {}
         self.speaker_state: Dict[str, bool] = {}
         self.last_voice_ts: Dict[str, float] = {}
+        self.self_muted: bool = False  # keep self mute state across UI refreshes
 
         self.refresh_participants(False)
         self.set_connected_state(True)
@@ -358,7 +359,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for cid in participants:
             is_self = cid == self.my_id
-            row = ParticipantRow(cid, is_self, cid in self.targets, cid in self.muted, self)
+            row = ParticipantRow(cid, is_self, cid in self.targets,
+                                 self.self_muted if is_self else (cid in self.muted),
+                                 self)
             row.talkToggled.connect(self._on_talk_toggled)
             row.muteToggled.connect(self._on_mute_toggled)
 
@@ -383,6 +386,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _on_mute_toggled(self, client_id: str, enabled: bool):
         if client_id == self.my_id:
+            # Self mute checkbox mirrors the main mute button
+            self._set_self_mute(enabled, source="checkbox")
             return
         if enabled:
             self.muted.add(client_id)
@@ -458,13 +463,25 @@ class MainWindow(QtWidgets.QMainWindow):
             row.setTalkChecked(cid in self.targets)
         self.update_local_targets()
 
-    def toggle_self_mute(self, muted: bool):
+    def _set_self_mute(self, muted: bool, source: str):
+        """Centralize self-mute state so button and checkbox stay in sync."""
+        if self.self_muted == muted:
+            pass
+        self.self_muted = muted
         self.audio.set_tx_muted(muted)
+        self.mute_button.blockSignals(source == "checkbox")
+        self.mute_button.setChecked(muted)
         self.mute_button.setText("Unmute Mic" if muted else "Mute Mic")
-        self.main_status_bar.showMessage("Microphone muted" if muted else "Microphone unmuted")
+        self.mute_button.blockSignals(False)
         row = self.rows.get(self.my_id)
         if row:
+            row.setMuteChecked(muted)
             row.setMicStatus(not muted)
+        self.main_status_bar.showMessage("Microphone muted" if muted else "Microphone unmuted")
+
+    def toggle_self_mute(self, muted: bool):
+        # Called from the mute button
+        self._set_self_mute(muted, source="button")
 
     def open_settings(self):
         dlg = SettingsDialog(self.audio, "P2P Mesh", self)

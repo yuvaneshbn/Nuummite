@@ -758,6 +758,18 @@ std::vector<int16_t> AudioEngine::mixFrame() {
         }
     }
 
+    // Soft limiter to tame clipping artifacts when many speakers overlap
+    auto soft_clip = [](int16_t s) -> int16_t {
+        float x = static_cast<float>(s) / 32768.0f;
+        x = std::clamp(x, -1.2f, 1.2f);
+        const float y = x - (x * x * x) / 3.0f; // smooth cubic soft clip
+        const int32_t out = static_cast<int32_t>(std::clamp(y * 32768.0f, -32768.0f, 32767.0f));
+        return static_cast<int16_t>(out);
+    };
+    for (auto& sample : mix) {
+        sample = soft_clip(sample);
+    }
+
     // AEC reverse (if enabled)
     if (echo_enabled_.load() && aec_) {
         try {
@@ -923,7 +935,7 @@ void AudioEngine::sendLoop() {
             const bool voice_detected = aec_ ? aec_->hasVoice() : false;
 
             static int silence_frames = 0;
-            constexpr int VAD_HANGOVER_FRAMES = 12;
+            constexpr int VAD_HANGOVER_FRAMES = 8; // shorter tail to reduce lingering noise
             if (voice_detected) {
                 silence_frames = 0;
                 should_send = true;
