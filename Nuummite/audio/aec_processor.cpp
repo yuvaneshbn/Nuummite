@@ -1,43 +1,41 @@
 #include "aec_processor.h"
-#include <algorithm>
-#include <cmath>
+#include "webrtc_apm.h"
 
-AecProcessor::AecProcessor(int sample_rate_hz, int frame_samples)
-    : sample_rate_(sample_rate_hz), frame_size_(frame_samples) {}
+#include <memory>
+
+AecProcessor::AecProcessor(int sample_rate_hz, int /*frame_samples*/)
+    : apm_(std::make_unique<WebRtcApm>(sample_rate_hz)) {}
 
 AecProcessor::~AecProcessor() = default;
 
-void AecProcessor::set_delay_ms(int) { /* not used in simple version */ }
+void AecProcessor::set_delay_ms(int /*delay_ms*/) {
+    // WebRTC APM handles delay internally; no-op here.
+}
 
-bool AecProcessor::process_render(const int16_t*, int) {
-    return true;
+void AecProcessor::set_stream_delay_ms(int delay_ms) {
+    if (apm_) {
+        apm_->set_stream_delay_ms(delay_ms);
+    }
+}
+
+void AecProcessor::setEchoEnabled(bool enabled) {
+    if (apm_) {
+        apm_->setEchoEnabled(enabled);
+    }
+}
+
+bool AecProcessor::process_render(const int16_t* frame, int samples) {
+    return apm_ ? apm_->process_render(frame, samples) : true;
 }
 
 bool AecProcessor::process_capture(std::vector<int16_t>& frame) {
-    if (frame.size() != static_cast<size_t>(frame_size_)) {
-        return false;
-    }
+    return apm_ ? apm_->process_capture(frame) : false;
+}
 
-    // Improved VAD (energy + hangover)
-    int peak = 0;
-    for (const auto sample : frame) {
-        peak = std::max(peak, std::abs(static_cast<int>(sample)));
-    }
+bool AecProcessor::hasVoice() const {
+    return apm_ ? apm_->hasVoice() : false;
+}
 
-    bool voice = peak > VAD_THRESHOLD;
-
-    if (voice) {
-        silence_frames_ = 0;
-        voice_detected_this_frame_ = true;
-    } else {
-        silence_frames_++;
-        if (silence_frames_ > VAD_HANGOVER_FRAMES) {
-            voice_detected_this_frame_ = false;
-        }
-        // else keep voice_detected = true (hangover)
-    }
-
-    // TODO: When you compile WebRTC APM as DLL, replace this with real AEC3 here
-    // For now we have a usable VAD that removes the crude "any non-zero" logic.
-    return true;
+bool AecProcessor::available() const {
+    return apm_ && apm_->available();
 }

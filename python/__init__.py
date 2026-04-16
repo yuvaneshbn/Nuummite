@@ -10,7 +10,7 @@ def _add_dll_dirs():
         here / "third_party" / "libsodium",
         here / "third_party" / "rnnoise",
         here / "third_party" / "libportaudio",
-        here / "third_party" / "win_webrtc" / "bin",
+        here / "third_party" / "webrtc_audio_processing" / "bin",
     ]
     for path in candidates:
         if path.exists():

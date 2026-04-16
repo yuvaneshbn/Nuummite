@@ -105,12 +105,12 @@ private:
     std::atomic<float> mixed_peak_{0.0f};
 
     // config
-    float master_volume_ = 1.2f;   // slight boost for overall loudness
+    float master_volume_ = 1.0f;   // default master volume
     float output_volume_ = 1.0f;
     float tx_gain_db_ = 0.0f;
-    int mic_sensitivity_ = 50;     // default input sensitivity
-    int noise_suppression_ = 70;
-    bool noise_suppression_enabled_ = true;
+    int mic_sensitivity_ = 45;     // default input sensitivity
+    int noise_suppression_ = 0;
+    bool noise_suppression_enabled_ = false;   // ← completely off for now
     bool auto_gain_ = false;
     std::atomic<bool> echo_enabled_{false};
     bool tx_muted_ = false;

@@ -110,7 +110,9 @@ class VolumeControlPanel(QtCore.QObject):
         self.audio = audio
         self.widget: QtWidgets.QWidget = load_ui("volume_control.ui")
 
+        self.master_label = self.widget.findChild(QtWidgets.QLabel, "masterLabel")
         self.master_slider = self.widget.findChild(QtWidgets.QSlider, "masterSlider")
+        self.gain_label = self.widget.findChild(QtWidgets.QLabel, "gainLabel")
         self.gain_slider = self.widget.findChild(QtWidgets.QSlider, "gainSlider")
         self.ns_label = self.widget.findChild(QtWidgets.QLabel, "noiseSuppressionLabel")
         self.ns_slider = self.widget.findChild(QtWidgets.QSlider, "noiseSuppressionSlider")
@@ -122,27 +124,73 @@ class VolumeControlPanel(QtCore.QObject):
             self.widget.findChild(QtWidgets.QProgressBar, "micLevelBar")
         self.reset_button = self.widget.findChild(QtWidgets.QPushButton, "restoreDefaultsButton")
 
-        self.master_slider.setRange(0, 100)
-        self.master_slider.setValue(100)
+        # Set tick marks in code (avoids QUiLoader enum parsing warnings on some Qt builds).
+        ticks = QtWidgets.QSlider.TickPosition.TicksBelow
+        for slider, interval in (
+            (self.master_slider, 10),
+            (self.gain_slider, 5),
+            (self.input_slider, 5),
+            (self.ns_slider, 5),
+        ):
+            if slider:
+                slider.setTickPosition(ticks)
+                slider.setTickInterval(interval)
+
+        self.master_slider.setRange(0, 200)
+        self.master_slider.setValue(100)  # default loudness
         self.gain_slider.setRange(-20, 20)
         self.gain_slider.setValue(0)
         self.ns_slider.setRange(0, 100)
-        self.master_slider.setRange(0, 200)
-        self.master_slider.setValue(120)  # +1.6x (~+4 dB) default loudness
-        self.gain_slider.setValue(0)
-        self.ns_slider.setValue(70)
+        self.ns_slider.setValue(65)
         if self.input_slider:
             self.input_slider.setRange(0, 100)
-            self.input_slider.setValue(55)
+            self.input_slider.setValue(45)
 
-        self.master_slider.valueChanged.connect(lambda v: self.audio.set_master_volume(int(v)))
-        self.gain_slider.valueChanged.connect(lambda v: self.audio.set_gain_db(int(v)))
-        self.ns_slider.valueChanged.connect(lambda v: self.audio.set_noise_suppression(int(v)))
+        self.master_slider.valueChanged.connect(self._on_master_changed)
+        self.gain_slider.valueChanged.connect(self._on_gain_changed)
+        self.ns_slider.valueChanged.connect(self._on_ns_changed)
         if self.input_slider:
-            self.input_slider.valueChanged.connect(lambda v: self.audio.set_mic_sensitivity(int(v)))
+            self.input_slider.valueChanged.connect(self._on_input_changed)
         self.test_button.clicked.connect(self._test_mic)
         if self.reset_button:
             self.reset_button.clicked.connect(self._reset_defaults)
+
+        # Apply the defaults immediately so the engine matches the UI on launch.
+        self.audio.set_master_volume(self.master_slider.value())
+        self.audio.set_gain_db(self.gain_slider.value())
+        self.audio.set_noise_suppression(self.ns_slider.value())
+        if self.input_slider:
+            self.audio.set_mic_sensitivity(self.input_slider.value())
+
+        self._update_value_labels()
+        self.widget.update()  # Force UI refresh
+
+    def _update_value_labels(self):
+        # Show current numeric values directly in the labels above each slider.
+        if self.master_label:
+            self.master_label.setText(f"Master Volume: {self.master_slider.value()}")
+        if self.gain_label:
+            self.gain_label.setText(f"Gain (dB): {self.gain_slider.value()}")
+        if self.input_label and self.input_slider:
+            self.input_label.setText(f"Input Sensitivity: {self.input_slider.value()}")
+        if self.ns_label:
+            self.ns_label.setText(f"Noise Suppression: {self.ns_slider.value()}")
+
+    def _on_master_changed(self, v: int):
+        self.audio.set_master_volume(int(v))
+        self._update_value_labels()
+
+    def _on_gain_changed(self, v: int):
+        self.audio.set_gain_db(int(v))
+        self._update_value_labels()
+
+    def _on_ns_changed(self, v: int):
+        self.audio.set_noise_suppression(int(v))
+        self._update_value_labels()
+
+    def _on_input_changed(self, v: int):
+        self.audio.set_mic_sensitivity(int(v))
+        self._update_value_labels()
 
     def _test_mic(self):
         level = self.audio.test_microphone_level(0.8)
@@ -150,11 +198,12 @@ class VolumeControlPanel(QtCore.QObject):
         self.test_status.setText(f"Mic level: {level}%")
 
     def _reset_defaults(self):
-        self.master_slider.setValue(120)
+        self.master_slider.setValue(100)
         self.gain_slider.setValue(0)
         if self.input_slider:
-            self.input_slider.setValue(55)
-        self.ns_slider.setValue(70)
+            self.input_slider.setValue(45)
+        self.ns_slider.setValue(65)
+        self._update_value_labels()
         self.setMicLevel(self.audio.capture_level)
 
     def setMicLevel(self, level: int):
@@ -182,10 +231,18 @@ class SettingsDialog(QtWidgets.QDialog):
         self.advanced_layout = self.form.findChild(QtWidgets.QVBoxLayout, "advancedAudioLayout")
         self.volume_hint = self.form.findChild(QtWidgets.QLabel, "volumeControlHint")
 
-        self.vol_panel = VolumeControlPanel(audio, self)
+        # Force refresh of hint and embed panel every time dialog opens
         if self.volume_hint:
-            self.volume_hint.setParent(None)
+            self.volume_hint.hide()  # avoid overlapping with embedded controls
+
+        # Always recreate the volume panel fresh
+        self.vol_panel = VolumeControlPanel(audio, self)
         if self.advanced_layout:
+            # Clear any previous widgets
+            while self.advanced_layout.count():
+                item = self.advanced_layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
             self.advanced_layout.addWidget(self.vol_panel.widget)
 
         self.server_ip_value.setText(server_ip)

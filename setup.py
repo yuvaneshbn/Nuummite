@@ -1,19 +1,19 @@
 from setuptools import setup, Extension
 from Cython.Build import cythonize
-import os
 from pathlib import Path
 
-# Third-party DLL + .lib folders (same style as your Opus)
 third_party = Path("third_party")
 opus_dir = third_party / "opus"
 rnnoise_dir = third_party / "rnnoise"
+webrtc_dir = third_party / "webrtc_audio_processing"
 
 ext = Extension(
-    "python.audio_wrapper",   # this is what you import in __init__.py
+    "python.audio_wrapper",
     sources=[
         "Nuummite/audio/audio_engine.cpp",
         "Nuummite/audio/aec_processor.cpp",
         "Nuummite/audio/rnnoise_processor.cpp",
+        "Nuummite/audio/webrtc_apm.cpp",
         "Nuummite/common/audio_packet.cpp",
         "Nuummite/common/libsodium_wrapper.cpp",
         "Nuummite/common/opus_codec.cpp",
@@ -28,14 +28,17 @@ ext = Extension(
         "Nuummite/audio",
         "Nuummite/common",
         "Nuummite/p2p",
-        str(opus_dir),              # opus.h
-        str(rnnoise_dir),           # rnnoise.h
+        str(opus_dir),
+        str(rnnoise_dir),
+        str(webrtc_dir / "include"),
+        str(webrtc_dir / "include" / "webrtc-audio-processing-1"),
     ],
     library_dirs=[
         str(opus_dir),
-        str(rnnoise_dir),           # ← rnnoise.lib goes here
+        str(rnnoise_dir),
+        str(webrtc_dir / "lib"),
     ],
-    libraries=["opus", "rnnoise", "ws2_32", "winmm"],  # sockets + timeGetTime
+    libraries=["opus", "rnnoise", "webrtc-audio-processing-1-msvc", "ws2_32", "winmm"],
     language="c++",
     define_macros=[("NOMINMAX", None)],
     extra_compile_args=["/std:c++17", "/O2"],
