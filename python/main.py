@@ -3,6 +3,7 @@ import sys
 import shutil
 import socket
 import time
+import traceback
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -19,12 +20,40 @@ ROOT = Path(__file__).resolve().parent.parent  # repository root
 UI_DIR = ROOT / "Nuummite" / "ui"
 
 
+def _log_dir() -> Path:
+    base = os.environ.get("LOCALAPPDATA") or os.environ.get("TEMP") or str(ROOT)
+    return Path(base) / "Nuummite" / "logs"
+
+
+def _write_startup_log() -> Path:
+    log_dir = _log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "startup_error.log"
+    log_path.write_text(traceback.format_exc(), encoding="utf-8", errors="replace")
+    return log_path
+
+
 def resource_path(rel: str) -> str:
     """
     Resolve resource paths when running from source or PyInstaller (_MEIPASS).
     """
     base = Path(getattr(sys, "_MEIPASS", ROOT))
     return str(base / rel)
+
+
+def _center_and_activate(widget: QtWidgets.QWidget, *, always_on_top: bool = False) -> None:
+    if always_on_top:
+        widget.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint, True)
+    widget.adjustSize()
+    screen = QtWidgets.QApplication.primaryScreen()
+    if screen is not None:
+        avail = screen.availableGeometry()
+        geo = widget.frameGeometry()
+        geo.moveCenter(avail.center())
+        widget.move(geo.topLeft())
+    widget.show()
+    widget.raise_()
+    widget.activateWindow()
 
 
 def load_ui(filename: str, parent=None):
@@ -596,11 +625,12 @@ class MainWindow(QtWidgets.QMainWindow):
 def run_app():
     # Ensure bundled DLLs are discoverable before any native loads
     dll_dirs = [
+        ROOT,  # PyInstaller onedir: dist/<app>/_internal
         ROOT / "third_party" / "opus",
         ROOT / "third_party" / "libportaudio",
         ROOT / "third_party" / "libsodium",
         ROOT / "third_party" / "rnnoise",
-        ROOT / "third_party" / "win_webrtc" / "bin",
+        ROOT / "third_party" / "webrtc_audio_processing" / "bin",
     ]
     # Prepend to PATH so native LoadLibrary finds them without flags
     existing_path = os.environ.get("PATH", "")
@@ -625,6 +655,7 @@ def run_app():
     if local_ip_label:
         local_ip_label.setText(get_local_ip())
 
+    _center_and_activate(dialog, always_on_top=True)
     if dialog.exec() != QtWidgets.QDialog.Accepted:
         sys.exit(0)
 
@@ -643,8 +674,24 @@ def run_app():
     discovery.start(my_id, audio.port(), room_name)
     win = MainWindow(my_id, room_name, audio, discovery)
     win.show()
+    win.raise_()
+    win.activateWindow()
     sys.exit(app.exec())
 
 
 if __name__ == "__main__":
-    run_app()
+    try:
+        run_app()
+    except Exception:
+        log_path = _write_startup_log()
+        try:
+            app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(sys.argv)
+            QtWidgets.QMessageBox.critical(
+                None,
+                "Nuummite failed to start",
+                f"Nuummite crashed during startup.\n\nLog written to:\n{log_path}",
+            )
+            app.processEvents()
+        except Exception:
+            pass
+        raise

@@ -99,6 +99,12 @@ pyinstaller --clean --onedir --windowed --icon Nuummite/technical-support.ico --
 Output: `dist/Nuummite-Voice/` (onedir) or `dist/Nuummite-Voice.exe` (onefile).  
 Keep `technical-support.ico` beside the exe for correct icon.
 
+If the packaged exe fails to start due to missing runtime DLLs (notably libsodium, which is loaded dynamically), copy the required DLLs into the onedir `_internal` folder:
+```powershell
+python scripts/copy_required_dlls.py --target dist/Nuummite/_internal
+```
+If you build via `Nuummite.spec`, the required third-party DLLs and `.ui` files are bundled automatically.
+
 ---
 
 ## Native C++/Qt client build
