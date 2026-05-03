@@ -503,12 +503,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_local_targets(self):
         dest_ips: List[str] = []
         peers = {p["id"]: p for p in self.discovery.peers()}
+        local_ip = get_local_ip()
         for cid in self.targets:
             peer = peers.get(cid)
             if peer:
                 ip = peer["ip"]
                 port = peer.get("port", self.audio.port())
-                dest_ips.append(f"{ip}:{port}")
+                # Use loopback for peers on the same host to keep local instances distinct.
+                if peer.get("is_local") or ip.startswith("127.") or ip == local_ip:
+                    dest_ips.append(f"127.0.0.1:{port}")
+                else:
+                    dest_ips.append(f"{ip}:{port}")
         if dest_ips:
             if self.stop_capture_timer.isActive():
                 self.stop_capture_timer.stop()

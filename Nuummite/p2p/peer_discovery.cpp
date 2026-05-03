@@ -3,10 +3,12 @@
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <iphlpapi.h>
 
 #include <algorithm>
 #include <chrono>
 #include <cstring>
+#include <vector>
 
 namespace {
     constexpr int DISCOVERY_PORT = 50000;
@@ -15,6 +17,34 @@ namespace {
     constexpr int SELECT_WAIT_MS = 250;
     constexpr int PEER_STALE_MS = 3500;
     constexpr const char* PEER_PREFIX = "VOICE_PEER:";
+
+    bool is_local_interface_ipv4(in_addr addr) {
+        // True if addr matches any local (non-loopback) adapter IPv4 address.
+        ULONG buf_len = 0;
+        const ULONG flags = GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER;
+        if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &buf_len) != ERROR_BUFFER_OVERFLOW || buf_len == 0) {
+            return false;
+        }
+
+        std::vector<unsigned char> buf(buf_len);
+        auto* addrs = reinterpret_cast<IP_ADAPTER_ADDRESSES*>(buf.data());
+        if (GetAdaptersAddresses(AF_INET, flags, nullptr, addrs, &buf_len) != NO_ERROR) {
+            return false;
+        }
+
+        for (auto* a = addrs; a; a = a->Next) {
+            for (auto* u = a->FirstUnicastAddress; u; u = u->Next) {
+                if (!u->Address.lpSockaddr || u->Address.lpSockaddr->sa_family != AF_INET) {
+                    continue;
+                }
+                auto* sin = reinterpret_cast<const sockaddr_in*>(u->Address.lpSockaddr);
+                if (sin->sin_addr.s_addr == addr.s_addr) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 } // namespace
 
 PeerDiscovery::~PeerDiscovery() { stop(); }
@@ -117,21 +147,30 @@ void PeerDiscovery::loop() {
                         std::string peer_room = (second != std::string::npos) ? data.substr(first+1, second-first-1) : "main";
                         std::string port_str = (second != std::string::npos) ? data.substr(second+1) : "50002";
 
-                        if (peer_id != my_id_) {
-                            char ip_str[INET_ADDRSTRLEN] = {0};
-                            inet_ntop(AF_INET, &src.sin_addr, ip_str, sizeof(ip_str));
+                         if (peer_id != my_id_) {
+                             char ip_str[INET_ADDRSTRLEN] = {0};
+                             inet_ntop(AF_INET, &src.sin_addr, ip_str, sizeof(ip_str));
 
-                            PeerInfo info;
-                            info.id = peer_id;
-                            info.ip = ip_str;
-                            info.port = static_cast<uint16_t>(std::stoi(port_str));
-                            info.room = peer_room;
-                            info.last_seen = std::chrono::steady_clock::now();
+                             PeerInfo info;
+                             info.id = peer_id;
+                             info.ip = ip_str;
+                             info.port = static_cast<uint16_t>(std::stoi(port_str));
+                             info.room = peer_room;
+                             info.last_seen = std::chrono::steady_clock::now();
 
-                            std::lock_guard<std::mutex> lock(mutex_);
-                            peers_[peer_id] = info;
-                            pruneLocked();
-                        }
+                              // Prefer loopback for same-host peers so multiple local instances remain distinct.
+                              const bool is_loopback_src = (std::strcmp(ip_str, "127.0.0.1") == 0) ||
+                                                           (src.sin_addr.s_addr == htonl(INADDR_LOOPBACK));
+                              const bool is_same_host = is_loopback_src || is_local_interface_ipv4(src.sin_addr);
+                              if (is_same_host) {
+                                  info.ip = "127.0.0.1";
+                                  info.is_local = true;
+                              }
+
+                             std::lock_guard<std::mutex> lock(mutex_);
+                             peers_[peer_id] = info;
+                             pruneLocked();
+                         }
                     }
                 }
             }

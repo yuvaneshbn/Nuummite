@@ -14,6 +14,7 @@ struct PeerInfo {
     std::string ip;
     uint16_t port = 50002;
     std::string room;
+    bool is_local = false;
     std::chrono::steady_clock::time_point last_seen;
 };
 

@@ -54,6 +54,7 @@ cdef extern from "p2p/peer_discovery.h" namespace "":
         string ip
         uint16_t port
         string room
+        bool is_local
 
     cdef cppclass PeerDiscovery:
         PeerDiscovery() except +
@@ -216,6 +217,7 @@ cdef class PyPeerDiscovery:
                 "ip": p.ip.decode("utf-8", errors="replace"),
                 "port": p.port,
                 "room": p.room.decode("utf-8", errors="replace"),
+                "is_local": True if p.is_local else False,
             })
         return result
 

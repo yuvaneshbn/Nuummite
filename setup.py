@@ -38,7 +38,7 @@ ext = Extension(
         str(rnnoise_dir),
         str(webrtc_dir / "lib"),
     ],
-    libraries=["opus", "rnnoise", "webrtc-audio-processing-1-msvc", "ws2_32", "winmm"],
+    libraries=["opus", "rnnoise", "webrtc-audio-processing-1-msvc", "ws2_32", "winmm", "iphlpapi"],
     language="c++",
     define_macros=[("NOMINMAX", None)],
     extra_compile_args=["/std:c++17", "/O2"],
