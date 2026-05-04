@@ -327,15 +327,7 @@ int paOutputCallback(const void*,
     if (!audio || !output) {
         return paContinue;
     }
-
-    auto frame = audio->mixFrame();
-    if (frame.size() < static_cast<size_t>(frame_count)) {
-        frame.resize(static_cast<size_t>(frame_count), 0);
-    } else if (frame.size() > static_cast<size_t>(frame_count)) {
-        frame.resize(static_cast<size_t>(frame_count));
-    }
-
-    std::memcpy(output, frame.data(), frame.size() * sizeof(int16_t));
+    audio->renderOutput(reinterpret_cast<int16_t*>(output), static_cast<int>(frame_count));
     return paContinue;
 }
 
@@ -359,15 +351,16 @@ int paInputCallback(const void* input,
 } // namespace
 
 AudioEngine::AudioEngine()
-    // VOIP tuned: enable DTX, lower bitrate, VOIP app for cleaner speech
-    : encoder_(RATE, 1, FRAME, true, 10, 48000, 10, true, OPUS_APPLICATION_VOIP, true, false),  // changed from 32000
-      decoder_(RATE, 1, FRAME, true, 10, 64000, 10, false, OPUS_APPLICATION_AUDIO, false, true) {
+    // Debug-safe VOIP settings: one encoder for this client's outgoing stream.
+    : encoder_(RATE, 1, FRAME, false, 0, 48000, 10, false, OPUS_APPLICATION_VOIP, true, false) {
     SodiumWrapper::init();
-    rnnoise_ = std::make_unique<RnNoiseProcessor>();
+    if (!pure_opus_) {
+        rnnoise_ = std::make_unique<RnNoiseProcessor>();
         aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
-    if (aec_) {
-        aec_->setEchoEnabled(false);   // start disabled - enable only after testing clean path
-        aec_->set_stream_delay_ms(180);
+        if (aec_) {
+            aec_->setEchoEnabled(false);   // start disabled - enable only after testing clean path
+            aec_->set_stream_delay_ms(180);
+        }
     }
     std::string pa_error;
     auto& pa = portAudioApi();
@@ -408,8 +401,16 @@ AudioEngine::AudioEngine()
 
     echo_enabled_.store(false);   // force off initially
 
-   
+    // Preallocate output/mix scratch buffers once (callback-safe).
+    mix_accum_.assign(FRAME, 0.0f);
+    mix_frame_.assign(FRAME, 0);
+    playback_fifo_.assign(static_cast<size_t>(FRAME) * 8u, 0); // ~160ms FIFO
+    fifo_read_ = fifo_write_ = fifo_size_ = 0;
+    plc_ids_.reserve(32);
+    reset_ids_.reserve(32);
 
+    
+ 
     if (!openOutput()) {
         std::cerr << "[AUDIO] Failed to open output device\n";
     }
@@ -476,17 +477,36 @@ void AudioEngine::setNoiseSuppression(int value) {
 
 void AudioEngine::setNoiseSuppressionEnabled(bool enabled) {
     std::lock_guard<std::mutex> lock(config_mutex_);
-    noise_suppression_enabled_ = enabled;
+    noise_suppression_enabled_ = pure_opus_ ? false : enabled;
 }
 
 void AudioEngine::setAutoGain(bool enabled) {
     std::lock_guard<std::mutex> lock(config_mutex_);
-    auto_gain_ = enabled;
+    auto_gain_ = pure_opus_ ? false : enabled;
+
+    if (aec_) {
+        aec_->setAutoGainEnabled(auto_gain_);
+    }
 }
 
 void AudioEngine::setEchoEnabled(bool enabled) {
     std::lock_guard<std::mutex> lock(echo_mutex_);
-    echo_enabled_.store(enabled && aec_ != nullptr);
+    const bool on = !pure_opus_ && enabled && aec_ != nullptr;
+    echo_enabled_.store(on);
+    if (aec_) {
+        aec_->setEchoEnabled(on);
+    }
+}
+
+void AudioEngine::setAecStreamDelayMs(int delay_ms) {
+    if (pure_opus_) {
+        return;
+    }
+    delay_ms = std::clamp(delay_ms, 0, 500);
+    aec_stream_delay_ms_.store(delay_ms);
+    if (aec_) {
+        aec_->set_stream_delay_ms(delay_ms);
+    }
 }
 
 void AudioEngine::setHearTargets(const std::unordered_set<std::string>& hear_ids) {
@@ -576,7 +596,7 @@ bool AudioEngine::openOutput() {
     params.device = device;
     params.channelCount = 1;
     params.sampleFormat = paInt16;
-    params.suggestedLatency = info->defaultLowOutputLatency;
+    params.suggestedLatency = info->defaultHighOutputLatency;
 
     PaStream* stream = nullptr;
     PaError err = pa.OpenStream(&stream, nullptr, &params, RATE, FRAME, paNoFlag, &paOutputCallback, this);
@@ -688,7 +708,12 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     std::vector<int16_t> pcm;
     {
         std::lock_guard<std::mutex> lock(decoder_mutex_);
-        pcm = decoder_.decode(packet->payload);
+        auto& decoder = rx_decoders_[packet->sender_id];
+        if (!decoder) {
+            decoder = std::make_unique<OpusCodec>(
+                RATE, 1, FRAME, true, 10, 24000, 10, false, OPUS_APPLICATION_VOIP, false, true);
+        }
+        pcm = decoder->decode(packet->payload);
     }
     if (pcm.empty()) {
         return;
@@ -698,75 +723,165 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     }
 
     std::lock_guard<std::mutex> lock(rx_mutex_);
-    rx_last_pcm_[packet->sender_id] = std::move(pcm);
-    rx_last_rx_time_[packet->sender_id] = std::chrono::steady_clock::now();
+    jitter_buffers_[packet->sender_id].push(packet->seq, pcm);
 }
 
-std::vector<int16_t> AudioEngine::mixFrame() {
-    const auto now = std::chrono::steady_clock::now();
-    std::vector<int32_t> sum(FRAME, 0);
-    int active_speakers = 0;
+void AudioEngine::renderOutput(int16_t* out, int sample_count) {
+    if (!out || sample_count <= 0) {
+        return;
+    }
 
-    {
-        std::lock_guard<std::mutex> lock(rx_mutex_);
-        for (auto it = rx_last_pcm_.begin(); it != rx_last_pcm_.end(); ) {
-            const std::string& id = it->first;
-            const auto& pcm = it->second;
+    const size_t need = static_cast<size_t>(sample_count);
+    if (playback_fifo_.empty() || mix_frame_.size() != static_cast<size_t>(FRAME) ||
+        mix_accum_.size() != static_cast<size_t>(FRAME)) {
+        std::fill(out, out + need, 0);
+        return;
+    }
 
-            auto time_it = rx_last_rx_time_.find(id);
-            const bool expired = (time_it == rx_last_rx_time_.end()) ||
-                (std::chrono::duration_cast<std::chrono::milliseconds>(now - time_it->second).count() > 600);
+    const size_t cap = playback_fifo_.size();
 
-            if (expired) {
-                it = rx_last_pcm_.erase(it);
-                rx_last_rx_time_.erase(id);
+    auto fifoWrite = [&](const int16_t* data, size_t n) {
+        for (size_t i = 0; i < n; ++i) {
+            if (fifo_size_ >= cap) {
+                // Drop oldest sample rather than blocking the audio callback.
+                fifo_read_ = (fifo_read_ + 1) % cap;
+                fifo_size_--;
+            }
+            playback_fifo_[fifo_write_] = data[i];
+            fifo_write_ = (fifo_write_ + 1) % cap;
+            fifo_size_++;
+        }
+    };
+
+    auto fifoRead = [&](int16_t* dst, size_t n) {
+        for (size_t i = 0; i < n; ++i) {
+            if (fifo_size_ == 0) {
+                dst[i] = 0;
+                continue;
+            }
+            dst[i] = playback_fifo_[fifo_read_];
+            fifo_read_ = (fifo_read_ + 1) % cap;
+            fifo_size_--;
+        }
+    };
+
+    auto mixOneFixedFrame = [&]() {
+        std::fill(mix_accum_.begin(), mix_accum_.end(), 0.0f);
+        int active_speakers = 0;
+        plc_ids_.clear();
+        reset_ids_.clear();
+
+        // Never block the audio callback on locks held by network/UI threads.
+        std::unique_lock<std::mutex> rx_lock(rx_mutex_, std::try_to_lock);
+        if (!rx_lock.owns_lock()) {
+            std::fill(mix_frame_.begin(), mix_frame_.end(), 0);
+            updateMixedLevel(mix_frame_);
+            return;
+        }
+
+        for (auto& [id, jb] : jitter_buffers_) {
+            if (!hear_targets_.count(id)) {
                 continue;
             }
 
-            if (hear_targets_.count(id)) {
-                for (int i = 0; i < FRAME && i < static_cast<int>(pcm.size()); ++i) {
-                    sum[i] += pcm[i];
-                }
-                ++active_speakers;
+            std::vector<int16_t> frame;
+            bool missing = false;
+            if (!jb.pop(frame, missing)) {
+                continue;
             }
-            ++it;
+
+            if (!missing) {
+                if (frame.size() != static_cast<size_t>(FRAME)) {
+                    frame.resize(FRAME, 0);
+                }
+                for (int i = 0; i < FRAME; ++i) {
+                    mix_accum_[i] += static_cast<float>(frame[i]);
+                }
+                active_speakers++;
+                continue;
+            }
+
+            // Opus PLC is great for a few missing packets, but for longer gaps (e.g. VAD/DTX
+            // or burst loss) it can produce audible tonal "tails". After a few misses, switch
+            // to silence and reset the decoder once to avoid artifacts carrying over.
+            const int misses = jb.consecutiveMissing();
+            if (misses <= 3) {
+                plc_ids_.push_back(&id);
+            } else if (misses == 4) {
+                reset_ids_.push_back(&id);
+            }
         }
-    }
+        rx_lock.unlock();
 
-    float mix_gain = (active_speakers > 1) ? (0.85f / active_speakers) : 1.0f;
-
-    // Create clean reference for AEC (no volume scaling yet)
-    std::vector<int16_t> reference(FRAME);
-    for (int i = 0; i < FRAME; ++i) {
-        int32_t val = static_cast<int32_t>(sum[i] * mix_gain);
-        reference[i] = static_cast<int16_t>(std::clamp(val, -32768, 32767));
-    }
-
-    // Feed clean reference to AEC
-    if (aec_ && aec_->available() && echo_enabled_.load()) {
-        std::lock_guard<std::mutex> lock(echo_mutex_);
-        aec_->process_render(reference.data(), FRAME);
-    }
-
-    // Master + output volume
-    float master = 1.0f, output = 1.0f;
-    {
-        std::lock_guard<std::mutex> lock(config_mutex_);
-        master = master_volume_;
-        output = output_volume_;
-    }
-    const float volume_factor = std::clamp(master * output, 0.0f, 1.8f);  // safer max
-
-    std::vector<int16_t> mix = reference;  // start from clean reference
-    if (std::abs(volume_factor - 1.0f) > 0.0001f) {
-        for (auto& sample : mix) {
-            float scaled = static_cast<float>(sample) * volume_factor;
-            sample = static_cast<int16_t>(std::clamp(scaled, -32768.0f, 32767.0f));
+        if (!reset_ids_.empty() || !plc_ids_.empty()) {
+            std::unique_lock<std::mutex> dec_lock(decoder_mutex_, std::try_to_lock);
+            if (dec_lock.owns_lock()) {
+                for (const std::string* id : reset_ids_) {
+                    auto it = rx_decoders_.find(*id);
+                    if (it != rx_decoders_.end() && it->second) {
+                        it->second->resetDecoderState();
+                    }
+                }
+                for (const std::string* id : plc_ids_) {
+                    auto it = rx_decoders_.find(*id);
+                    if (it == rx_decoders_.end() || !it->second) {
+                        continue;
+                    }
+                    std::vector<int16_t> plc = it->second->decode(nullptr, 0);
+                    if (plc.size() != static_cast<size_t>(FRAME)) {
+                        plc.resize(FRAME, 0);
+                    }
+                    for (int i = 0; i < FRAME; ++i) {
+                        mix_accum_[i] += static_cast<float>(plc[i]);
+                    }
+                    active_speakers++;
+                }
+            }
         }
+
+        float mix_gain = 1.0f;
+        if (active_speakers > 1) {
+            mix_gain = 1.0f / std::sqrt(static_cast<float>(active_speakers));
+        }
+
+        for (int i = 0; i < FRAME; ++i) {
+            const float value = mix_accum_[i] * mix_gain;
+            mix_frame_[i] = static_cast<int16_t>(std::clamp(value, -32768.0f, 32767.0f));
+        }
+
+        if (!pure_opus_) {
+            // Feed reference to AEC before applying user volume scaling.
+            if (aec_ && aec_->available() && echo_enabled_.load()) {
+                std::unique_lock<std::mutex> lock(echo_mutex_, std::try_to_lock);
+                if (lock.owns_lock()) {
+                    aec_->process_render(mix_frame_.data(), FRAME);
+                }
+            }
+
+            float master = 1.0f, output = 1.0f;
+            std::unique_lock<std::mutex> cfg_lock(config_mutex_, std::try_to_lock);
+            if (cfg_lock.owns_lock()) {
+                master = master_volume_;
+                output = output_volume_;
+            }
+            const float volume_factor = std::clamp(master * output, 0.0f, 2.5f);
+            if (std::abs(volume_factor - 1.0f) > 0.0001f) {
+                for (auto& sample : mix_frame_) {
+                    float scaled = static_cast<float>(sample) * volume_factor;
+                    sample = static_cast<int16_t>(std::clamp(scaled, -32768.0f, 32767.0f));
+                }
+            }
+        }
+
+        updateMixedLevel(mix_frame_);
+    };
+
+    while (fifo_size_ < need) {
+        mixOneFixedFrame();
+        fifoWrite(mix_frame_.data(), static_cast<size_t>(FRAME));
     }
 
-    updateMixedLevel(mix);
-    return mix;
+    fifoRead(out, need);
 }
 
 void AudioEngine::updateMixedLevel(const std::vector<int16_t>& frame) {
@@ -882,75 +997,98 @@ void AudioEngine::sendLoop() {
         std::vector<int16_t> frame;
         if (!popCaptureFrame(frame)) continue;
 
-        // === 1. WebRTC APM - AEC + VAD (now properly configured) ===
         bool tx_muted_local = false;
-        {
-            std::lock_guard<std::mutex> lock(config_mutex_);
-            tx_muted_local = tx_muted_;
-        }
-
-        bool voice_detected = false;
-        if (!tx_muted_local && aec_ && aec_->available() && echo_enabled_.load()) {
-            aec_->set_stream_delay_ms(180);   // tune: try 120, 180, 250 if tails remain
-            aec_->process_capture(frame);
-            voice_detected = aec_->hasVoice();
-        } else {
-            int peak = 0;
-            for (const auto sample : frame) {
-                peak = std::max(peak, std::abs(static_cast<int>(sample)));
-            }
-            voice_detected = peak > 700;  // lowered for cleaner voice detection
-        }
-
-        // === 2. RNNoise - DISABLED for testing (sandpaper effect) ===
-        // if (noise_suppression_enabled_ && rnnoise_ && rnnoise_->isAvailable()) {
-        //     rnnoise_->process(frame);
-        // }
-        // We will add a checkbox + slider later to re-enable it.
-
-        // === 3. Apply TX Gain + Mic Sensitivity ===
+        bool autogain_local = false;
+        bool rnnoise_local = false;
         float tx_gain_db_local = 0.0f;
-        int mic_sens = 40;  // lowered default
+        int mic_sens_local = 50;
         {
             std::lock_guard<std::mutex> lock(config_mutex_);
             tx_muted_local = tx_muted_;
+            autogain_local = auto_gain_;
+            rnnoise_local = noise_suppression_enabled_;
             tx_gain_db_local = tx_gain_db_;
-            mic_sens = mic_sensitivity_;
+            mic_sens_local = mic_sensitivity_;
         }
 
-        if (tx_muted_local) {
-            std::fill(frame.begin(), frame.end(), 0);
-        } else {
-            const float gain_linear = std::pow(10.0f, tx_gain_db_local / 20.0f);
-            const float sens_linear = static_cast<float>(mic_sens) / 50.0f;
-            const float total_gain = gain_linear * sens_linear * 0.85f;  // overall gentler
-            for (auto& s : frame) {
-                float amplified = static_cast<float>(s) * total_gain;
-                s = static_cast<int16_t>(std::clamp(amplified, -32768.0f, 32767.0f));
+        if (!pure_opus_) {
+            // === 1. WebRTC APM - AEC + VAD ===
+            bool voice_detected = false;
+            const bool want_apm = !tx_muted_local && aec_ && aec_->available() && (echo_enabled_.load() || autogain_local);
+            if (want_apm) {
+                aec_->set_stream_delay_ms(aec_stream_delay_ms_.load());
+                aec_->process_capture(frame);  // runs AEC when enabled, runs AGC when enabled
+                voice_detected = aec_->hasVoice();
+            } else {
+                int peak = 0;
+                for (const auto sample : frame) {
+                    peak = std::max(peak, std::abs(static_cast<int>(sample)));
+                }
+                voice_detected = peak > 400;
             }
-        }
 
-        // === 4. VAD with Hangover ===
-        static int silence_frames = 0;
-        constexpr int VAD_HANGOVER_FRAMES = 14;   // ~280ms
+            // === 2. RNNoise (noise suppression) ===
+            if (!tx_muted_local && rnnoise_local && rnnoise_ && rnnoise_->isAvailable()) {
+                rnnoise_->process(frame);
+            }
 
-        if (voice_detected) {
-            silence_frames = 0;
+            // === 3. Transmit gain ===
+            // If Auto-Gain is enabled, avoid applying manual gain on top.
+            if (tx_muted_local) {
+                std::fill(frame.begin(), frame.end(), 0);
+            } else if (!autogain_local) {
+                const float gain_linear = std::pow(10.0f, tx_gain_db_local / 20.0f);
+                const float sens_linear = static_cast<float>(mic_sens_local) / 50.0f;
+                const float total_gain = std::clamp(gain_linear * sens_linear, 0.0f, 6.0f);
+                if (std::abs(total_gain - 1.0f) > 0.0001f) {
+                    for (auto& sample : frame) {
+                        float scaled = static_cast<float>(sample) * total_gain;
+                        sample = static_cast<int16_t>(std::clamp(scaled, -32768.0f, 32767.0f));
+                    }
+                }
+            }
+
+            // === 4. VAD with Hangover ===
+            static int silence_frames = 0;
+            constexpr int VAD_HANGOVER_FRAMES = 14;   // ~280ms
+
+            if (voice_detected) {
+                silence_frames = 0;
+            } else {
+                silence_frames++;
+            }
+
+            const bool should_send = !tx_muted_local && (voice_detected || silence_frames <= VAD_HANGOVER_FRAMES);
+
+            // === 5. Update UI levels ===
+            int input_peak = 0;
+            for (const auto sample : frame) {
+                input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
+            }
+            capture_level_.store(std::min(100, (input_peak * 100) / 32767));
+            capture_active_.store(should_send);
+
+            if (!should_send) continue;
         } else {
-            silence_frames++;
+            // Pure Opus debug: no AEC/RNNoise/VAD/AGC/manual gain. Always transmit raw frames.
+            if (tx_muted_local) {
+                std::fill(frame.begin(), frame.end(), 0);
+            }
+
+            int input_peak = 0;
+            for (const auto sample : frame) {
+                input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
+            }
+            capture_level_.store(std::min(100, (input_peak * 100) / 32767));
+            capture_active_.store(!tx_muted_local);
+
+            if (tx_muted_local) continue;
         }
 
-        bool should_send = !tx_muted_local && (voice_detected || silence_frames <= VAD_HANGOVER_FRAMES);
-
-        // === 5. Update UI levels ===
-        int input_peak = 0;
-        for (const auto sample : frame) {
-            input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
+        {
+            std::lock_guard<std::mutex> lock(config_mutex_);
+            tx_muted_local = tx_muted_;
         }
-        capture_level_.store(std::min(100, (input_peak * 100) / 32767));
-        capture_active_.store(should_send);
-
-        if (!should_send) continue;
 
         // === 6. Opus encode + send ===
         const std::vector<uint8_t> opus_data = encoder_.encode(frame);

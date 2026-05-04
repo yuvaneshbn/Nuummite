@@ -32,6 +32,7 @@ public:
 
     std::vector<int16_t> decode(const uint8_t* data, int len);
     std::vector<int16_t> decode(const std::vector<uint8_t>& data);
+    void resetDecoderState();
 
 private:
     void set_encoder_ctl(int request, int value);

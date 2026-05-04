@@ -1,6 +1,7 @@
 #ifndef AUDIO_ENGINE_H
 #define AUDIO_ENGINE_H
 
+#include "jitter_buffer.h"
 #include "opus_codec.h"
 #include "p2p/rtp_transport.h"
 #include "libsodium_wrapper.h"
@@ -57,12 +58,13 @@ public:
     void setNoiseSuppressionEnabled(bool enabled);
     void setAutoGain(bool enabled);
     void setEchoEnabled(bool enabled);
+    void setAecStreamDelayMs(int delay_ms);
     void setTxMuted(bool enabled);
 
     int testMicrophoneLevel(double duration_sec = 1.0);
 
     void pushCaptureFrame(const int16_t* samples, int sample_count);
-    std::vector<int16_t> mixFrame();
+    void renderOutput(int16_t* out, int sample_count);
 
     int captureLevel() const { return capture_level_.load(); }
     bool captureActive() const { return capture_active_.load(); }
@@ -105,12 +107,13 @@ private:
     std::atomic<float> mixed_peak_{0.0f};
 
     // config
+    bool pure_opus_ = true;         // debug: bypass all DSP (AEC/AGC/RNNoise/VAD/manual gain)
     float master_volume_ = 1.0f;   // default master volume
     float output_volume_ = 1.0f;
     float tx_gain_db_ = 0.0f;
     int mic_sensitivity_ = 45;     // default input sensitivity
     int noise_suppression_ = 0;
-    bool noise_suppression_enabled_ = false;   // ← completely off for now
+    bool noise_suppression_enabled_ = false;   // testing: keep RNNoise off while tuning clarity
     bool auto_gain_ = false;
     std::atomic<bool> echo_enabled_{false};
     bool tx_muted_ = false;
@@ -118,14 +121,13 @@ private:
 
     std::unique_ptr<AecProcessor> aec_;
     std::mutex echo_mutex_;
+    std::atomic<int> aec_stream_delay_ms_{180};
 
     OpusCodec encoder_;
-    OpusCodec decoder_;
+    std::unordered_map<std::string, std::unique_ptr<OpusCodec>> rx_decoders_;
     std::mutex decoder_mutex_;
 
-    // Per-sender last frame + timestamp (prevents repeating old frames = noise)
-    std::unordered_map<std::string, std::vector<int16_t>> rx_last_pcm_;
-    std::unordered_map<std::string, std::chrono::steady_clock::time_point> rx_last_rx_time_;
+    std::unordered_map<std::string, JitterBuffer> jitter_buffers_;
     mutable std::mutex rx_mutex_;
     std::unordered_set<std::string> hear_targets_;
 
@@ -142,6 +144,18 @@ private:
 
     void* wave_out_ = nullptr;
     void* wave_in_ = nullptr;
+
+    // Output callback must be real-time friendly: avoid allocations and blocking locks.
+    // We render fixed 20ms (960-sample) mix frames into a small FIFO and then satisfy
+    // whatever frame_count PortAudio asks for.
+    std::vector<float> mix_accum_;
+    std::vector<int16_t> mix_frame_;
+    std::vector<int16_t> playback_fifo_;
+    size_t fifo_read_ = 0;
+    size_t fifo_write_ = 0;
+    size_t fifo_size_ = 0;
+    std::vector<const std::string*> plc_ids_;
+    std::vector<const std::string*> reset_ids_;
 };
 
 #endif

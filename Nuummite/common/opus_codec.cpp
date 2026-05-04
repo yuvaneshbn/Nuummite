@@ -110,6 +110,8 @@ std::vector<int16_t> OpusCodec::decode(const uint8_t* data, int len) {
     std::vector<int16_t> pcm(frame_size_, 0);
     const int decoded = opus_decode(decoder_, data, len, pcm.data(), frame_size_, 0);
     if (decoded < 0) {
+        std::cerr << "[OPUS] decode failed len=" << len << " rc=" << decoded
+                  << " error=" << opus_strerror(decoded) << "\n";
         return {};
     }
     pcm.resize(static_cast<size_t>(decoded));
@@ -121,4 +123,13 @@ std::vector<int16_t> OpusCodec::decode(const std::vector<uint8_t>& data) {
         return decode(nullptr, 0);
     }
     return decode(data.data(), static_cast<int>(data.size()));
+}
+
+void OpusCodec::resetDecoderState() {
+    if (!decoder_) {
+        return;
+    }
+    // Helpful when a stream has been missing for a while (e.g. VAD/DTX or a burst loss),
+    // to avoid prolonged PLC "tails" carrying over into the next good packet.
+    (void)opus_decoder_ctl(decoder_, OPUS_RESET_STATE);
 }

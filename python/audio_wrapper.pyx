@@ -7,7 +7,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.unordered_set cimport unordered_set
 from libcpp cimport bool
-from libc.stdint cimport uint16_t
+from libc.stdint cimport uint16_t, int16_t
 
 cdef extern from "audio/audio_engine.h" namespace "":
     cdef struct AudioDeviceInfo:
@@ -33,6 +33,7 @@ cdef extern from "audio/audio_engine.h" namespace "":
         void setNoiseSuppressionEnabled(bool)
         void setAutoGain(bool)
         void setEchoEnabled(bool)
+        void setAecStreamDelayMs(int)
         bool echoAvailable() const
         bool echoEnabled() const
         void setTxMuted(bool)
@@ -47,6 +48,7 @@ cdef extern from "audio/audio_engine.h" namespace "":
         bool captureActive() const
         float mixedPeak() const
         void setHearTargets(const unordered_set[string]&)
+        void renderOutput(int16_t* out, int sample_count)
 
 cdef extern from "p2p/peer_discovery.h" namespace "":
     cdef struct PeerInfo:
@@ -134,6 +136,9 @@ cdef class PyAudioEngine:
 
     def set_echo_enabled(self, bool enabled):
         self.thisptr.setEchoEnabled(enabled)
+
+    def set_aec_stream_delay_ms(self, int delay_ms):
+        self.thisptr.setAecStreamDelayMs(delay_ms)
 
     def echo_available(self):
         return self.thisptr.echoAvailable()
