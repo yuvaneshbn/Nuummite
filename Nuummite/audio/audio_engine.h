@@ -1,7 +1,6 @@
 #ifndef AUDIO_ENGINE_H
 #define AUDIO_ENGINE_H
 
-#include "jitter_buffer.h"
 #include "opus_codec.h"
 #include "p2p/rtp_transport.h"
 #include "libsodium_wrapper.h"
@@ -78,6 +77,9 @@ public:
     void setHearTargets(const std::unordered_set<std::string>& hear_ids);
 
 private:
+    static constexpr int RATE = 48000;
+    static constexpr int FRAME = 960; // 20 ms @ 48 kHz
+
     void listenLoop();
     void handleIncomingPacket(const std::vector<uint8_t>& data);
     void sendLoop();
@@ -85,6 +87,29 @@ private:
     bool openInput(); void closeInput();
     void updateMixedLevel(const std::vector<int16_t>& frame);
     bool popCaptureFrame(std::vector<int16_t>& out);
+
+    struct StreamState {
+        std::unique_ptr<OpusCodec> decoder;
+        std::deque<std::vector<int16_t>> jitter;
+        uint16_t last_seq = 0;
+        bool has_seq = false;
+    };
+
+    StreamState& getStream(const std::string& id) {
+        std::lock_guard<std::mutex> lock(streams_mutex_);
+        auto& s = streams_[id];
+
+        if (!s.decoder) {
+            s.decoder = std::make_unique<OpusCodec>(
+                RATE, 1, FRAME,
+                true, 10, 24000, 10,
+                false,
+                OPUS_APPLICATION_VOIP,
+                false, true
+            );
+        }
+        return s;
+    }
 
     int port_ = 0;
     std::string client_id_;
@@ -124,11 +149,8 @@ private:
     std::atomic<int> aec_stream_delay_ms_{180};
 
     OpusCodec encoder_;
-    std::unordered_map<std::string, std::unique_ptr<OpusCodec>> rx_decoders_;
-    std::mutex decoder_mutex_;
-
-    std::unordered_map<std::string, JitterBuffer> jitter_buffers_;
-    mutable std::mutex rx_mutex_;
+    std::mutex streams_mutex_;
+    std::unordered_map<std::string, StreamState> streams_;
     std::unordered_set<std::string> hear_targets_;
 
     std::deque<std::vector<int16_t>> capture_frames_;
@@ -154,8 +176,6 @@ private:
     size_t fifo_read_ = 0;
     size_t fifo_write_ = 0;
     size_t fifo_size_ = 0;
-    std::vector<const std::string*> plc_ids_;
-    std::vector<const std::string*> reset_ids_;
 };
 
 #endif

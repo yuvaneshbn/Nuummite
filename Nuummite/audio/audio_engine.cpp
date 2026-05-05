@@ -406,8 +406,6 @@ AudioEngine::AudioEngine()
     mix_frame_.assign(FRAME, 0);
     playback_fifo_.assign(static_cast<size_t>(FRAME) * 8u, 0); // ~160ms FIFO
     fifo_read_ = fifo_write_ = fifo_size_ = 0;
-    plc_ids_.reserve(32);
-    reset_ids_.reserve(32);
 
     
  
@@ -490,11 +488,11 @@ void AudioEngine::setAutoGain(bool enabled) {
 }
 
 void AudioEngine::setEchoEnabled(bool enabled) {
+    (void)enabled;
     std::lock_guard<std::mutex> lock(echo_mutex_);
-    const bool on = !pure_opus_ && enabled && aec_ != nullptr;
-    echo_enabled_.store(on);
+    echo_enabled_.store(false);
     if (aec_) {
-        aec_->setEchoEnabled(on);
+        aec_->setEchoEnabled(false);
     }
 }
 
@@ -510,7 +508,7 @@ void AudioEngine::setAecStreamDelayMs(int delay_ms) {
 }
 
 void AudioEngine::setHearTargets(const std::unordered_set<std::string>& hear_ids) {
-    std::lock_guard<std::mutex> lock(rx_mutex_);
+    std::lock_guard<std::mutex> lock(streams_mutex_);
     hear_targets_ = hear_ids;
 }
 
@@ -705,25 +703,48 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
         return;
     }
 
-    std::vector<int16_t> pcm;
-    {
-        std::lock_guard<std::mutex> lock(decoder_mutex_);
-        auto& decoder = rx_decoders_[packet->sender_id];
-        if (!decoder) {
-            decoder = std::make_unique<OpusCodec>(
-                RATE, 1, FRAME, true, 10, 24000, 10, false, OPUS_APPLICATION_VOIP, false, true);
+    auto& st = getStream(packet->sender_id);
+
+    std::lock_guard<std::mutex> lock(streams_mutex_);
+
+    // HANDLE PACKET LOSS (PLC)
+    if (st.has_seq) {
+        const uint16_t expected = static_cast<uint16_t>(st.last_seq + 1);
+
+        if (packet->seq != expected) {
+            const uint16_t delta = static_cast<uint16_t>((packet->seq - expected) & 0xFFFF);
+            // Drop obviously out-of-order/duplicate packets rather than generating massive PLC.
+            if (delta > 1000) {
+                return;
+            }
+            const uint16_t lost = delta;
+
+            for (int i = 0; i < static_cast<int>(lost); ++i) {
+                std::vector<int16_t> plc = st.decoder->decode(nullptr, 0);
+                if (plc.size() != static_cast<size_t>(FRAME)) {
+                    plc.resize(FRAME, 0);
+                }
+                st.jitter.push_back(std::move(plc));
+            }
         }
-        pcm = decoder->decode(packet->payload);
     }
-    if (pcm.empty()) {
-        return;
-    }
-    if (pcm.size() != FRAME) {
+
+    st.has_seq = true;
+    st.last_seq = packet->seq;
+
+    // DECODE REAL FRAME
+    std::vector<int16_t> pcm = st.decoder->decode(packet->payload);
+    if (pcm.size() != static_cast<size_t>(FRAME)) {
         pcm.resize(FRAME, 0);
     }
 
-    std::lock_guard<std::mutex> lock(rx_mutex_);
-    jitter_buffers_[packet->sender_id].push(packet->seq, pcm);
+    // PUSH TO JITTER BUFFER
+    st.jitter.push_back(std::move(pcm));
+
+    // limit buffer
+    while (st.jitter.size() > 5) {
+        st.jitter.pop_front();
+    }
 }
 
 void AudioEngine::renderOutput(int16_t* out, int sample_count) {
@@ -767,86 +788,63 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
 
     auto mixOneFixedFrame = [&]() {
         std::fill(mix_accum_.begin(), mix_accum_.end(), 0.0f);
-        int active_speakers = 0;
-        plc_ids_.clear();
-        reset_ids_.clear();
+        int active = 0;
+        float peak = 0.0f;
 
         // Never block the audio callback on locks held by network/UI threads.
-        std::unique_lock<std::mutex> rx_lock(rx_mutex_, std::try_to_lock);
-        if (!rx_lock.owns_lock()) {
+        std::unique_lock<std::mutex> streams_lock(streams_mutex_, std::try_to_lock);
+        if (!streams_lock.owns_lock()) {
             std::fill(mix_frame_.begin(), mix_frame_.end(), 0);
             updateMixedLevel(mix_frame_);
             return;
         }
 
-        for (auto& [id, jb] : jitter_buffers_) {
+        for (auto& [id, st] : streams_) {
             if (!hear_targets_.count(id)) {
                 continue;
             }
-
-            std::vector<int16_t> frame;
-            bool missing = false;
-            if (!jb.pop(frame, missing)) {
+            if (st.jitter.empty()) {
                 continue;
             }
 
-            if (!missing) {
-                if (frame.size() != static_cast<size_t>(FRAME)) {
-                    frame.resize(FRAME, 0);
-                }
-                for (int i = 0; i < FRAME; ++i) {
-                    mix_accum_[i] += static_cast<float>(frame[i]);
-                }
-                active_speakers++;
-                continue;
-            }
+            auto frame = std::move(st.jitter.front());
+            st.jitter.pop_front();
 
-            // Opus PLC is great for a few missing packets, but for longer gaps (e.g. VAD/DTX
-            // or burst loss) it can produce audible tonal "tails". After a few misses, switch
-            // to silence and reset the decoder once to avoid artifacts carrying over.
-            const int misses = jb.consecutiveMissing();
-            if (misses <= 3) {
-                plc_ids_.push_back(&id);
-            } else if (misses == 4) {
-                reset_ids_.push_back(&id);
+            active++;
+            for (int i = 0; i < FRAME; ++i) {
+                mix_accum_[i] += static_cast<float>(frame[i]);
             }
         }
-        rx_lock.unlock();
+        streams_lock.unlock();
 
-        if (!reset_ids_.empty() || !plc_ids_.empty()) {
-            std::unique_lock<std::mutex> dec_lock(decoder_mutex_, std::try_to_lock);
-            if (dec_lock.owns_lock()) {
-                for (const std::string* id : reset_ids_) {
-                    auto it = rx_decoders_.find(*id);
-                    if (it != rx_decoders_.end() && it->second) {
-                        it->second->resetDecoderState();
-                    }
-                }
-                for (const std::string* id : plc_ids_) {
-                    auto it = rx_decoders_.find(*id);
-                    if (it == rx_decoders_.end() || !it->second) {
-                        continue;
-                    }
-                    std::vector<int16_t> plc = it->second->decode(nullptr, 0);
-                    if (plc.size() != static_cast<size_t>(FRAME)) {
-                        plc.resize(FRAME, 0);
-                    }
-                    for (int i = 0; i < FRAME; ++i) {
-                        mix_accum_[i] += static_cast<float>(plc[i]);
-                    }
-                    active_speakers++;
-                }
-            }
+        if (active == 0) {
+            std::fill(mix_frame_.begin(), mix_frame_.end(), 0);
+            updateMixedLevel(mix_frame_);
+            return;
         }
 
-        float mix_gain = 1.0f;
-        if (active_speakers > 1) {
-            mix_gain = 1.0f / std::sqrt(static_cast<float>(active_speakers));
+        // LIMITER
+        for (float v : mix_accum_) {
+            peak = std::max(peak, static_cast<float>(std::abs(v)));
         }
+
+        const float scale = (peak > 28000.0f) ? (28000.0f / peak) : 1.0f;
 
         for (int i = 0; i < FRAME; ++i) {
-            const float value = mix_accum_[i] * mix_gain;
-            mix_frame_[i] = static_cast<int16_t>(std::clamp(value, -32768.0f, 32767.0f));
+            float v = mix_accum_[i] * scale;
+
+            if (v > 32767.0f) v = 32767.0f;
+            if (v < -32768.0f) v = -32768.0f;
+
+            mix_frame_[i] = static_cast<int16_t>(v);
+        }
+
+        static auto last_debug = std::chrono::steady_clock::now();
+        const auto now = std::chrono::steady_clock::now();
+        if (now - last_debug > std::chrono::seconds(1)) {
+            last_debug = now;
+            std::cout << "Active clients: " << active << std::endl;
+            std::cout << "Peak: " << peak << std::endl;
         }
 
         if (!pure_opus_) {
