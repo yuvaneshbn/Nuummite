@@ -153,6 +153,10 @@ class VolumeControlPanel(QtCore.QObject):
             self.widget.findChild(QtWidgets.QProgressBar, "micLevelBar")
         self.reset_button = self.widget.findChild(QtWidgets.QPushButton, "restoreDefaultsButton")
 
+        self.autogain_radio = self.widget.findChild(QtWidgets.QRadioButton, "Autogain")
+        self.rnnoise_radio = self.widget.findChild(QtWidgets.QRadioButton, "noisesuppression")
+        self.echo_radio = self.widget.findChild(QtWidgets.QRadioButton, "Echocancellation")
+
         # Set tick marks in code (avoids QUiLoader enum parsing warnings on some Qt builds).
         ticks = QtWidgets.QSlider.TickPosition.TicksBelow
         for slider, interval in (
@@ -184,6 +188,13 @@ class VolumeControlPanel(QtCore.QObject):
         if self.reset_button:
             self.reset_button.clicked.connect(self._reset_defaults)
 
+        if self.autogain_radio:
+            self.autogain_radio.toggled.connect(self._on_autogain_toggled)
+        if self.rnnoise_radio:
+            self.rnnoise_radio.toggled.connect(self._on_rnnoise_toggled)
+        if self.echo_radio:
+            self.echo_radio.toggled.connect(self._on_echo_toggled)
+
         # Apply the defaults immediately so the engine matches the UI on launch.
         self.audio.set_master_volume(self.master_slider.value())
         self.audio.set_gain_db(self.gain_slider.value())
@@ -191,7 +202,15 @@ class VolumeControlPanel(QtCore.QObject):
         if self.input_slider:
             self.audio.set_mic_sensitivity(self.input_slider.value())
 
+        if self.autogain_radio:
+            self.audio.set_auto_gain(bool(self.autogain_radio.isChecked()))
+        if self.rnnoise_radio:
+            self.audio.set_noise_suppression_enabled(bool(self.rnnoise_radio.isChecked()))
+        if self.echo_radio:
+            self.audio.set_echo_enabled(bool(self.echo_radio.isChecked()))
+
         self._update_value_labels()
+        self._sync_feature_controls()
         self.widget.update()  # Force UI refresh
 
     def _update_value_labels(self):
@@ -220,6 +239,26 @@ class VolumeControlPanel(QtCore.QObject):
     def _on_input_changed(self, v: int):
         self.audio.set_mic_sensitivity(int(v))
         self._update_value_labels()
+
+    def _sync_feature_controls(self) -> None:
+        autogain_on = bool(self.autogain_radio and self.autogain_radio.isChecked())
+        rnnoise_on = bool(self.rnnoise_radio and self.rnnoise_radio.isChecked())
+
+        if self.gain_slider:
+            self.gain_slider.setEnabled(not autogain_on)
+        if self.ns_slider:
+            self.ns_slider.setEnabled(not rnnoise_on)
+
+    def _on_autogain_toggled(self, checked: bool) -> None:
+        self.audio.set_auto_gain(bool(checked))
+        self._sync_feature_controls()
+
+    def _on_rnnoise_toggled(self, checked: bool) -> None:
+        self.audio.set_noise_suppression_enabled(bool(checked))
+        self._sync_feature_controls()
+
+    def _on_echo_toggled(self, checked: bool) -> None:
+        self.audio.set_echo_enabled(bool(checked))
 
     def _test_mic(self):
         level = self.audio.test_microphone_level(0.8)

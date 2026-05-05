@@ -12,6 +12,7 @@ ext = Extension(
     sources=[
         "Nuummite/audio/audio_engine.cpp",
         "Nuummite/audio/aec_processor.cpp",
+        "Nuummite/audio/jitter_buffer.cpp",
         "Nuummite/audio/rnnoise_processor.cpp",
         "Nuummite/audio/webrtc_apm.cpp",
         "Nuummite/common/audio_packet.cpp",

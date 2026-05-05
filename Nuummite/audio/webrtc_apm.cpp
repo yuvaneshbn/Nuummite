@@ -26,6 +26,7 @@ struct WebRtcApm::Impl {
     bool has_voice = false;
     std::vector<int16_t> reverse_output;
     int stream_delay_ms = 180;  // default for Windows desktop (tune 120-250)
+    webrtc::AudioProcessing::Config config;
 };
 
 WebRtcApm::WebRtcApm(int sample_rate_hz) {
@@ -34,20 +35,25 @@ WebRtcApm::WebRtcApm(int sample_rate_hz) {
     impl_->reverse_config = webrtc::StreamConfig(sample_rate_hz, 1);
 
     webrtc::AudioProcessing::Config config;
-    config.echo_canceller.enabled = true;
+    config.echo_canceller.enabled = false;
     enableAec3Fields(config.echo_canceller, 0);
     config.echo_canceller.mobile_mode = false;
 
     config.high_pass_filter.enabled = true;
     config.noise_suppression.enabled = false;   // RNNoise if needed later
     config.gain_controller1.enabled = false;
+    config.gain_controller1.mode = webrtc::AudioProcessing::Config::GainController1::kAdaptiveDigital;
+
     config.gain_controller2.enabled = false;
+    config.gain_controller2.adaptive_digital.enabled = false;
+    config.gain_controller2.adaptive_digital.level_estimator = webrtc::AudioProcessing::Config::GainController2::kRms;
     config.voice_detection.enabled = true;
 
     webrtc::AudioProcessingBuilder builder;
     impl_->apm.reset(builder.Create());
 
     if (impl_->apm) {
+        impl_->config = config;
         impl_->apm->ApplyConfig(config);
         std::cout << "[WEBRTC] Desktop AEC3 ready (delay = " << impl_->stream_delay_ms << " ms)\n";
     } else {
@@ -88,4 +94,22 @@ bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
 }
 
 bool WebRtcApm::hasVoice() const { return impl_ ? impl_->has_voice : false; }
-void WebRtcApm::setEchoEnabled(bool /*enabled*/) {}
+void WebRtcApm::setEchoEnabled(bool enabled) {
+    if (!available()) {
+        return;
+    }
+    impl_->config.echo_canceller.enabled = enabled;
+    impl_->apm->ApplyConfig(impl_->config);
+}
+
+void WebRtcApm::setAutoGainEnabled(bool enabled) {
+    if (!available()) {
+        return;
+    }
+
+    // Use GainController2 only (avoid stacking GC1 + GC2).
+    impl_->config.gain_controller1.enabled = false;
+    impl_->config.gain_controller2.enabled = enabled;
+    impl_->config.gain_controller2.adaptive_digital.enabled = enabled;
+    impl_->apm->ApplyConfig(impl_->config);
+}

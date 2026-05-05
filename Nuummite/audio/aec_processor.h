@@ -15,6 +15,7 @@ public:
     void set_delay_ms(int delay_ms);
     void set_stream_delay_ms(int delay_ms);
     void setEchoEnabled(bool enabled);
+    void setAutoGainEnabled(bool enabled);
     bool process_render(const int16_t* frame, int samples);
     bool process_capture(std::vector<int16_t>& frame);
 

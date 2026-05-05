@@ -15,6 +15,7 @@ public:
     bool process_capture(std::vector<int16_t>& frame);        // near-end (mic)
     bool hasVoice() const;                                    // VAD result
     void setEchoEnabled(bool enabled);
+    void setAutoGainEnabled(bool enabled);
     void set_stream_delay_ms(int delay_ms);
 
 private:

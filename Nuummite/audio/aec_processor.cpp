@@ -24,6 +24,12 @@ void AecProcessor::setEchoEnabled(bool enabled) {
     }
 }
 
+void AecProcessor::setAutoGainEnabled(bool enabled) {
+    if (apm_) {
+        apm_->setAutoGainEnabled(enabled);
+    }
+}
+
 bool AecProcessor::process_render(const int16_t* frame, int samples) {
     return apm_ ? apm_->process_render(frame, samples) : true;
 }
