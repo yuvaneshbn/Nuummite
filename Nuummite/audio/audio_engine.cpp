@@ -6,6 +6,7 @@
 #include "aec_processor.h"
 #include "rnnoise_processor.h"
 #include "winsock_init.h"
+#include "opus.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -15,6 +16,7 @@
 #include <chrono>
 #include <cctype>
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
 #include <deque>
 #include <iostream>
@@ -354,6 +356,16 @@ AudioEngine::AudioEngine()
     // Debug-safe VOIP settings: one encoder for this client's outgoing stream.
     : encoder_(RATE, 1, FRAME, false, 0, 48000, 10, false, OPUS_APPLICATION_VOIP, true, false) {
     SodiumWrapper::init();
+
+    {
+        char* value = nullptr;
+        size_t len = 0;
+        if (_dupenv_s(&value, &len, "NUUMMITE_AUDIO_DEBUG") == 0 && value) {
+            audio_debug_ = (*value != '\0' && *value != '0');
+            free(value);
+        }
+    }
+
     if (!pure_opus_) {
         rnnoise_ = std::make_unique<RnNoiseProcessor>();
         aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
@@ -510,6 +522,15 @@ void AudioEngine::setAecStreamDelayMs(int delay_ms) {
 void AudioEngine::setHearTargets(const std::unordered_set<std::string>& hear_ids) {
     std::lock_guard<std::mutex> lock(streams_mutex_);
     hear_targets_ = hear_ids;
+}
+
+std::shared_ptr<AudioEngine::StreamState> AudioEngine::getOrCreateStream(const std::string& id) {
+    std::lock_guard<std::mutex> lock(streams_mutex_);
+    auto& st = streams_[id];
+    if (!st) {
+        st = std::make_shared<StreamState>();
+    }
+    return st;
 }
 
 void AudioEngine::setTxMuted(bool enabled) {
@@ -703,13 +724,25 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
         return;
     }
 
-    auto& st = getStream(packet->sender_id);
+    auto st = getOrCreateStream(packet->sender_id);
+    if (!st) {
+        return;
+    }
 
-    std::lock_guard<std::mutex> lock(streams_mutex_);
+    std::lock_guard<std::mutex> lock(st->mtx);
+    if (!st->decoder) {
+        st->decoder = std::make_unique<OpusCodec>(
+            RATE, 1, FRAME,
+            true, 10, 24000, 10,
+            false,
+            OPUS_APPLICATION_VOIP,
+            false, true
+        );
+    }
 
     // HANDLE PACKET LOSS (PLC)
-    if (st.has_seq) {
-        const uint16_t expected = static_cast<uint16_t>(st.last_seq + 1);
+    if (st->has_seq) {
+        const uint16_t expected = static_cast<uint16_t>(st->last_seq + 1);
 
         if (packet->seq != expected) {
             const uint16_t delta = static_cast<uint16_t>((packet->seq - expected) & 0xFFFF);
@@ -718,32 +751,40 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
                 return;
             }
             const uint16_t lost = delta;
+            if (lost > 0) {
+                static thread_local auto last_loss_log = std::chrono::steady_clock::now();
+                const auto now = std::chrono::steady_clock::now();
+                if (audio_debug_ && (now - last_loss_log) > std::chrono::seconds(1)) {
+                    last_loss_log = now;
+                    std::cout << "[AUDIO] plc_lost_frames=" << lost << " sender=" << packet->sender_id << "\n";
+                }
+            }
 
             for (int i = 0; i < static_cast<int>(lost); ++i) {
-                std::vector<int16_t> plc = st.decoder->decode(nullptr, 0);
+                std::vector<int16_t> plc = st->decoder->decode(nullptr, 0);
                 if (plc.size() != static_cast<size_t>(FRAME)) {
                     plc.resize(FRAME, 0);
                 }
-                st.jitter.push_back(std::move(plc));
+                st->jitter.push_back(std::move(plc));
             }
         }
     }
 
-    st.has_seq = true;
-    st.last_seq = packet->seq;
+    st->has_seq = true;
+    st->last_seq = packet->seq;
 
     // DECODE REAL FRAME
-    std::vector<int16_t> pcm = st.decoder->decode(packet->payload);
+    std::vector<int16_t> pcm = st->decoder->decode(packet->payload);
     if (pcm.size() != static_cast<size_t>(FRAME)) {
         pcm.resize(FRAME, 0);
     }
 
     // PUSH TO JITTER BUFFER
-    st.jitter.push_back(std::move(pcm));
+    st->jitter.push_back(std::move(pcm));
 
     // limit buffer
-    while (st.jitter.size() > 5) {
-        st.jitter.pop_front();
+    while (st->jitter.size() > 5) {
+        st->jitter.pop_front();
     }
 }
 
@@ -799,23 +840,35 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
             return;
         }
 
-        for (auto& [id, st] : streams_) {
-            if (!hear_targets_.count(id)) {
+        const auto hear_targets = hear_targets_;
+        std::vector<std::pair<std::string, std::shared_ptr<StreamState>>> snapshot;
+        snapshot.reserve(streams_.size());
+        for (const auto& [id, st] : streams_) {
+            snapshot.emplace_back(id, st);
+        }
+        streams_lock.unlock();
+
+        for (auto& [id, st] : snapshot) {
+            if (!st) {
                 continue;
             }
-            if (st.jitter.empty()) {
+            if (!hear_targets.count(id)) {
                 continue;
             }
 
-            auto frame = std::move(st.jitter.front());
-            st.jitter.pop_front();
+            std::unique_lock<std::mutex> st_lock(st->mtx, std::try_to_lock);
+            if (!st_lock.owns_lock() || st->jitter.empty()) {
+                continue;
+            }
+
+            auto frame = std::move(st->jitter.front());
+            st->jitter.pop_front();
 
             active++;
             for (int i = 0; i < FRAME; ++i) {
                 mix_accum_[i] += static_cast<float>(frame[i]);
             }
         }
-        streams_lock.unlock();
 
         if (active == 0) {
             std::fill(mix_frame_.begin(), mix_frame_.end(), 0);
@@ -823,28 +876,40 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
             return;
         }
 
-        // LIMITER
+        // LIMITER + SOFT CLIP (float domain)
         for (float v : mix_accum_) {
             peak = std::max(peak, static_cast<float>(std::abs(v)));
         }
 
-        const float scale = (peak > 28000.0f) ? (28000.0f / peak) : 1.0f;
+        const float pre_scale = (peak > 28000.0f) ? (28000.0f / peak) : 1.0f;
+        for (int i = 0; i < FRAME; ++i) {
+            mix_accum_[i] = (mix_accum_[i] * pre_scale) / 32768.0f;
+        }
+        static float softclip_mem[1] = {0.0f};
+        opus_pcm_soft_clip(mix_accum_.data(), FRAME, 1, softclip_mem);
 
         for (int i = 0; i < FRAME; ++i) {
-            float v = mix_accum_[i] * scale;
-
-            if (v > 32767.0f) v = 32767.0f;
-            if (v < -32768.0f) v = -32768.0f;
-
-            mix_frame_[i] = static_cast<int16_t>(v);
+            const float v = mix_accum_[i] * 32767.0f;
+            mix_frame_[i] = static_cast<int16_t>(std::clamp(v, -32768.0f, 32767.0f));
         }
 
         static auto last_debug = std::chrono::steady_clock::now();
         const auto now = std::chrono::steady_clock::now();
         if (now - last_debug > std::chrono::seconds(1)) {
             last_debug = now;
-            std::cout << "Active clients: " << active << std::endl;
-            std::cout << "Peak: " << peak << std::endl;
+            if (audio_debug_) {
+                std::cout << "[AUDIO] active_clients=" << active << " pre_limiter_peak=" << peak << " queues=[";
+                for (const auto& [id, st] : snapshot) {
+                    if (!st) {
+                        continue;
+                    }
+                    std::unique_lock<std::mutex> st_lock(st->mtx, std::try_to_lock);
+                    if (st_lock.owns_lock()) {
+                        std::cout << st->jitter.size() << ",";
+                    }
+                }
+                std::cout << "]\n";
+            }
         }
 
         if (!pure_opus_) {

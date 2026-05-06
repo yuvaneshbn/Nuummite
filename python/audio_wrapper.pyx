@@ -9,6 +9,22 @@ from libcpp.unordered_set cimport unordered_set
 from libcpp cimport bool
 from libc.stdint cimport uint16_t, int16_t
 
+cdef extern from "common/opus_codec.h" namespace "":
+    cdef cppclass OpusCodec:
+        OpusCodec(int rate,
+                  int channels,
+                  int frame_size,
+                  bool enable_fec,
+                  int packet_loss_perc,
+                  int bitrate,
+                  int complexity,
+                  bool enable_dtx,
+                  int application,
+                  bool create_encoder,
+                  bool create_decoder) except +
+        vector[unsigned char] encode(const int16_t* pcm, int frame_samples)
+        vector[unsigned char] encode(const vector[int16_t]& pcm)
+
 cdef extern from "audio/audio_engine.h" namespace "":
     cdef struct AudioDeviceInfo:
         int index
@@ -228,3 +244,59 @@ cdef class PyPeerDiscovery:
 
     def current_room(self):
         return self.thisptr.currentRoom().decode("utf-8", errors="replace")
+
+
+cdef class PyOpusEncoder:
+    cdef OpusCodec* thisptr
+    cdef int frame_size
+
+    def __cinit__(self,
+                 int rate=48000,
+                 int channels=1,
+                 int frame_size=960,
+                 int bitrate=24000,
+                 int complexity=10,
+                 bint fec=True,
+                 int packet_loss_perc=10,
+                 bint dtx=False,
+                 int application=2048):  # OPUS_APPLICATION_VOIP
+        self.frame_size = frame_size
+        self.thisptr = new OpusCodec(rate, channels, frame_size,
+                                     fec, packet_loss_perc, bitrate, complexity,
+                                     dtx, application,
+                                     True, False)
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    def encode(self, samples):
+        """
+        Encode one frame of mono int16 PCM.
+        `samples` can be a list/tuple of ints or a bytes-like object containing int16 little-endian.
+        """
+        cdef vector[int16_t] pcm
+        if isinstance(samples, (bytes, bytearray, memoryview)):
+            b = memoryview(samples).tobytes()
+            if len(b) % 2 != 0:
+                raise ValueError("PCM bytes must be int16 little-endian")
+            n = len(b) // 2
+            if n == 0:
+                raise ValueError("Empty PCM")
+            pcm.resize(n)
+            for i in range(n):
+                u = (<unsigned int>b[2*i]) | ((<unsigned int>b[2*i+1]) << 8)
+                if u >= 32768:
+                    pcm[i] = <int16_t>(u - 65536)
+                else:
+                    pcm[i] = <int16_t>u
+        else:
+            for s in samples:
+                v = int(s)
+                if v > 32767:
+                    v = 32767
+                elif v < -32768:
+                    v = -32768
+                pcm.push_back(<int16_t>v)
+
+        out = self.thisptr.encode(pcm)
+        return bytes(out)

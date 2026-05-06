@@ -20,5 +20,5 @@ def _add_dll_dirs():
                 os.environ["PATH"] = f"{path};{os.environ.get('PATH','')}"
 _add_dll_dirs()
 
-from .audio_wrapper import PyAudioEngine, PyPeerDiscovery
-__all__ = ["PyAudioEngine", "PyPeerDiscovery"]
+from .audio_wrapper import PyAudioEngine, PyPeerDiscovery, PyOpusEncoder
+__all__ = ["PyAudioEngine", "PyPeerDiscovery", "PyOpusEncoder"]
