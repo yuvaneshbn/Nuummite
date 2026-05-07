@@ -500,13 +500,14 @@ void AudioEngine::setNoiseSuppressionEnabled(bool enabled) {
 }
 
 void AudioEngine::setAutoGain(bool enabled) {
+    const bool apply_enabled = (!pure_opus_) && enabled;
     {
         std::lock_guard<std::mutex> lock(config_mutex_);
-        auto_gain_ = enabled;
+        auto_gain_ = apply_enabled;
     }
     std::lock_guard<std::mutex> lock(echo_mutex_);
     if (aec_) {
-        aec_->setAutoGainEnabled(enabled);
+        aec_->setAutoGainEnabled(apply_enabled);
     }
 }
 

@@ -87,6 +87,13 @@ int RTPTransport::sendPacket(SOCKET sock, const std::vector<uint8_t>& packet) co
                               sizeof(entry.addr));
         if (rc != SOCKET_ERROR) {
             ++success_count;
+            continue;
+        }
+
+        // When using non-blocking UDP, treat "would block" as a soft drop.
+        const int err = WSAGetLastError();
+        if (err == WSAEWOULDBLOCK) {
+            continue;
         }
     }
     return success_count;

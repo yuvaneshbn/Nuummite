@@ -12,9 +12,9 @@
 - Per-client queue depth: jitter queues growing beyond ~5 frames indicates overload or lock contention.
 - Decode errors/drops: count/print failures from Opus decode or dropped out-of-order packets.
 - Mixed peak vs. client count: peak should not grow linearly with N; limiter/soft-clip should keep it bounded.
+- UDP socket behavior: with non-blocking sockets enabled, occasional send drops (WOULDBLOCK) are acceptable; sustained drops indicate CPU/network overload.
 
 ### Thresholds (suggested)
 - Queue depth > 5 for multiple clients: investigate contention or scheduling.
 - Sudden rise in mixed peak with more clients: limiter/soft-clip regression.
 - Frequent PLC bursts (`plc_lost_frames`): network loss or timing issues.
-
