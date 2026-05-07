@@ -119,7 +119,7 @@ private:
     std::atomic<float> mixed_peak_{0.0f};
 
     // config
-    bool pure_opus_ = true;         // debug: bypass all DSP (AEC/AGC/RNNoise/VAD/manual gain)
+    bool pure_opus_ = false;        // debug: bypass all DSP (AEC/AGC/RNNoise/VAD/manual gain)
     float master_volume_ = 1.0f;   // default master volume
     float output_volume_ = 1.0f;
     float tx_gain_db_ = 0.0f;

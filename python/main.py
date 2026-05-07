@@ -137,14 +137,19 @@ class VolumeControlPanel(QtCore.QObject):
     def __init__(self, audio: PyAudioEngine, parent=None):
         super().__init__(parent)
         self.audio = audio
+        self.settings = QtCore.QSettings()
         self.widget: QtWidgets.QWidget = load_ui("volume_control.ui")
 
         self.master_label = self.widget.findChild(QtWidgets.QLabel, "masterLabel")
         self.master_slider = self.widget.findChild(QtWidgets.QSlider, "masterSlider")
+        self.output_label = self.widget.findChild(QtWidgets.QLabel, "outputLabel")
+        self.output_slider = self.widget.findChild(QtWidgets.QSlider, "outputSlider")
         self.gain_label = self.widget.findChild(QtWidgets.QLabel, "gainLabel")
         self.gain_slider = self.widget.findChild(QtWidgets.QSlider, "gainSlider")
         self.ns_label = self.widget.findChild(QtWidgets.QLabel, "noiseSuppressionLabel")
         self.ns_slider = self.widget.findChild(QtWidgets.QSlider, "noiseSuppressionSlider")
+        self.aec_delay_label = self.widget.findChild(QtWidgets.QLabel, "aecDelayLabel")
+        self.aec_delay_slider = self.widget.findChild(QtWidgets.QSlider, "aecDelaySlider")
         self.input_label = self.widget.findChild(QtWidgets.QLabel, "inputSensitivityLabel")
         self.input_slider = self.widget.findChild(QtWidgets.QSlider, "inputSensitivitySlider")
         self.test_button = self.widget.findChild(QtWidgets.QPushButton, "testMicButton")
@@ -153,62 +158,56 @@ class VolumeControlPanel(QtCore.QObject):
             self.widget.findChild(QtWidgets.QProgressBar, "micLevelBar")
         self.reset_button = self.widget.findChild(QtWidgets.QPushButton, "restoreDefaultsButton")
 
-        self.autogain_radio = self.widget.findChild(QtWidgets.QRadioButton, "Autogain")
-        self.rnnoise_radio = self.widget.findChild(QtWidgets.QRadioButton, "noisesuppression")
-        self.echo_radio = self.widget.findChild(QtWidgets.QRadioButton, "Echocancellation")
+        self.autogain_checkbox = self.widget.findChild(QtWidgets.QCheckBox, "autoGainCheckbox")
+        self.rnnoise_checkbox = self.widget.findChild(QtWidgets.QCheckBox, "noiseSuppCheckbox")
+        self.echo_checkbox = self.widget.findChild(QtWidgets.QCheckBox, "echoCheckbox")
 
         # Set tick marks in code (avoids QUiLoader enum parsing warnings on some Qt builds).
         ticks = QtWidgets.QSlider.TickPosition.TicksBelow
         for slider, interval in (
             (self.master_slider, 10),
+            (self.output_slider, 10),
             (self.gain_slider, 5),
             (self.input_slider, 5),
             (self.ns_slider, 5),
+            (self.aec_delay_slider, 20),
         ):
             if slider:
                 slider.setTickPosition(ticks)
                 slider.setTickInterval(interval)
 
-        self.master_slider.setRange(0, 200)
-        self.master_slider.setValue(100)  # default loudness
+        self.master_slider.setRange(0, 250)
+        if self.output_slider:
+            self.output_slider.setRange(0, 250)
         self.gain_slider.setRange(-20, 20)
-        self.gain_slider.setValue(0)
         self.ns_slider.setRange(0, 100)
-        self.ns_slider.setValue(65)
+        if self.aec_delay_slider:
+            self.aec_delay_slider.setRange(0, 500)
         if self.input_slider:
             self.input_slider.setRange(0, 100)
-            self.input_slider.setValue(45)
 
         self.master_slider.valueChanged.connect(self._on_master_changed)
+        if self.output_slider:
+            self.output_slider.valueChanged.connect(self._on_output_changed)
         self.gain_slider.valueChanged.connect(self._on_gain_changed)
         self.ns_slider.valueChanged.connect(self._on_ns_changed)
+        if self.aec_delay_slider:
+            self.aec_delay_slider.valueChanged.connect(self._on_aec_delay_changed)
         if self.input_slider:
             self.input_slider.valueChanged.connect(self._on_input_changed)
         self.test_button.clicked.connect(self._test_mic)
         if self.reset_button:
             self.reset_button.clicked.connect(self._reset_defaults)
 
-        if self.autogain_radio:
-            self.autogain_radio.toggled.connect(self._on_autogain_toggled)
-        if self.rnnoise_radio:
-            self.rnnoise_radio.toggled.connect(self._on_rnnoise_toggled)
-        if self.echo_radio:
-            self.echo_radio.toggled.connect(self._on_echo_toggled)
+        if self.autogain_checkbox:
+            self.autogain_checkbox.toggled.connect(self._on_autogain_toggled)
+        if self.rnnoise_checkbox:
+            self.rnnoise_checkbox.toggled.connect(self._on_rnnoise_toggled)
+        if self.echo_checkbox:
+            self.echo_checkbox.toggled.connect(self._on_echo_toggled)
 
-        # Apply the defaults immediately so the engine matches the UI on launch.
-        self.audio.set_master_volume(self.master_slider.value())
-        self.audio.set_gain_db(self.gain_slider.value())
-        self.audio.set_noise_suppression(self.ns_slider.value())
-        if self.input_slider:
-            self.audio.set_mic_sensitivity(self.input_slider.value())
-
-        if self.autogain_radio:
-            self.audio.set_auto_gain(bool(self.autogain_radio.isChecked()))
-        if self.rnnoise_radio:
-            self.audio.set_noise_suppression_enabled(bool(self.rnnoise_radio.isChecked()))
-        if self.echo_radio:
-            self.audio.set_echo_enabled(bool(self.echo_radio.isChecked()))
-
+        self._load_settings_into_ui()
+        self._apply_ui_to_engine()
         self._update_value_labels()
         self._sync_feature_controls()
         self.widget.update()  # Force UI refresh
@@ -217,48 +216,75 @@ class VolumeControlPanel(QtCore.QObject):
         # Show current numeric values directly in the labels above each slider.
         if self.master_label:
             self.master_label.setText(f"Master Volume: {self.master_slider.value()}")
+        if self.output_label and self.output_slider:
+            self.output_label.setText(f"Output Volume: {self.output_slider.value()}")
         if self.gain_label:
             self.gain_label.setText(f"Gain (dB): {self.gain_slider.value()}")
         if self.input_label and self.input_slider:
             self.input_label.setText(f"Input Sensitivity: {self.input_slider.value()}")
         if self.ns_label:
             self.ns_label.setText(f"Noise Suppression: {self.ns_slider.value()}")
+        if self.aec_delay_label and self.aec_delay_slider:
+            self.aec_delay_label.setText(f"AEC Delay (ms): {self.aec_delay_slider.value()}")
 
     def _on_master_changed(self, v: int):
         self.audio.set_master_volume(int(v))
+        self.settings.setValue("audio/masterVolume", int(v))
+        self._update_value_labels()
+
+    def _on_output_changed(self, v: int) -> None:
+        self.audio.set_output_volume(int(v))
+        self.settings.setValue("audio/outputVolume", int(v))
         self._update_value_labels()
 
     def _on_gain_changed(self, v: int):
         self.audio.set_gain_db(int(v))
+        self.settings.setValue("audio/txGainDb", int(v))
         self._update_value_labels()
 
     def _on_ns_changed(self, v: int):
         self.audio.set_noise_suppression(int(v))
+        self.settings.setValue("audio/noiseSuppAmount", int(v))
+        self._update_value_labels()
+
+    def _on_aec_delay_changed(self, v: int) -> None:
+        self.audio.set_aec_stream_delay_ms(int(v))
+        self.settings.setValue("audio/aecDelayMs", int(v))
         self._update_value_labels()
 
     def _on_input_changed(self, v: int):
         self.audio.set_mic_sensitivity(int(v))
+        self.settings.setValue("audio/micSensitivity", int(v))
         self._update_value_labels()
 
     def _sync_feature_controls(self) -> None:
-        autogain_on = bool(self.autogain_radio and self.autogain_radio.isChecked())
-        rnnoise_on = bool(self.rnnoise_radio and self.rnnoise_radio.isChecked())
+        autogain_on = bool(self.autogain_checkbox and self.autogain_checkbox.isChecked())
+        rnnoise_on = bool(self.rnnoise_checkbox and self.rnnoise_checkbox.isChecked())
+        echo_on = bool(self.echo_checkbox and self.echo_checkbox.isChecked())
 
         if self.gain_slider:
             self.gain_slider.setEnabled(not autogain_on)
         if self.ns_slider:
             self.ns_slider.setEnabled(not rnnoise_on)
+        if self.aec_delay_slider:
+            self.aec_delay_slider.setEnabled(echo_on)
+        if self.aec_delay_label:
+            self.aec_delay_label.setEnabled(echo_on)
 
     def _on_autogain_toggled(self, checked: bool) -> None:
         self.audio.set_auto_gain(bool(checked))
+        self.settings.setValue("audio/autoGainEnabled", bool(checked))
         self._sync_feature_controls()
 
     def _on_rnnoise_toggled(self, checked: bool) -> None:
         self.audio.set_noise_suppression_enabled(bool(checked))
+        self.settings.setValue("audio/noiseSuppEnabled", bool(checked))
         self._sync_feature_controls()
 
     def _on_echo_toggled(self, checked: bool) -> None:
         self.audio.set_echo_enabled(bool(checked))
+        self.settings.setValue("audio/echoEnabled", bool(checked))
+        self._sync_feature_controls()
 
     def _test_mic(self):
         level = self.audio.test_microphone_level(0.8)
@@ -266,13 +292,58 @@ class VolumeControlPanel(QtCore.QObject):
         self.test_status.setText(f"Mic level: {level}%")
 
     def _reset_defaults(self):
-        self.master_slider.setValue(100)
-        self.gain_slider.setValue(0)
-        if self.input_slider:
-            self.input_slider.setValue(45)
-        self.ns_slider.setValue(65)
+        self.settings.setValue("audio/masterVolume", 100)
+        self.settings.setValue("audio/outputVolume", 100)
+        self.settings.setValue("audio/txGainDb", 0)
+        self.settings.setValue("audio/micSensitivity", 45)
+        self.settings.setValue("audio/noiseSuppAmount", 65)
+        self.settings.setValue("audio/aecDelayMs", 180)
+        self.settings.setValue("audio/autoGainEnabled", False)
+        self.settings.setValue("audio/noiseSuppEnabled", False)
+        self.settings.setValue("audio/echoEnabled", False)
+        self._load_settings_into_ui()
+        self._apply_ui_to_engine()
         self._update_value_labels()
+        self._sync_feature_controls()
         self.setMicLevel(self.audio.capture_level)
+
+    def _load_settings_into_ui(self) -> None:
+        def _set(widget, value):
+            if not widget:
+                return
+            widget.blockSignals(True)
+            try:
+                if isinstance(widget, QtWidgets.QAbstractButton):
+                    widget.setChecked(bool(value))
+                elif isinstance(widget, QtWidgets.QSlider):
+                    widget.setValue(int(value))
+            finally:
+                widget.blockSignals(False)
+
+        _set(self.master_slider, self.settings.value("audio/masterVolume", 100, type=int))
+        _set(self.output_slider, self.settings.value("audio/outputVolume", 100, type=int))
+        _set(self.gain_slider, self.settings.value("audio/txGainDb", 0, type=int))
+        _set(self.ns_slider, self.settings.value("audio/noiseSuppAmount", 65, type=int))
+        _set(self.input_slider, self.settings.value("audio/micSensitivity", 45, type=int))
+        _set(self.aec_delay_slider, self.settings.value("audio/aecDelayMs", 180, type=int))
+
+        _set(self.autogain_checkbox, self.settings.value("audio/autoGainEnabled", False, type=bool))
+        _set(self.rnnoise_checkbox, self.settings.value("audio/noiseSuppEnabled", False, type=bool))
+        _set(self.echo_checkbox, self.settings.value("audio/echoEnabled", False, type=bool))
+
+    def _apply_ui_to_engine(self) -> None:
+        self.audio.set_master_volume(int(self.master_slider.value()))
+        if self.output_slider:
+            self.audio.set_output_volume(int(self.output_slider.value()))
+        self.audio.set_gain_db(int(self.gain_slider.value()))
+        self.audio.set_noise_suppression(int(self.ns_slider.value()))
+        if self.input_slider:
+            self.audio.set_mic_sensitivity(int(self.input_slider.value()))
+        if self.aec_delay_slider:
+            self.audio.set_aec_stream_delay_ms(int(self.aec_delay_slider.value()))
+        self.audio.set_auto_gain(bool(self.autogain_checkbox and self.autogain_checkbox.isChecked()))
+        self.audio.set_noise_suppression_enabled(bool(self.rnnoise_checkbox and self.rnnoise_checkbox.isChecked()))
+        self.audio.set_echo_enabled(bool(self.echo_checkbox and self.echo_checkbox.isChecked()))
 
     def setMicLevel(self, level: int):
         if self.mic_bar:
@@ -354,6 +425,40 @@ class SettingsDialog(QtWidgets.QDialog):
 
     def _noop_reconnect(self):
         QtWidgets.QMessageBox.information(self, "Reconnect", "Reconnect not required for LAN mesh.")
+
+
+def apply_saved_audio_settings(audio: PyAudioEngine) -> None:
+    """
+    Apply persisted audio DSP/levels immediately on startup, even before the settings UI is opened.
+    """
+    s = QtCore.QSettings()
+
+    def _ival(key: str, default: int) -> int:
+        try:
+            return int(s.value(key, default))
+        except Exception:
+            return default
+
+    def _bval(key: str, default: bool) -> bool:
+        v = s.value(key, default)
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float)):
+            return bool(v)
+        if isinstance(v, str):
+            return v.strip().lower() in ("1", "true", "yes", "on")
+        return bool(v)
+
+    audio.set_master_volume(_ival("audio/masterVolume", 100))
+    audio.set_output_volume(_ival("audio/outputVolume", 100))
+    audio.set_gain_db(_ival("audio/txGainDb", 0))
+    audio.set_mic_sensitivity(_ival("audio/micSensitivity", 45))
+    audio.set_noise_suppression(_ival("audio/noiseSuppAmount", 65))
+    audio.set_aec_stream_delay_ms(_ival("audio/aecDelayMs", 180))
+
+    audio.set_noise_suppression_enabled(_bval("audio/noiseSuppEnabled", False))
+    audio.set_echo_enabled(_bval("audio/echoEnabled", False))
+    audio.set_auto_gain(_bval("audio/autoGainEnabled", False))
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -689,6 +794,8 @@ def run_app():
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
+    app.setOrganizationName("Nuummite")
+    app.setApplicationName("Nuummite")
 
     dialog = load_ui("Popup_message.ui")
     name_edit = dialog.findChild(QtWidgets.QLineEdit, "nameEdit")
@@ -712,6 +819,7 @@ def run_app():
         sys.exit(1)
 
     audio = PyAudioEngine()
+    apply_saved_audio_settings(audio)
     discovery = PyPeerDiscovery()
     # Derive per-room encryption key so only peers in the same room can decrypt audio
     audio.set_room_secret(room_name)

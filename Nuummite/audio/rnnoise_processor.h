@@ -14,6 +14,7 @@ public:
     ~RnNoiseProcessor();
 
     void process(std::vector<int16_t>& frame);
+    void processBlock(int16_t* samples, int sample_count);
     bool isAvailable() const { return state_ != nullptr; }
 
 private:
