@@ -90,6 +90,7 @@ private:
 
     struct StreamState {
         std::mutex mtx;
+        std::string id;
         std::unique_ptr<OpusCodec> decoder;
         std::deque<std::vector<int16_t>> jitter;
         uint16_t last_seq = 0;
@@ -139,6 +140,7 @@ private:
     std::mutex streams_mutex_;
     std::unordered_map<std::string, std::shared_ptr<StreamState>> streams_;
     std::unordered_set<std::string> hear_targets_;
+    std::vector<std::shared_ptr<StreamState>> stream_snapshot_;
 
     std::deque<std::vector<int16_t>> capture_frames_;
     std::mutex capture_mutex_;

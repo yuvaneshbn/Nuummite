@@ -428,6 +428,7 @@ AudioEngine::AudioEngine()
     mix_frame_.assign(FRAME, 0);
     playback_fifo_.assign(static_cast<size_t>(FRAME) * 8u, 0); // ~160ms FIFO
     fifo_read_ = fifo_write_ = fifo_size_ = 0;
+    stream_snapshot_.reserve(128);
 
     
  
@@ -539,6 +540,12 @@ std::shared_ptr<AudioEngine::StreamState> AudioEngine::getOrCreateStream(const s
     auto& st = streams_[id];
     if (!st) {
         st = std::make_shared<StreamState>();
+        st->id = id;
+    }
+    if (streams_.size() > stream_snapshot_.capacity()) {
+        // Grow snapshot capacity outside the audio callback to avoid allocations in renderOutput().
+        const size_t want = std::max(stream_snapshot_.capacity() * 2, streams_.size());
+        stream_snapshot_.reserve(want);
     }
     return st;
 }
@@ -865,22 +872,19 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
             return;
         }
 
-        const auto hear_targets = hear_targets_;
-        std::vector<std::pair<std::string, std::shared_ptr<StreamState>>> snapshot;
-        snapshot.reserve(streams_.size());
+        stream_snapshot_.clear();
         for (const auto& [id, st] : streams_) {
-            snapshot.emplace_back(id, st);
-        }
-        streams_lock.unlock();
-
-        for (auto& [id, st] : snapshot) {
             if (!st) {
                 continue;
             }
-            if (!hear_targets.count(id)) {
+            if (!hear_targets_.empty() && !hear_targets_.count(id)) {
                 continue;
             }
+            stream_snapshot_.push_back(st);
+        }
+        streams_lock.unlock();
 
+        for (auto& st : stream_snapshot_) {
             std::unique_lock<std::mutex> st_lock(st->mtx, std::try_to_lock);
             if (!st_lock.owns_lock() || st->jitter.empty()) {
                 continue;
@@ -924,7 +928,7 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
             last_debug = now;
             if (audio_debug_) {
                 std::cout << "[AUDIO] active_clients=" << active << " pre_limiter_peak=" << peak << " queues=[";
-                for (const auto& [id, st] : snapshot) {
+                for (const auto& st : stream_snapshot_) {
                     if (!st) {
                         continue;
                     }
