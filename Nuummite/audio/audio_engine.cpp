@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cctype>
+#include <array>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -401,6 +402,7 @@ AudioEngine::AudioEngine()
     const int buf_size = 65536;
     setsockopt(recv_sock_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(recv_sock_, IP_TOS_EF);
+    socket_utils::set_non_blocking(recv_sock_, true);
 
     sockaddr_in bind_addr{};
     bind_addr.sin_family = AF_INET;
@@ -498,12 +500,13 @@ void AudioEngine::setNoiseSuppressionEnabled(bool enabled) {
 }
 
 void AudioEngine::setAutoGain(bool enabled) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    auto_gain_ = enabled;
-
-    std::unique_lock<std::mutex> echo_lock(echo_mutex_, std::try_to_lock);
-    if (echo_lock.owns_lock() && aec_) {
-        aec_->setAutoGainEnabled(auto_gain_);
+    {
+        std::lock_guard<std::mutex> lock(config_mutex_);
+        auto_gain_ = enabled;
+    }
+    std::lock_guard<std::mutex> lock(echo_mutex_);
+    if (aec_) {
+        aec_->setAutoGainEnabled(enabled);
     }
 }
 
@@ -518,8 +521,8 @@ void AudioEngine::setEchoEnabled(bool enabled) {
 void AudioEngine::setAecStreamDelayMs(int delay_ms) {
     delay_ms = std::clamp(delay_ms, 0, 500);
     aec_stream_delay_ms_.store(delay_ms);
-    std::unique_lock<std::mutex> lock(echo_mutex_, std::try_to_lock);
-    if (lock.owns_lock() && aec_) {
+    std::lock_guard<std::mutex> lock(echo_mutex_);
+    if (aec_) {
         aec_->set_stream_delay_ms(delay_ms);
     }
 }
@@ -710,11 +713,21 @@ void AudioEngine::listenLoop() {
         std::vector<uint8_t> buffer(4096);
         sockaddr_in src{};
         int src_len = sizeof(src);
-        const int recv_len = recvfrom(recv_sock_, reinterpret_cast<char*>(buffer.data()), static_cast<int>(buffer.size()), 0, reinterpret_cast<sockaddr*>(&src), &src_len);
-        if (recv_len <= 0) {
+        const int recv_len = recvfrom(recv_sock_, reinterpret_cast<char*>(buffer.data()), static_cast<int>(buffer.size()), 0,
+                                      reinterpret_cast<sockaddr*>(&src), &src_len);
+        if (recv_len == SOCKET_ERROR) {
+            const int err = WSAGetLastError();
+            if (err == WSAEWOULDBLOCK) {
+                Sleep(1);
+                continue;
+            }
             if (!listen_running_.load()) {
                 break;
             }
+            Sleep(1);
+            continue;
+        }
+        if (recv_len <= 0) {
             continue;
         }
         buffer.resize(static_cast<size_t>(recv_len));
@@ -1029,6 +1042,7 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
     const int buf_size = 65536;
     setsockopt(send_sock_, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(send_sock_, IP_TOS_EF);
+    socket_utils::set_non_blocking(send_sock_, true);
 
     running_.store(true);
     send_thread_ = std::thread(&AudioEngine::sendLoop, this);
@@ -1070,6 +1084,7 @@ void AudioEngine::sendLoop() {
         bool rnnoise_local = false;
         float tx_gain_db_local = 0.0f;
         int mic_sens_local = 50;
+        int ns_amount_local = 0;
         {
             std::lock_guard<std::mutex> lock(config_mutex_);
             tx_muted_local = tx_muted_;
@@ -1077,6 +1092,7 @@ void AudioEngine::sendLoop() {
             rnnoise_local = noise_suppression_enabled_;
             tx_gain_db_local = tx_gain_db_;
             mic_sens_local = mic_sensitivity_;
+            ns_amount_local = noise_suppression_;
         }
 
         if (!pure_opus_) {
@@ -1084,17 +1100,25 @@ void AudioEngine::sendLoop() {
             bool voice_detected = false;
             const bool want_apm = !tx_muted_local && aec_ && aec_->available() && (echo_enabled_.load() || autogain_local);
             if (want_apm) {
-                std::unique_lock<std::mutex> lock(echo_mutex_, std::try_to_lock);
-                if (lock.owns_lock()) {
+                if (echo_enabled_.load()) {
+                    std::lock_guard<std::mutex> lock(echo_mutex_);
                     aec_->set_stream_delay_ms(aec_stream_delay_ms_.load());
                     aec_->process_capture(frame);  // runs AEC when enabled, runs AGC when enabled
                     voice_detected = aec_->hasVoice();
                 } else {
-                    int peak = 0;
-                    for (const auto sample : frame) {
-                        peak = std::max(peak, std::abs(static_cast<int>(sample)));
+                    // Autogain-only mode: avoid blocking the audio thread if the output callback is inside APM.
+                    std::unique_lock<std::mutex> lock(echo_mutex_, std::try_to_lock);
+                    if (lock.owns_lock()) {
+                        aec_->set_stream_delay_ms(aec_stream_delay_ms_.load());
+                        aec_->process_capture(frame);
+                        voice_detected = aec_->hasVoice();
+                    } else {
+                        int peak = 0;
+                        for (const auto sample : frame) {
+                            peak = std::max(peak, std::abs(static_cast<int>(sample)));
+                        }
+                        voice_detected = peak > 400;
                     }
-                    voice_detected = peak > 400;
                 }
             } else {
                 int peak = 0;
@@ -1106,10 +1130,28 @@ void AudioEngine::sendLoop() {
 
             // === 2. RNNoise (noise suppression) ===
             if (!tx_muted_local && rnnoise_local && rnnoise_ && rnnoise_->isAvailable() && frame.size() == FRAME) {
-                // Process 20ms frame in two 10ms chunks (480 samples at 48kHz).
-                const int blockSize = FRAME / 2; // 480
-                rnnoise_->processBlock(frame.data(), blockSize);
-                rnnoise_->processBlock(frame.data() + blockSize, blockSize);
+                const float amount = std::clamp(static_cast<float>(ns_amount_local) / 100.0f, 0.0f, 1.0f);
+                if (amount > 0.0001f) {
+                    // Process 20ms frame in two 10ms chunks (480 samples at 48kHz).
+                    constexpr int blockSize = FRAME / 2; // 480
+                    for (int off = 0; off < FRAME; off += blockSize) {
+                        std::array<int16_t, blockSize> orig{};
+                        std::array<int16_t, blockSize> denoised{};
+                        std::copy_n(frame.data() + off, blockSize, orig.begin());
+                        denoised = orig;
+                        rnnoise_->processBlock(denoised.data(), blockSize);
+                        if (amount >= 0.999f) {
+                            std::copy_n(denoised.begin(), blockSize, frame.begin() + off);
+                        } else {
+                            for (int i = 0; i < blockSize; ++i) {
+                                const float mixed = (1.0f - amount) * static_cast<float>(orig[i]) +
+                                                    amount * static_cast<float>(denoised[i]);
+                                frame[static_cast<size_t>(off + i)] =
+                                    static_cast<int16_t>(std::clamp(mixed, -32768.0f, 32767.0f));
+                            }
+                        }
+                    }
+                }
             }
 
             // === 3. Transmit gain ===

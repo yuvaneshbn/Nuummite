@@ -265,7 +265,9 @@ class VolumeControlPanel(QtCore.QObject):
         if self.gain_slider:
             self.gain_slider.setEnabled(not autogain_on)
         if self.ns_slider:
-            self.ns_slider.setEnabled(not rnnoise_on)
+            self.ns_slider.setEnabled(rnnoise_on)
+        if self.ns_label:
+            self.ns_label.setEnabled(rnnoise_on)
         if self.aec_delay_slider:
             self.aec_delay_slider.setEnabled(echo_on)
         if self.aec_delay_label:

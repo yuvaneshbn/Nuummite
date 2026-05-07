@@ -12,4 +12,12 @@ void set_dscp(SOCKET sock, int ip_tos) {
     setsockopt(sock, IPPROTO_IP, IP_TOS, reinterpret_cast<const char*>(&tos), sizeof(tos));
 }
 
+bool set_non_blocking(SOCKET sock, bool enabled) {
+    if (sock == INVALID_SOCKET) {
+        return false;
+    }
+    u_long mode = enabled ? 1UL : 0UL;
+    return ioctlsocket(sock, FIONBIO, &mode) == 0;
+}
+
 }
