@@ -74,18 +74,51 @@ void WebRtcApm::set_stream_delay_ms(int delay_ms) {
 
 bool WebRtcApm::process_render(const int16_t* frame, int samples) {
     if (!available()) return false;
-    if (impl_->reverse_output.size() < static_cast<size_t>(samples)) {
-        impl_->reverse_output.resize(static_cast<size_t>(samples));
+    if (!frame || samples <= 0) {
+        return false;
     }
-    int err = impl_->apm->ProcessReverseStream(frame, impl_->reverse_config, impl_->reverse_config, impl_->reverse_output.data());
-    return err == webrtc::AudioProcessing::kNoError;
+
+    // WebRTC APM expects ~10ms chunks. For 48 kHz mono, that's 480 samples.
+    constexpr int kChunk = 480;
+    if (samples % kChunk != 0) {
+        return false;
+    }
+
+    if (impl_->reverse_output.size() < static_cast<size_t>(kChunk)) {
+        impl_->reverse_output.resize(static_cast<size_t>(kChunk));
+    }
+
+    for (int off = 0; off < samples; off += kChunk) {
+        const int err = impl_->apm->ProcessReverseStream(frame + off, impl_->reverse_config, impl_->reverse_config, impl_->reverse_output.data());
+        if (err != webrtc::AudioProcessing::kNoError) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
-    if (!available() || frame.size() != 960) return false;
-    impl_->apm->set_stream_delay_ms(impl_->stream_delay_ms);  // critical - call every frame
-    int err = impl_->apm->ProcessStream(frame.data(), impl_->stream_config, impl_->stream_config, frame.data());
-    if (err == webrtc::AudioProcessing::kNoError) {
+    if (!available() || frame.empty()) {
+        return false;
+    }
+    // WebRTC APM expects ~10ms chunks. For 48 kHz mono, that's 480 samples.
+    constexpr int kChunk = 480;
+    if (frame.size() % kChunk != 0) {
+        return false;
+    }
+
+    bool ok = true;
+    for (size_t off = 0; off < frame.size(); off += kChunk) {
+        impl_->apm->set_stream_delay_ms(impl_->stream_delay_ms);  // critical - call every chunk
+        const int err = impl_->apm->ProcessStream(frame.data() + off, impl_->stream_config, impl_->stream_config, frame.data() + off);
+        if (err != webrtc::AudioProcessing::kNoError) {
+            ok = false;
+            break;
+        }
+    }
+
+    if (ok) {
         const auto stats = impl_->apm->GetStatistics();
         impl_->has_voice = stats.voice_detected.value_or(false);
         return true;

@@ -50,6 +50,8 @@ setup(
     version="0.1.0",
     packages=["python"],
     package_dir={"python": "python"},
-    ext_modules=cythonize([ext], language_level=3),
+    # Generate C++ into a build directory (keeps the repo clean) and always
+    # cythonize from the .pyx so changes don't depend on checked-in .cpp files.
+    ext_modules=cythonize([ext], language_level=3, build_dir=str(Path("build") / "cython"), force=True),
     zip_safe=False,
 )

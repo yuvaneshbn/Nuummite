@@ -365,14 +365,21 @@ AudioEngine::AudioEngine()
             free(value);
         }
     }
-
-    if (!pure_opus_) {
-        rnnoise_ = std::make_unique<RnNoiseProcessor>();
-        aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
-        if (aec_) {
-            aec_->setEchoEnabled(false);   // start disabled - enable only after testing clean path
-            aec_->set_stream_delay_ms(180);
+    {
+        char* value = nullptr;
+        size_t len = 0;
+        if (_dupenv_s(&value, &len, "NUUMMITE_PURE_OPUS") == 0 && value) {
+            pure_opus_ = (*value != '\0' && *value != '0');
+            free(value);
         }
+    }
+
+    rnnoise_ = std::make_unique<RnNoiseProcessor>();
+    aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
+    if (aec_) {
+        aec_->setEchoEnabled(false);
+        aec_->setAutoGainEnabled(false);
+        aec_->set_stream_delay_ms(180);
     }
     std::string pa_error;
     auto& pa = portAudioApi();
@@ -467,7 +474,7 @@ void AudioEngine::setMasterVolume(int value) {
 
 void AudioEngine::setOutputVolume(int value) {
     std::lock_guard<std::mutex> lock(config_mutex_);
-    output_volume_ = std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.0f);
+    output_volume_ = std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.5f);
 }
 
 void AudioEngine::setGainDb(int value) {
@@ -487,34 +494,32 @@ void AudioEngine::setNoiseSuppression(int value) {
 
 void AudioEngine::setNoiseSuppressionEnabled(bool enabled) {
     std::lock_guard<std::mutex> lock(config_mutex_);
-    noise_suppression_enabled_ = pure_opus_ ? false : enabled;
+    noise_suppression_enabled_ = enabled;
 }
 
 void AudioEngine::setAutoGain(bool enabled) {
     std::lock_guard<std::mutex> lock(config_mutex_);
-    auto_gain_ = pure_opus_ ? false : enabled;
+    auto_gain_ = enabled;
 
-    if (aec_) {
+    std::unique_lock<std::mutex> echo_lock(echo_mutex_, std::try_to_lock);
+    if (echo_lock.owns_lock() && aec_) {
         aec_->setAutoGainEnabled(auto_gain_);
     }
 }
 
 void AudioEngine::setEchoEnabled(bool enabled) {
-    (void)enabled;
     std::lock_guard<std::mutex> lock(echo_mutex_);
-    echo_enabled_.store(false);
+    echo_enabled_.store(enabled);
     if (aec_) {
-        aec_->setEchoEnabled(false);
+        aec_->setEchoEnabled(enabled);
     }
 }
 
 void AudioEngine::setAecStreamDelayMs(int delay_ms) {
-    if (pure_opus_) {
-        return;
-    }
     delay_ms = std::clamp(delay_ms, 0, 500);
     aec_stream_delay_ms_.store(delay_ms);
-    if (aec_) {
+    std::unique_lock<std::mutex> lock(echo_mutex_, std::try_to_lock);
+    if (lock.owns_lock() && aec_) {
         aec_->set_stream_delay_ms(delay_ms);
     }
 }
@@ -1079,9 +1084,18 @@ void AudioEngine::sendLoop() {
             bool voice_detected = false;
             const bool want_apm = !tx_muted_local && aec_ && aec_->available() && (echo_enabled_.load() || autogain_local);
             if (want_apm) {
-                aec_->set_stream_delay_ms(aec_stream_delay_ms_.load());
-                aec_->process_capture(frame);  // runs AEC when enabled, runs AGC when enabled
-                voice_detected = aec_->hasVoice();
+                std::unique_lock<std::mutex> lock(echo_mutex_, std::try_to_lock);
+                if (lock.owns_lock()) {
+                    aec_->set_stream_delay_ms(aec_stream_delay_ms_.load());
+                    aec_->process_capture(frame);  // runs AEC when enabled, runs AGC when enabled
+                    voice_detected = aec_->hasVoice();
+                } else {
+                    int peak = 0;
+                    for (const auto sample : frame) {
+                        peak = std::max(peak, std::abs(static_cast<int>(sample)));
+                    }
+                    voice_detected = peak > 400;
+                }
             } else {
                 int peak = 0;
                 for (const auto sample : frame) {
@@ -1091,8 +1105,11 @@ void AudioEngine::sendLoop() {
             }
 
             // === 2. RNNoise (noise suppression) ===
-            if (!tx_muted_local && rnnoise_local && rnnoise_ && rnnoise_->isAvailable()) {
-                rnnoise_->process(frame);
+            if (!tx_muted_local && rnnoise_local && rnnoise_ && rnnoise_->isAvailable() && frame.size() == FRAME) {
+                // Process 20ms frame in two 10ms chunks (480 samples at 48kHz).
+                const int blockSize = FRAME / 2; // 480
+                rnnoise_->processBlock(frame.data(), blockSize);
+                rnnoise_->processBlock(frame.data() + blockSize, blockSize);
             }
 
             // === 3. Transmit gain ===
