@@ -13,6 +13,7 @@
 - Decode errors/drops: count/print failures from Opus decode or dropped out-of-order packets.
 - Mixed peak vs. client count: peak should not grow linearly with N; limiter/soft-clip should keep it bounded.
 - UDP socket behavior: with non-blocking sockets enabled, occasional send drops (WOULDBLOCK) are acceptable; sustained drops indicate CPU/network overload.
+- Windows UDP: we disable `SIO_UDP_CONNRESET` so stray ICMP "Port Unreachable" doesn’t break `recvfrom()` with `WSAECONNRESET`.
 
 ### Thresholds (suggested)
 - Queue depth > 5 for multiple clients: investigate contention or scheduling.

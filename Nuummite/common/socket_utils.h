@@ -7,6 +7,7 @@ namespace socket_utils {
 
 void set_dscp(SOCKET sock, int ip_tos);
 bool set_non_blocking(SOCKET sock, bool enabled);
+bool disable_udp_connreset(SOCKET sock);
 
 }
 

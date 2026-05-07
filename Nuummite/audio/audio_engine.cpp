@@ -403,6 +403,7 @@ AudioEngine::AudioEngine()
     setsockopt(recv_sock_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(recv_sock_, IP_TOS_EF);
     socket_utils::set_non_blocking(recv_sock_, true);
+    socket_utils::disable_udp_connreset(recv_sock_);
 
     sockaddr_in bind_addr{};
     bind_addr.sin_family = AF_INET;
@@ -719,6 +720,11 @@ void AudioEngine::listenLoop() {
         if (recv_len == SOCKET_ERROR) {
             const int err = WSAGetLastError();
             if (err == WSAEWOULDBLOCK) {
+                Sleep(1);
+                continue;
+            }
+            if (err == WSAECONNRESET) {
+                // Can occur on Windows UDP after ICMP "Port Unreachable" if SIO_UDP_CONNRESET is not disabled.
                 Sleep(1);
                 continue;
             }
@@ -1044,6 +1050,7 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
     setsockopt(send_sock_, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(send_sock_, IP_TOS_EF);
     socket_utils::set_non_blocking(send_sock_, true);
+    socket_utils::disable_udp_connreset(send_sock_);
 
     running_.store(true);
     send_thread_ = std::thread(&AudioEngine::sendLoop, this);
