@@ -51,7 +51,7 @@ Python dependencies (installed automatically via `pip install -e .`):
 
 ---
 
-## Install & run from source (recommended)
+## Quick start (run from source)
 ```powershell
 git clone https://github.com/yuvaneshbn/Nuummite.git
 cd Nuummite
@@ -80,30 +80,54 @@ python -m pip install -e . --no-deps   # re-cythonizes and rebuilds python/audio
 
 # Run with the fresh extension
 python -m python.main
+python setup.py build_ext --inplace --force
 ```
 If you only change Python UI code, you can just run `python -m python.main` without rebuilding.
 
 > Tip: On a machine that already has Cython and setuptools in the venv, you can skip the explicit install lines and just run `python -m pip install -e . --no-deps`.
 
-python setup.py build_ext --inplace --force
 ---
 
-## Package with PyInstaller
-With the same venv active:
+## Package as an `.exe` (PyInstaller)
+You have two supported packaging paths:
+
+### Option A (recommended): build via `Nuummite.spec`
+This bundles the required third-party DLLs and the `.ui` files deterministically.
+
 ```powershell
+.\.venv\Scripts\activate
 pip install pyinstaller
-pyinstaller --clean --onedir --windowed --icon Nuummite/technical-support.ico --name "Nuummite-Voice" python/main.py
-# One-file (more AV false-positives possible):
-# pyinstaller --clean --onefile --windowed --noupx --icon Nuummite/technical-support.ico --name "Nuummite-Voice" python/main.py
+pyinstaller --clean -y Nuummite.spec
 ```
-Output: `dist/Nuummite-Voice/` (onedir) or `dist/Nuummite-Voice.exe` (onefile).  
-Keep `technical-support.ico` beside the exe for correct icon.
+
+Output: `dist/Nuummite/Nuummite.exe` (one-folder build) and `dist/Nuummite/_internal/` (all runtime files).
+
+To distribute: zip the whole `dist/Nuummite/` folder (the exe needs `_internal`).
+
+### Option B: build directly from `python/main.py`
+This is useful for quick local builds, but you may need to copy DLLs manually if your environment differs.
+
+```powershell
+.\.venv\Scripts\activate
+pip install pyinstaller
+pyinstaller --clean --onedir --windowed --icon Nuummite/technical-support.ico --name "Nuummite" python/main.py
+# One-file (more AV false-positives possible):
+# pyinstaller --clean --onefile --windowed --noupx --icon Nuummite/technical-support.ico --name "Nuummite" python/main.py
+```
+Output:
+- one-folder: `dist/Nuummite/Nuummite.exe` + `dist/Nuummite/_internal/`
+- one-file: `dist/Nuummite.exe`
 
 If the packaged exe fails to start due to missing runtime DLLs (notably libsodium, which is loaded dynamically), copy the required DLLs into the onedir `_internal` folder:
 ```powershell
 python scripts/copy_required_dlls.py --target dist/Nuummite/_internal
 ```
-If you build via `Nuummite.spec`, the required third-party DLLs and `.ui` files are bundled automatically.
+
+### Troubleshooting packaged builds
+- If the window never appears, try running from a console and check the exit code.
+- Confirm you ship the whole folder for one-folder builds: `Nuummite.exe` must sit beside `_internal/`.
+- If you see missing `VCRUNTIME*.dll` on a target PC, install the **Microsoft Visual C++ Redistributable** (x64).
+- If audio devices do not enumerate, ensure your PortAudio DLL is present and 64-bit.
 
 ---
 
@@ -153,6 +177,7 @@ PY
 - Noise suppression defaults to 70%, DTX enabled; tweak in Settings for noisy/quiet mics.
 - Audio flows only when at least one target is active (broadcast or per-participant talk).
 - If you hear nothing: confirm device selection, Windows mic permission, and firewall rules.
+- Two PCs on the same LAN should both allow UDP on private networks for discovery/audio.
 
 ---
 
@@ -160,12 +185,6 @@ PY
 - UDP **50000** : peer discovery (broadcast)
 - UDP **50002** : audio (per peer)
 Allow both on private networks in Windows Firewall.
-
----
-
-## Known limitations / TODO
-- Echo cancellation stubbed (AEC disabled) — use headphones.
-- VAD is basic (Opus DTX + gate); WebRTC VAD is a potential upgrade.
 
 ---
 
