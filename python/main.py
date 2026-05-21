@@ -439,17 +439,78 @@ class SettingsDialog(QtWidgets.QDialog):
         self.input_combo.blockSignals(False)
         self.output_combo.blockSignals(False)
 
+    def show_error(self, title: str, message: str, details: str | None = None) -> None:
+        box = QtWidgets.QMessageBox(self)
+        box.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+        box.setWindowTitle(title)
+        box.setText(message)
+        if details:
+            box.setDetailedText(details)
+        box.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
+        box.exec()
+
+    def _restore_combo_to_device(self, combo: QtWidgets.QComboBox, device_index: int) -> None:
+        combo.blockSignals(True)
+        try:
+            idx = combo.findData(device_index)
+            if idx >= 0:
+                combo.setCurrentIndex(idx)
+        finally:
+            combo.blockSignals(False)
+
     def _input_changed(self, _):
         data = self.input_combo.currentData()
         if data is not None:
-            self.audio.set_input_device(int(data))
-            self.settings.setValue("audio/inputDeviceIndex", int(data))
+            requested = int(data)
+            previous = int(self.audio.input_device_index)
+            try:
+                ok = bool(self.audio.set_input_device(requested))
+            except Exception as e:
+                self.show_error(
+                    "Input device error",
+                    "Something went wrong while applying the selected input device.",
+                    f"Device: {self.input_combo.currentText()}\nIndex: {requested}\n\n{e}",
+                )
+                self._restore_combo_to_device(self.input_combo, previous)
+                return
+
+            if not ok:
+                self.show_error(
+                    "Input device error",
+                    "Failed to open the selected input device.",
+                    f"Device: {self.input_combo.currentText()}\nIndex: {requested}",
+                )
+                self._restore_combo_to_device(self.input_combo, previous)
+                return
+
+            self.settings.setValue("audio/inputDeviceIndex", requested)
 
     def _output_changed(self, _):
         data = self.output_combo.currentData()
         if data is not None:
-            self.audio.set_output_device(int(data))
-            self.settings.setValue("audio/outputDeviceIndex", int(data))
+            requested = int(data)
+            previous = int(self.audio.output_device_index)
+            try:
+                ok = bool(self.audio.set_output_device(requested))
+            except Exception as e:
+                self.show_error(
+                    "Output device error",
+                    "Something went wrong while applying the selected output device.",
+                    f"Device: {self.output_combo.currentText()}\nIndex: {requested}\n\n{e}",
+                )
+                self._restore_combo_to_device(self.output_combo, previous)
+                return
+
+            if not ok:
+                self.show_error(
+                    "Output device error",
+                    "Failed to open the selected output device.",
+                    f"Device: {self.output_combo.currentText()}\nIndex: {requested}",
+                )
+                self._restore_combo_to_device(self.output_combo, previous)
+                return
+
+            self.settings.setValue("audio/outputDeviceIndex", requested)
 
     def _noop_reconnect(self):
         QtWidgets.QMessageBox.information(self, "Reconnect", "Reconnect not required for LAN mesh.")
