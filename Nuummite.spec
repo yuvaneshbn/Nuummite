@@ -4,20 +4,8 @@
 a = Analysis(
     ['python\\main.py'],
     pathex=[],
-    binaries=[
-        ('third_party\\opus\\opus.dll', '.'),
-        ('third_party\\rnnoise\\rnnoise.dll', '.'),
-        ('third_party\\libportaudio\\libportaudio.dll', '.'),
-        ('third_party\\webrtc_audio_processing\\bin\\*.dll', '.'),
-        ('third_party\\libsodium\\libsodium.dll', '.'),
-        ('third_party\\libsodium\\bin\\libsodium-26.dll', '.'),
-        ('third_party\\libsodium\\bin\\libgcc_s_seh-1.dll', '.'),
-        ('third_party\\libsodium\\bin\\libwinpthread-1.dll', '.'),
-    ],
-    datas=[
-        ('Nuummite\\ui\\*.ui', 'Nuummite\\ui'),
-        ('Nuummite\\technical-support.ico', 'Nuummite'),
-    ],
+    binaries=[],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
