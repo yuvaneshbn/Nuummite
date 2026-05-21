@@ -32,6 +32,21 @@ def _copy_file(src: Path, dst_dir: Path, *, force: bool, dry_run: bool) -> str:
     return f"COPY  {src} -> {dst}"
 
 
+def _copy_tree(src_dir: Path, dst_dir: Path, *, force: bool, dry_run: bool) -> str:
+    if not src_dir.exists():
+        return f"MISS  {src_dir}"
+
+    if dry_run:
+        return f"DRY   {src_dir} -> {dst_dir}"
+
+    dst_dir.parent.mkdir(parents=True, exist_ok=True)
+    if dst_dir.exists() and force:
+        shutil.rmtree(dst_dir)
+
+    shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
+    return f"COPY  {src_dir} -> {dst_dir}"
+
+
 def _expand_webrtc_bin(root: Path) -> list[Path]:
     bin_dir = root / "third_party" / "webrtc_audio_processing" / "bin"
     if not bin_dir.exists():
@@ -97,6 +112,8 @@ def main(argv: list[str]) -> int:
     target = (root / target) if not target.is_absolute() else target
 
     items = _default_items(root)
+    ui_src = root / "Nuummite" / "ui"
+    ui_dst = target / "Nuummite" / "ui"
 
     missing: list[Path] = []
     did_anything = False
@@ -117,6 +134,13 @@ def main(argv: list[str]) -> int:
             msg = _copy_file(src, target, force=args.force, dry_run=args.dry_run)
             did_anything = did_anything or msg.startswith(("COPY", "DRY"))
             print(msg)
+
+    print("\n[ui]")
+    msg = _copy_tree(ui_src, ui_dst, force=args.force, dry_run=args.dry_run)
+    if msg.startswith("MISS"):
+        missing.append(ui_src)
+    did_anything = did_anything or msg.startswith(("COPY", "DRY"))
+    print(msg)
 
     if missing:
         print("\nMissing files (not copied):")
