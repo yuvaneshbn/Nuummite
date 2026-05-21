@@ -264,6 +264,15 @@ class VolumeControlPanel(QtCore.QObject):
 
         if self.gain_slider:
             self.gain_slider.setEnabled(not autogain_on)
+            self.gain_slider.setToolTip(
+                "Disabled because Auto Gain is enabled."
+                if autogain_on
+                else "Manual transmit gain."
+            )
+        if self.gain_label:
+            self.gain_label.setEnabled(not autogain_on)
+            base = f"Gain (dB): {self.gain_slider.value() if self.gain_slider else ''}".strip()
+            self.gain_label.setText(base + (" (Auto Gain enabled)" if autogain_on else ""))
         if self.ns_slider:
             self.ns_slider.setEnabled(rnnoise_on)
         if self.ns_label:
@@ -358,10 +367,16 @@ class SettingsDialog(QtWidgets.QDialog):
         super().__init__(parent)
         self.audio = audio
         self.server_ip = server_ip
-        self.form = load_ui("settings_dialog.ui", self)
+        self.settings = QtCore.QSettings()
+        self.form = load_ui("settings_dialog.ui")
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.form)
+
+        scroll = QtWidgets.QScrollArea(self)
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
+        scroll.setWidget(self.form)
+        layout.addWidget(scroll)
 
         self.input_combo = self.form.findChild(QtWidgets.QComboBox, "inputDeviceCombo")
         self.output_combo = self.form.findChild(QtWidgets.QComboBox, "outputDeviceCombo")
@@ -389,12 +404,21 @@ class SettingsDialog(QtWidgets.QDialog):
         self.server_ip_value.setText(server_ip)
 
         self.reconnect_button.clicked.connect(self._noop_reconnect)
-        self.save_button.clicked.connect(self.accept)
+        self.save_button.clicked.connect(self._save_and_close)
         self.cancel_button.clicked.connect(self.reject)
         self.input_combo.currentIndexChanged.connect(self._input_changed)
         self.output_combo.currentIndexChanged.connect(self._output_changed)
 
+        self.setWindowTitle(self.form.windowTitle())
+        self.setSizeGripEnabled(True)
+
+        # Apply persisted device choices (best-effort) before populating UI.
+        self._apply_saved_devices_to_engine()
         self._populate_devices()
+
+        # Ensure initial size can accommodate embedded controls but remains resizable.
+        hint = self.sizeHint()
+        self.resize(max(hint.width(), 480), max(hint.height(), 640))
 
     def _populate_devices(self):
         self.input_combo.blockSignals(True)
@@ -419,14 +443,53 @@ class SettingsDialog(QtWidgets.QDialog):
         data = self.input_combo.currentData()
         if data is not None:
             self.audio.set_input_device(int(data))
+            self.settings.setValue("audio/inputDeviceIndex", int(data))
 
     def _output_changed(self, _):
         data = self.output_combo.currentData()
         if data is not None:
             self.audio.set_output_device(int(data))
+            self.settings.setValue("audio/outputDeviceIndex", int(data))
 
     def _noop_reconnect(self):
         QtWidgets.QMessageBox.information(self, "Reconnect", "Reconnect not required for LAN mesh.")
+
+    def _apply_saved_devices_to_engine(self) -> None:
+        def _ival(key: str):
+            try:
+                v = self.settings.value(key, None)
+                if v is None or v == "":
+                    return None
+                return int(v)
+            except Exception:
+                return None
+
+        in_idx = _ival("audio/inputDeviceIndex")
+        out_idx = _ival("audio/outputDeviceIndex")
+
+        if in_idx is not None:
+            try:
+                self.audio.set_input_device(in_idx)
+            except Exception:
+                pass
+        if out_idx is not None:
+            try:
+                self.audio.set_output_device(out_idx)
+            except Exception:
+                pass
+
+    def _save_and_close(self) -> None:
+        # Advanced audio controls persist on change; ensure device selections are persisted too.
+        if self.input_combo is not None:
+            data = self.input_combo.currentData()
+            if data is not None:
+                self.settings.setValue("audio/inputDeviceIndex", int(data))
+        if self.output_combo is not None:
+            data = self.output_combo.currentData()
+            if data is not None:
+                self.settings.setValue("audio/outputDeviceIndex", int(data))
+        self.settings.sync()
+        self.accept()
 
 
 def apply_saved_audio_settings(audio: PyAudioEngine) -> None:
@@ -451,6 +514,15 @@ def apply_saved_audio_settings(audio: PyAudioEngine) -> None:
             return v.strip().lower() in ("1", "true", "yes", "on")
         return bool(v)
 
+    def _opt_ival(key: str):
+        v = s.value(key, None)
+        if v is None or v == "":
+            return None
+        try:
+            return int(v)
+        except Exception:
+            return None
+
     audio.set_master_volume(_ival("audio/masterVolume", 100))
     audio.set_output_volume(_ival("audio/outputVolume", 100))
     audio.set_gain_db(_ival("audio/txGainDb", 0))
@@ -461,6 +533,19 @@ def apply_saved_audio_settings(audio: PyAudioEngine) -> None:
     audio.set_noise_suppression_enabled(_bval("audio/noiseSuppEnabled", False))
     audio.set_echo_enabled(_bval("audio/echoEnabled", False))
     audio.set_auto_gain(_bval("audio/autoGainEnabled", False))
+
+    in_idx = _opt_ival("audio/inputDeviceIndex")
+    out_idx = _opt_ival("audio/outputDeviceIndex")
+    if in_idx is not None:
+        try:
+            audio.set_input_device(in_idx)
+        except Exception:
+            pass
+    if out_idx is not None:
+        try:
+            audio.set_output_device(out_idx)
+        except Exception:
+            pass
 
 
 class MainWindow(QtWidgets.QMainWindow):
