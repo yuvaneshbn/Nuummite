@@ -5,7 +5,10 @@ a = Analysis(
     ['python\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[
+        ('Nuummite\\ui', 'Nuummite\\ui'),
+        ('Nuummite\\technical-support.ico', 'Nuummite'),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

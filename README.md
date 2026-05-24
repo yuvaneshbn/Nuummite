@@ -140,7 +140,7 @@ Requirements (Windows x64):
 
 Configure + build (recommended: MSVC + Ninja):
 ```powershell
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake -S . -B build-msvc -G Ninja -DCMAKE_PREFIX_PATH=C:\Qt\6.11.1\msvc2022_64 && cmake --build build-msvc --config Release'
+cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake -S . -B build-msvc -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=C:\Qt\6.11.1\msvc2022_64 && cmake --build build-msvc'
 
 # run
 .\build-msvc\bin\voice_client.exe
@@ -148,13 +148,14 @@ cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxilia
 
 Rebuild after code changes (no reconfigure needed):
 ```powershell
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake --build build-msvc --config Release'
+cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake --build build-msvc'
 ```
 
 Notes:
 - The `^` line-continuation character is for `cmd.exe` only. If you paste a `^` command into PowerShell as a single line, it will fail; use the one-liners above.
 - If you delete `build-msvc/`, rerun the full configure command.
 - `voice_client.exe` is made runnable by CMake post-build steps: it copies the required third-party DLLs next to the exe and runs `windeployqt` to deploy Qt runtime + plugins.
+- `windeployqt` is invoked with `--compiler-runtime`, which drops `vc_redist.x64.exe` next to the exe. On a fresh machine you typically must run that installer once (or install “Microsoft Visual C++ Redistributable 2015–2022 (x64)”) to satisfy `MSVCP140.dll` / `VCRUNTIME140*.dll`.
 - If your PortAudio DLL lives elsewhere, override it at configure time with `-DPORTAUDIO_DLL=C:\path\to\libportaudio.dll`.
 
 ---

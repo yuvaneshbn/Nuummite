@@ -173,6 +173,7 @@ if (VOICE_BUILD_QT_CLIENT)
                 COMMAND "${_QT_BIN_DIR}/windeployqt.exe"
                     --no-translations
                     --no-opengl-sw
+                    --compiler-runtime
                     "$<TARGET_FILE:voice_client>"
                 VERBATIM
             )
