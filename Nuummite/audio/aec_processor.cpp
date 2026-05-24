@@ -35,7 +35,8 @@ bool AecProcessor::process_render(const int16_t* frame, int samples) {
 }
 
 bool AecProcessor::process_capture(std::vector<int16_t>& frame) {
-    return apm_ ? apm_->process_capture(frame) : false;
+    // If no APM is present, do nothing but return success (no error)
+    return apm_ ? apm_->process_capture(frame) : true;
 }
 
 bool AecProcessor::hasVoice() const {

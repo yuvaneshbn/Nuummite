@@ -462,7 +462,12 @@ bool AudioEngine::setInputDevice(int device_index) {
         stop();
         return start(destinations);
     }
-    return true;
+    // Best-effort validation so UIs can report failure immediately even when
+    // we're not actively capturing yet.
+    closeInput();
+    const bool ok = openInput();
+    closeInput();
+    return ok;
 }
 
 bool AudioEngine::setOutputDevice(int device_index) {

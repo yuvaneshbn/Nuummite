@@ -18,6 +18,7 @@ python/audio_wrapper.cp*-win_amd64.*.pyd
 
 # Build / packaging
 build/
+build-*/
 dist/
 *.spec
 !Nuummite.spec

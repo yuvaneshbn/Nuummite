@@ -27,7 +27,7 @@ Nuummite/
 third_party/
   libsodium/        # prebuilt libsodium.dll + import lib + headers
   rnnoise/          # rnnoise sources + built DLL
-  libportaudio/     # optional helper, PortAudio DLL typically in msys64
+  libportaudio/     # PortAudio runtime DLL (libportaudio.dll)
 CMakeLists.txt      # C++/Qt build (voice_client)
 setup.py            # Cython extension (python.audio_wrapper)
 CMakePresets.json   # VS/Ninja presets
@@ -42,7 +42,7 @@ CMakePresets.json   # VS/Ninja presets
 - Git
 - Audio DLLs:
   - `third_party/opus/opus.dll` (included)
-  - PortAudio DLL: default `C:/msys64/ucrt64/bin/libportaudio.dll` (adjust PATH if elsewhere)
+  - `third_party/libportaudio/libportaudio.dll` (included)
   - `third_party/libsodium/libsodium.dll` (included)
   - `third_party/rnnoise/rnnoise.dll` (included, 64-bit)
 
@@ -132,23 +132,30 @@ python scripts/copy_required_dlls.py --target dist/Nuummite/_internal
 ---
 
 ## Native C++/Qt client build
-Requirements: CMake >= 3.20, Visual Studio 2022 (MSVC x64), vcpkg installed and `VCPKG_ROOT` set. Qt6 and Opus come from the vcpkg manifest; CMakePresets use the vcpkg toolchain.
+Requirements (Windows x64):
+- CMake >= 3.20
+- Ninja
+- Visual Studio / Build Tools (MSVC x64)
+- Qt 6 (MSVC kit), e.g. `C:\Qt\6.11.1\msvc2022_64`
 
-Configure + build (Visual Studio solution):
+Configure + build (recommended: MSVC + Ninja):
 ```powershell
-cmake --preset vs-release
-cmake --build --preset vs-release
-.\build\bin\Release\voice_client.exe
+cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake -S . -B build-msvc -G Ninja -DCMAKE_PREFIX_PATH=C:\Qt\6.11.1\msvc2022_64 && cmake --build build-msvc --config Release'
+
+# run
+.\build-msvc\bin\voice_client.exe
 ```
 
-Alternative (Ninja, single-config, exports compile_commands.json):
+Rebuild after code changes (no reconfigure needed):
 ```powershell
-cmake --preset ninja-release
-cmake --build --preset ninja-release
-.\build-ninja\voice_client.exe
+cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake --build build-msvc --config Release'
 ```
 
-If Qt is installed locally instead of via vcpkg, set `QT6_ROOT` accordingly before configuring.
+Notes:
+- The `^` line-continuation character is for `cmd.exe` only. If you paste a `^` command into PowerShell as a single line, it will fail; use the one-liners above.
+- If you delete `build-msvc/`, rerun the full configure command.
+- `voice_client.exe` is made runnable by CMake post-build steps: it copies the required third-party DLLs next to the exe and runs `windeployqt` to deploy Qt runtime + plugins.
+- If your PortAudio DLL lives elsewhere, override it at configure time with `-DPORTAUDIO_DLL=C:\path\to\libportaudio.dll`.
 
 ---
 
