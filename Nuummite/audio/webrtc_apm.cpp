@@ -11,11 +11,11 @@ auto enableAec3Fields(EchoCanceller& ec, int)
     -> decltype(ec.aec3.enabled = true, ec.delay_agnostic = true, void()) {
     ec.aec3.enabled = true;
     ec.delay_agnostic = true;
-    std::cout << "[WEBRTC] AEC3 + delay_agnostic ENABLED for desktop\n";
+    std::cout << " AEC3 and delay-agnostic routing enabled\n";
 }
 template <typename EchoCanceller>
-void enableAec3Fields(EchoCanceller&, ...) {
-    std::cout << "[WEBRTC] Using basic AEC\n";
+void enableAec3Fields(EchoCanceller&,...) {
+    std::cout << " System falling back to basic AEC\n";
 }
 } // namespace
 
@@ -25,7 +25,7 @@ struct WebRtcApm::Impl {
     webrtc::StreamConfig reverse_config;
     bool has_voice = false;
     std::vector<int16_t> reverse_output;
-    int stream_delay_ms = 180;  // default for Windows desktop (tune 120-250)
+    int stream_delay_ms = 180;
     webrtc::AudioProcessing::Config config;
 };
 
@@ -40,14 +40,15 @@ WebRtcApm::WebRtcApm(int sample_rate_hz) {
     config.echo_canceller.mobile_mode = false;
 
     config.high_pass_filter.enabled = true;
-    config.noise_suppression.enabled = false;   // RNNoise if needed later
+    config.noise_suppression.enabled = false;
+
+    // Gain processing configuration
     config.gain_controller1.enabled = false;
     config.gain_controller1.mode = webrtc::AudioProcessing::Config::GainController1::kAdaptiveDigital;
 
     config.gain_controller2.enabled = false;
     config.gain_controller2.adaptive_digital.enabled = false;
     config.gain_controller2.adaptive_digital.level_estimator = webrtc::AudioProcessing::Config::GainController2::kRms;
-    config.voice_detection.enabled = true;
 
     webrtc::AudioProcessingBuilder builder;
     impl_->apm.reset(builder.Create());
@@ -55,15 +56,15 @@ WebRtcApm::WebRtcApm(int sample_rate_hz) {
     if (impl_->apm) {
         impl_->config = config;
         impl_->apm->ApplyConfig(config);
-        std::cout << "[WEBRTC] Desktop AEC3 ready (delay = " << impl_->stream_delay_ms << " ms)\n";
+        std::cout << " Acoustic unit configured (delay limit: " << impl_->stream_delay_ms << " ms)\n";
     } else {
-        std::cerr << "[WEBRTC] Failed to create AudioProcessing\n";
+        std::cerr << " Failed to instantiate AudioProcessing module\n";
     }
 }
 
 WebRtcApm::~WebRtcApm() = default;
 
-bool WebRtcApm::available() const { return impl_ && impl_->apm != nullptr; }
+bool WebRtcApm::available() const { return impl_ && impl_->apm!= nullptr; }
 
 void WebRtcApm::set_stream_delay_ms(int delay_ms) {
     if (available()) {
@@ -78,9 +79,8 @@ bool WebRtcApm::process_render(const int16_t* frame, int samples) {
         return false;
     }
 
-    // WebRTC APM expects ~10ms chunks. For 48 kHz mono, that's 480 samples.
     constexpr int kChunk = 480;
-    if (samples % kChunk != 0) {
+    if (samples % kChunk!= 0) {
         return false;
     }
 
@@ -90,7 +90,7 @@ bool WebRtcApm::process_render(const int16_t* frame, int samples) {
 
     for (int off = 0; off < samples; off += kChunk) {
         const int err = impl_->apm->ProcessReverseStream(frame + off, impl_->reverse_config, impl_->reverse_config, impl_->reverse_output.data());
-        if (err != webrtc::AudioProcessing::kNoError) {
+        if (err!= webrtc::AudioProcessing::kNoError) {
             return false;
         }
     }
@@ -102,31 +102,32 @@ bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
     if (!available() || frame.empty()) {
         return false;
     }
-    // WebRTC APM expects ~10ms chunks. For 48 kHz mono, that's 480 samples.
     constexpr int kChunk = 480;
-    if (frame.size() % kChunk != 0) {
+    if (frame.size() % kChunk!= 0) {
         return false;
     }
 
     bool ok = true;
     for (size_t off = 0; off < frame.size(); off += kChunk) {
-        impl_->apm->set_stream_delay_ms(impl_->stream_delay_ms);  // critical - call every chunk
+        impl_->apm->set_stream_delay_ms(impl_->stream_delay_ms);
         const int err = impl_->apm->ProcessStream(frame.data() + off, impl_->stream_config, impl_->stream_config, frame.data() + off);
-        if (err != webrtc::AudioProcessing::kNoError) {
+        if (err!= webrtc::AudioProcessing::kNoError) {
             ok = false;
             break;
         }
     }
 
     if (ok) {
-        const auto stats = impl_->apm->GetStatistics();
-        impl_->has_voice = stats.voice_detected.value_or(false);
+        impl_->has_voice = true; 
         return true;
     }
     return false;
 }
 
-bool WebRtcApm::hasVoice() const { return impl_ ? impl_->has_voice : false; }
+bool WebRtcApm::hasVoice() const { 
+    return impl_? impl_->has_voice : false; 
+}
+
 void WebRtcApm::setEchoEnabled(bool enabled) {
     if (!available()) {
         return;
@@ -140,9 +141,8 @@ void WebRtcApm::setAutoGainEnabled(bool enabled) {
         return;
     }
 
-    // Use GainController2 only (avoid stacking GC1 + GC2).
     impl_->config.gain_controller1.enabled = false;
     impl_->config.gain_controller2.enabled = enabled;
     impl_->config.gain_controller2.adaptive_digital.enabled = enabled;
     impl_->apm->ApplyConfig(impl_->config);
-} 
+}

@@ -125,6 +125,13 @@ std::vector<int16_t> OpusCodec::decode(const std::vector<uint8_t>& data) {
     return decode(data.data(), static_cast<int>(data.size()));
 }
 
+int OpusCodec::decode_into(const uint8_t* data, int len, int16_t* pcm, int frame_samples) {
+    if (!decoder_ || !pcm || frame_samples <= 0) {
+        return OPUS_BAD_ARG;
+    }
+    return opus_decode(decoder_, data, len, pcm, frame_samples, 0);
+}
+
 void OpusCodec::resetDecoderState() {
     if (!decoder_) {
         return;

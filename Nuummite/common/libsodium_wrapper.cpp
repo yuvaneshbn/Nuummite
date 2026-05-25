@@ -1,46 +1,92 @@
 #include "libsodium_wrapper.h"
 #include <iostream>
 #include <cstring>
+#include <vector>
+
+namespace {
+
+std::string exeDir() {
+    char path[MAX_PATH] = {0};
+    const DWORD len = GetModuleFileNameA(nullptr, path, MAX_PATH);
+    if (len == 0 || len >= MAX_PATH) {
+        return {};
+    }
+    std::string full(path, path + len);
+    const size_t slash = full.find_last_of("\\/");
+    if (slash == std::string::npos) {
+        return {};
+    }
+    return full.substr(0, slash);
+}
+
+std::string cwd() {
+    char buf[MAX_PATH] = {0};
+    const DWORD len = GetCurrentDirectoryA(MAX_PATH, buf);
+    if (len == 0 || len >= MAX_PATH) {
+        return {};
+    }
+    return std::string(buf, buf + len);
+}
+
+void addCandidates(std::vector<std::string>& out, const std::string& base) {
+    if (base.empty()) {
+        return;
+    }
+    out.push_back(base + "\\libsodium.dll");
+    out.push_back(base + "\\third_party\\libsodium\\libsodium.dll");
+    out.push_back(base + "\\third_party\\libsodium\\bin\\libsodium-26.dll");
+    out.push_back(base + "\\..\\third_party\\libsodium\\libsodium.dll");
+    out.push_back(base + "\\..\\third_party\\libsodium\\bin\\libsodium-26.dll");
+    out.push_back(base + "\\..\\..\\third_party\\libsodium\\libsodium.dll");
+    out.push_back(base + "\\..\\..\\third_party\\libsodium\\bin\\libsodium-26.dll");
+}
+
+} // namespace
 
 HMODULE SodiumWrapper::module_ = nullptr;
 bool SodiumWrapper::initialized_ = false;
 std::vector<uint8_t> SodiumWrapper::key_;
 
+SodiumWrapper::crypto_secretbox_easy_fn SodiumWrapper::p_encrypt_ = nullptr;
+SodiumWrapper::crypto_secretbox_open_easy_fn SodiumWrapper::p_decrypt_ = nullptr;
+SodiumWrapper::randombytes_buf_fn SodiumWrapper::p_random_ = nullptr;
+
 bool SodiumWrapper::init() {
     if (initialized_) return true;
 
-    const std::vector<std::string> candidates = {
-        "libsodium.dll",
-        "third_party\\libsodium\\libsodium.dll",
-        "third_party\\libsodium\\bin\\libsodium-26.dll",
-    };
+    std::vector<std::string> candidates;
+    candidates.reserve(24);
 
+    candidates.push_back("libsodium.dll");
+    addCandidates(candidates, exeDir());
+    addCandidates(candidates, cwd());
+    candidates.push_back("third_party\\libsodium\\libsodium.dll");
+    candidates.push_back("third_party\\libsodium\\bin\\libsodium-26.dll");
+    
     for (const auto& c : candidates) {
         module_ = LoadLibraryA(c.c_str());
         if (module_) break;
     }
 
     if (!module_) {
-        std::cerr << "[SODIUM] Could not load libsodium.dll\n";
+        std::cerr << " Could not load libsodium.dll\n";
         return false;
     }
 
     auto p_init = reinterpret_cast<int (*)()>(GetProcAddress(module_, "sodium_init"));
-    auto p_encrypt = reinterpret_cast<int (*)(unsigned char*, const unsigned char*, unsigned long long, const unsigned char*, const unsigned char*)>(
-        GetProcAddress(module_, "crypto_secretbox_easy"));
-    auto p_decrypt = reinterpret_cast<int (*)(unsigned char*, const unsigned char*, unsigned long long, const unsigned char*, const unsigned char*)>(
-        GetProcAddress(module_, "crypto_secretbox_open_easy"));
-    auto p_random = reinterpret_cast<void (*)(void*, size_t)>(GetProcAddress(module_, "randombytes_buf"));
+    p_encrypt_ = reinterpret_cast<crypto_secretbox_easy_fn>(GetProcAddress(module_, "crypto_secretbox_easy"));
+    p_decrypt_ = reinterpret_cast<crypto_secretbox_open_easy_fn>(GetProcAddress(module_, "crypto_secretbox_open_easy"));
+    p_random_ = reinterpret_cast<randombytes_buf_fn>(GetProcAddress(module_, "randombytes_buf"));
 
-    if (!p_init || !p_encrypt || !p_decrypt || !p_random) {
-        std::cerr << "[SODIUM] Missing symbols\n";
+    if (!p_init ||!p_encrypt_ ||!p_decrypt_ ||!p_random_) {
+        std::cerr << " Failed to resolve target dynamic entries\n";
         shutdown();
         return false;
     }
 
     p_init();
     initialized_ = true;
-    std::cout << "[SODIUM] Ready (secretbox encryption)\n";
+    std::cout << " API resolved successfully (procedures cached)\n";
     return true;
 }
 
@@ -49,33 +95,65 @@ void SodiumWrapper::shutdown() {
     module_ = nullptr;
     initialized_ = false;
     key_.clear();
+    p_encrypt_ = nullptr;
+    p_decrypt_ = nullptr;
+    p_random_ = nullptr;
 }
 
-std::vector<uint8_t> SodiumWrapper::deriveKey(const std::string& room_name) {
-    const char* salt = "NuummiteLANVoice2026SecureSalt";
-    std::string input = room_name + salt;
+std::vector<uint8_t> SodiumWrapper::deriveKey(const std::string& passphrase) {
+    if (passphrase.empty() ||!initialized_) {
+        return {};
+    }
+
+    auto p_pwhash = reinterpret_cast<int (*)(unsigned char*, unsigned long long, const char*, unsigned long long, const unsigned char*, unsigned long long, size_t, int)>(
+        GetProcAddress(module_, "crypto_pwhash"));
+    auto p_alg_default = reinterpret_cast<int (*)()>(GetProcAddress(module_, "crypto_pwhash_alg_default"));
+    auto p_opslimit_interactive = reinterpret_cast<size_t (*)()>(GetProcAddress(module_, "crypto_pwhash_opslimit_interactive"));
+    auto p_memlimit_interactive = reinterpret_cast<size_t (*)()>(GetProcAddress(module_, "crypto_pwhash_memlimit_interactive"));
+
+    if (p_pwhash && p_alg_default && p_opslimit_interactive && p_memlimit_interactive) {
+        static const unsigned char salt[16] = {
+            'N','u','u','m','m','i','t','e','V','o','i','c','e','K','D','F'
+        };
+        std::vector<uint8_t> out(32, 0);
+        const unsigned long long ops = static_cast<unsigned long long>(p_opslimit_interactive());
+        const size_t mem = p_memlimit_interactive();
+        const int alg = p_alg_default();
+
+        const int rc = p_pwhash(out.data(),
+                                static_cast<unsigned long long>(out.size()),
+                                passphrase.c_str(),
+                                static_cast<unsigned long long>(passphrase.size()),
+                                salt, ops, mem, alg);
+        if (rc == 0) {
+            return out;
+        }
+    }
 
     auto p_hash = reinterpret_cast<int (*)(unsigned char*, size_t, const unsigned char*, unsigned long long, const unsigned char*, size_t)>(
         GetProcAddress(module_, "crypto_generichash"));
     if (!p_hash) {
-        std::cerr << "[SODIUM] Missing crypto_generichash\n";
+        std::cerr << " Fallback generation missing\n";
         return {};
     }
 
-    uint8_t hash1[32];
-    p_hash(hash1, 32, reinterpret_cast<const uint8_t*>(input.data()), input.size(), nullptr, 0);
-    uint8_t final_key[32];
-    p_hash(final_key, 32, hash1, 32, nullptr, 0);
+    const char* domain = "Nuummite:secretbox:key:v1";
+    std::string input = passphrase + "|" + domain;
 
-    return std::vector<uint8_t>(final_key, final_key + 32);
+    uint8_t final_key[32] = {0};
+    p_hash(final_key, 32, reinterpret_cast<const unsigned char*>(input.data()), static_cast<unsigned long long>(input.size()), nullptr, 0);
+
+    std::vector<uint8_t> out(final_key, final_key + 32);
+    std::memset(final_key, 0, sizeof(final_key));
+    return out;
 }
 
-void SodiumWrapper::setKey(const std::string& room_name) {
-    if (room_name.empty()) return;
-    if (!initialized_ && !init()) return;
-    key_ = deriveKey(room_name);
+void SodiumWrapper::setKey(const std::string& passphrase) {
+    if (passphrase.empty()) return;
+    if (!initialized_ &&!init()) return;
+    key_ = deriveKey(passphrase);
     if (!key_.empty()) {
-        std::cout << "[SODIUM] Key derived from room: " << room_name << "\n";
+        std::cout << " Symmetric key derived\n";
     }
 }
 
@@ -83,19 +161,13 @@ bool SodiumWrapper::encrypt(const uint8_t* data,
                             size_t len,
                             std::vector<uint8_t>& ciphertext,
                             std::array<uint8_t, kNonceSize>& nonce) {
-    if (!initialized_ || key_.size() != 32) {
+    if (!initialized_ || key_.size()!= 32 ||!p_random_ ||!p_encrypt_) {
         return false;
     }
 
-    auto p_random = reinterpret_cast<void (*)(void*, size_t)>(GetProcAddress(module_, "randombytes_buf"));
-    auto p_encrypt = reinterpret_cast<int (*)(unsigned char*, const unsigned char*, unsigned long long, const unsigned char*, const unsigned char*)>(
-        GetProcAddress(module_, "crypto_secretbox_easy"));
-    if (!p_random || !p_encrypt) return false;
-
-    p_random(nonce.data(), nonce.size());
+    p_random_(nonce.data(), nonce.size());
     ciphertext.resize(len + kMacSize);
-
-    return p_encrypt(ciphertext.data(), data, static_cast<unsigned long long>(len), nonce.data(), key_.data()) == 0;
+    return p_encrypt_(ciphertext.data(), data, static_cast<unsigned long long>(len), nonce.data(), key_.data()) == 0;
 }
 
 bool SodiumWrapper::decrypt(const uint8_t* ciphertext,
@@ -103,19 +175,15 @@ bool SodiumWrapper::decrypt(const uint8_t* ciphertext,
                             const uint8_t* nonce,
                             size_t nonce_len,
                             std::vector<uint8_t>& plaintext) {
-    if (!initialized_ || key_.size() != 32 || nonce_len != kNonceSize || len < kMacSize) {
+    if (!initialized_ || key_.size()!= 32 || nonce_len!= kNonceSize || len < kMacSize ||!p_decrypt_) {
         return false;
     }
 
-    auto p_decrypt = reinterpret_cast<int (*)(unsigned char*, const unsigned char*, unsigned long long, const unsigned char*, const unsigned char*)>(
-        GetProcAddress(module_, "crypto_secretbox_open_easy"));
-    if (!p_decrypt) return false;
-
     plaintext.resize(len - kMacSize);
-    int rc = p_decrypt(plaintext.data(), ciphertext, static_cast<unsigned long long>(len), nonce, key_.data());
-    if (rc != 0) {
+    int rc = p_decrypt_(plaintext.data(), ciphertext, static_cast<unsigned long long>(len), nonce, key_.data());
+    if (rc!= 0) {
         plaintext.clear();
         return false;
     }
     return true;
-} 
+}

@@ -4,13 +4,13 @@
 #include "opus_codec.h"
 #include "p2p/rtp_transport.h"
 #include "libsodium_wrapper.h"
+#include "jitter_buffer.h"
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstdint>
-#include <condition_variable>
-#include <deque>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -21,6 +21,9 @@
 #include <memory>
 
 #include <winsock2.h>
+#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
+#include <immintrin.h>
+#endif
 
 struct AudioDeviceInfo { int index; std::string name; };
 
@@ -73,12 +76,18 @@ public:
     bool echoEnabled() const { return echo_enabled_.load(); }
     bool isTxMuted() const;
 
+    // Diagnostics
+    uint64_t debugPacketsSent() const { return packets_sent_.load(std::memory_order_relaxed); }
+    uint64_t debugPacketsRecv() const { return packets_recv_.load(std::memory_order_relaxed); }
+    uint64_t debugPacketsDecrypted() const { return packets_decrypted_.load(std::memory_order_relaxed); }
+
     // Local hear list for mixing
     void setHearTargets(const std::unordered_set<std::string>& hear_ids);
 
 private:
     static constexpr int RATE = 48000;
     static constexpr int FRAME = 960; // 20 ms @ 48 kHz
+    static constexpr size_t CAPTURE_QUEUE_MAX = 16; // ~320ms @ 20ms frames
 
     void listenLoop();
     void handleIncomingPacket(const std::vector<uint8_t>& data);
@@ -86,18 +95,76 @@ private:
     bool openOutput(); void closeOutput();
     bool openInput(); void closeInput();
     void updateMixedLevel(const std::vector<int16_t>& frame);
-    bool popCaptureFrame(std::vector<int16_t>& out);
 
-    struct StreamState {
-        std::mutex mtx;
-        std::string id;
-        std::unique_ptr<OpusCodec> decoder;
-        std::deque<std::vector<int16_t>> jitter;
-        uint16_t last_seq = 0;
-        bool has_seq = false;
+    template <typename T, size_t Capacity>
+    class LockFreeSpscRingBuffer {
+    public:
+        static_assert(Capacity >= 2, "Capacity must be at least 2");
+
+        bool push(const T& data) noexcept {
+            const size_t head = head_.load(std::memory_order_relaxed);
+            const size_t next = (head + 1) % Capacity;
+            if (next == tail_.load(std::memory_order_acquire)) {
+                return false; // full
+            }
+            buffer_[head] = data;
+            head_.store(next, std::memory_order_release);
+            return true;
+        }
+
+        bool pop(T& out) noexcept {
+            const size_t tail = tail_.load(std::memory_order_relaxed);
+            if (tail == head_.load(std::memory_order_acquire)) {
+                return false; // empty
+            }
+            out = buffer_[tail];
+            tail_.store((tail + 1) % Capacity, std::memory_order_release);
+            return true;
+        }
+
+        void reset() noexcept {
+            head_.store(0, std::memory_order_relaxed);
+            tail_.store(0, std::memory_order_relaxed);
+        }
+
+        bool empty() const noexcept {
+            return tail_.load(std::memory_order_acquire) == head_.load(std::memory_order_acquire);
+        }
+
+    private:
+        std::array<T, Capacity> buffer_{};
+        std::atomic<size_t> head_{0}; // producer index
+        std::atomic<size_t> tail_{0}; // consumer index
     };
 
-    std::shared_ptr<StreamState> getOrCreateStream(const std::string& id);
+    using CaptureFrame = std::array<int16_t, FRAME>;
+    static constexpr size_t CAPTURE_RING_CAPACITY = CAPTURE_QUEUE_MAX + 1; // one-slot-empty SPSC ring
+
+    bool popCaptureFrame(CaptureFrame& out) noexcept;
+
+    struct StreamState {
+        std::string id;
+        std::unique_ptr<OpusCodec> decoder;
+
+        JitterBuffer jitter_buffer;
+        std::atomic_flag lock = ATOMIC_FLAG_INIT;
+
+        bool tryAcquireLock() noexcept {
+            return !lock.test_and_set(std::memory_order_acquire);
+        }
+        void acquireLock() noexcept {
+            while (lock.test_and_set(std::memory_order_acquire)) {
+#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
+                _mm_pause();
+#endif
+            }
+        }
+        void releaseLock() noexcept {
+            lock.clear(std::memory_order_release);
+        }
+    };
+
+    StreamState* getOrCreateStream(const std::string& id);
 
     int port_ = 0;
     std::string client_id_;
@@ -119,6 +186,10 @@ private:
     std::atomic<bool> capture_active_{false};
     std::atomic<float> mixed_peak_{0.0f};
 
+    std::atomic<uint64_t> packets_sent_{0};
+    std::atomic<uint64_t> packets_recv_{0};
+    std::atomic<uint64_t> packets_decrypted_{0};
+
     // config
     bool pure_opus_ = false;        // debug: bypass all DSP (AEC/AGC/RNNoise/VAD/manual gain)
     float master_volume_ = 1.0f;   // default master volume
@@ -129,6 +200,12 @@ private:
     bool noise_suppression_enabled_ = false;   // testing: keep RNNoise off while tuning clarity
     bool auto_gain_ = false;
     std::atomic<bool> echo_enabled_{false};
+    // Queue WebRTC APM configuration updates to be applied on the capture thread
+    // (avoid locking / reconfiguring inside UI threads).
+    std::atomic<bool> pending_aec_update_{false};
+    std::atomic<bool> pending_agc_update_{false};
+    std::atomic<bool> target_aec_enabled_{false};
+    std::atomic<bool> target_agc_enabled_{false};
     bool tx_muted_ = false;
     mutable std::mutex config_mutex_;
 
@@ -138,13 +215,12 @@ private:
 
     OpusCodec encoder_;
     std::mutex streams_mutex_;
-    std::unordered_map<std::string, std::shared_ptr<StreamState>> streams_;
+    std::unordered_map<std::string, std::unique_ptr<StreamState>> streams_;
     std::unordered_set<std::string> hear_targets_;
-    std::vector<std::shared_ptr<StreamState>> stream_snapshot_;
+    std::vector<StreamState*> stream_snapshot_;
 
-    std::deque<std::vector<int16_t>> capture_frames_;
-    std::mutex capture_mutex_;
-    std::condition_variable capture_cv_;
+    LockFreeSpscRingBuffer<CaptureFrame, CAPTURE_RING_CAPACITY> capture_frames_;
+    std::atomic<uint32_t> capture_dropped_{0};
 
     uint16_t seq_ = 0;
     uint32_t timestamp_ = 0;

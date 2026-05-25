@@ -11,7 +11,7 @@ C++ audio/transport core, Python + PySide6 UI. 64-bit **Windows 10/11** target.
 - Live controls: device selection, master/output volume, mic gain, noise suppression, mute, broadcast, per-participant talk/ignore.
 - Friendly name dialog with duplicate retry; optional IP hint.
 - PyInstaller one-folder/one-file builds (no Qt SDK on target PCs).
-- Audio packets are encrypted & authenticated with libsodium secretbox (room name is the shared key by default).
+- Audio packets are encrypted & authenticated with libsodium secretbox (key derived locally from a private passphrase; room name is used only for discovery routing).
 
 ---
 

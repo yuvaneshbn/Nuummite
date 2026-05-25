@@ -7,6 +7,8 @@
 #include <QCoreApplication>
 #include <QDialog>
 #include <QIcon>
+#include <QInputDialog>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QMetaType>
 #include <QSettings>
@@ -114,10 +116,23 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    bool ok = false;
+    QString passphrase = QInputDialog::getText(
+        nullptr,
+        "Room Encryption Setup",
+        "Enter Private Room Passphrase (Not transmitted):",
+        QLineEdit::Password,
+        QString(),
+        &ok
+    ).trimmed();
+    if (!ok || passphrase.isEmpty()) {
+        return 0;
+    }
+
     AudioEngine audio;
     applySavedAudioSettings(audio);
     audio.setClientId(myId.toStdString());
-    audio.setRoomSecret(room.toStdString());
+    audio.setRoomSecret(passphrase.toStdString());
 
     PeerDiscovery discovery;
     discovery.start(myId.toStdString(), static_cast<uint16_t>(audio.port()), room.toStdString());

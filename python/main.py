@@ -915,6 +915,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.system_level_bar.setValue(mic_level)
         self.volume_controls.setMicLevel(mic_level)
 
+        sent = getattr(self.audio, "packets_sent", 0)
+        recv = getattr(self.audio, "packets_recv", 0)
+        dec = getattr(self.audio, "packets_decrypted", 0)
+
         speaking_state: Dict[str, bool] = {}
         self_state = self.audio.capture_active and not self.audio.tx_muted
         row = self.rows.get(self.my_id)
@@ -948,6 +952,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         status_lines = [f"Client {cid} - {'talking' if state else 'listening'}"
                         for cid, state in speaking_state.items()]
+        status_lines.append(f"Packets: tx={sent} rx={recv} dec={dec}")
         self.active_speakers_label.setText("\n".join(status_lines) if status_lines else "No clients")
 
     def closeEvent(self, event):
@@ -1006,11 +1011,21 @@ def run_app():
         QtWidgets.QMessageBox.warning(None, "Error", "Name is required!")
         sys.exit(1)
 
+    room_passphrase, ok = QtWidgets.QInputDialog.getText(
+        None,
+        "Room Encryption Setup",
+        "Enter Private Room Passphrase (Not transmitted):",
+        QtWidgets.QLineEdit.EchoMode.Password,
+    )
+    room_passphrase = (room_passphrase or "").strip()
+    if not ok or not room_passphrase:
+        sys.exit(0)
+
     audio = PyAudioEngine()
     apply_saved_audio_settings(audio)
     discovery = PyPeerDiscovery()
-    # Derive per-room encryption key so only peers in the same room can decrypt audio
-    audio.set_room_secret(room_name)
+    # Derive the symmetric encryption key locally from a private passphrase.
+    audio.set_room_secret(room_passphrase)
     discovery.start(my_id, audio.port(), room_name)
     win = MainWindow(my_id, room_name, audio, discovery)
     win.show()

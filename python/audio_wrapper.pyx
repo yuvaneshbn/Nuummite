@@ -7,7 +7,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.unordered_set cimport unordered_set
 from libcpp cimport bool
-from libc.stdint cimport uint16_t, int16_t
+from libc.stdint cimport uint16_t, uint64_t, int16_t
 
 cdef extern from "common/opus_codec.h" namespace "":
     cdef cppclass OpusCodec:
@@ -65,6 +65,9 @@ cdef extern from "audio/audio_engine.h" namespace "":
         float mixedPeak() const
         void setHearTargets(const unordered_set[string]&)
         void renderOutput(int16_t* out, int sample_count)
+        uint64_t debugPacketsSent() const
+        uint64_t debugPacketsRecv() const
+        uint64_t debugPacketsDecrypted() const
 
 cdef extern from "p2p/peer_discovery.h" namespace "":
     cdef struct PeerInfo:
@@ -205,6 +208,18 @@ cdef class PyAudioEngine:
     @property
     def mixed_peak(self):
         return self.thisptr.mixedPeak()
+
+    @property
+    def packets_sent(self):
+        return self.thisptr.debugPacketsSent()
+
+    @property
+    def packets_recv(self):
+        return self.thisptr.debugPacketsRecv()
+
+    @property
+    def packets_decrypted(self):
+        return self.thisptr.debugPacketsDecrypted()
 
     def set_hear_targets(self, set targets):
         cdef unordered_set[string] cpp_set

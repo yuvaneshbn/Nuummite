@@ -32,6 +32,9 @@ public:
 
     std::vector<int16_t> decode(const uint8_t* data, int len);
     std::vector<int16_t> decode(const std::vector<uint8_t>& data);
+
+    // Real-time friendly decode API (no allocations). Returns decoded samples per channel, or a negative Opus error.
+    int decode_into(const uint8_t* data, int len, int16_t* pcm, int frame_samples);
     void resetDecoderState();
 
 private:
