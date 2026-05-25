@@ -21,4 +21,4 @@ private:
     DenoiseState* state_ = nullptr;
 };
 
-#endif
+#endif // RNNOISE_PROCESSOR_H

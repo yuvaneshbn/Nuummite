@@ -132,4 +132,4 @@ void OpusCodec::resetDecoderState() {
     // Helpful when a stream has been missing for a while (e.g. VAD/DTX or a burst loss),
     // to avoid prolonged PLC "tails" carrying over into the next good packet.
     (void)opus_decoder_ctl(decoder_, OPUS_RESET_STATE);
-}
+} 

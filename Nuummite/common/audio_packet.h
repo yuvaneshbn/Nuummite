@@ -29,4 +29,4 @@ std::vector<uint8_t> build_client_audio_packet(const std::string& client_id,
 std::vector<uint8_t> build_mixed_audio_packet(uint16_t seq,
                                               const std::vector<uint8_t>& payload);
 
-#endif
+#endif // AUDIO_PACKET_H

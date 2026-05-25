@@ -37,4 +37,4 @@ private:
     static std::vector<uint8_t> deriveKey(const std::string& room_name);
 };
 
-#endif
+#endif // LIBSODIUM_WRAPPER_H

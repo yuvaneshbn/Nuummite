@@ -23,4 +23,4 @@ private:
     std::unique_ptr<Impl> impl_;
 };
 
-#endif
+#endif // WEBRTC_APM_H

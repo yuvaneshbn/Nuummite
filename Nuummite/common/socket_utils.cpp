@@ -41,4 +41,4 @@ bool disable_udp_connreset(SOCKET sock) {
                     nullptr) == 0;
 }
 
-}
+} // namespace socket_utils

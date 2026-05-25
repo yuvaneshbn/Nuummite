@@ -118,4 +118,4 @@ bool SodiumWrapper::decrypt(const uint8_t* ciphertext,
         return false;
     }
     return true;
-}
+} 

@@ -10,6 +10,7 @@ def _add_dll_dirs():
         here / "third_party" / "libsodium",
         here / "third_party" / "rnnoise",
         here / "third_party" / "libportaudio",
+        # WebRTC APM (repo layout uses webrtc_audio_processing/bin)
         here / "third_party" / "webrtc_audio_processing" / "bin",
     ]
     for path in candidates:
@@ -20,5 +21,5 @@ def _add_dll_dirs():
                 os.environ["PATH"] = f"{path};{os.environ.get('PATH','')}"
 _add_dll_dirs()
 
-from .audio_wrapper import PyAudioEngine, PyPeerDiscovery, PyOpusEncoder
-__all__ = ["PyAudioEngine", "PyPeerDiscovery", "PyOpusEncoder"]
+from .audio_wrapper import PyAudioEngine, PyPeerDiscovery
+__all__ = ["PyAudioEngine", "PyPeerDiscovery"]

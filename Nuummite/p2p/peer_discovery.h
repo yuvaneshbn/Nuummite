@@ -41,4 +41,4 @@ private:
     std::unordered_map<std::string, PeerInfo> peers_;
 };
 
-#endif
+#endif // PEER_DISCOVERY_H

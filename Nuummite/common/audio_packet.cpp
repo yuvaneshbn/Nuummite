@@ -145,4 +145,4 @@ std::vector<uint8_t> build_mixed_audio_packet(uint16_t seq,
     packet.insert(packet.end(), nonce.begin(), nonce.end());
     packet.insert(packet.end(), ciphertext.begin(), ciphertext.end());
     return packet;
-}
+} 

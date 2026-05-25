@@ -42,4 +42,4 @@ private:
     OpusDecoder* decoder_ = nullptr;
 };
 
-#endif
+#endif // OPUS_CODEC_H

@@ -93,7 +93,10 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Copy Nuummite runtime DLL dependencies into a PyInstaller onedir folder "
-            "(defaults to dist/Nuummite/_internal)."
+            "(defaults to dist/Nuummite/_internal).\n\n"
+            "Note: AudioEngine loads PortAudio via LoadLibrary and first checks next to the .exe. "
+            "If your onedir layout uses an `_internal` folder (PyInstaller default), you typically "
+            "also need `libportaudio.dll` copied to the `_internal` parent directory."
         )
     )
     parser.add_argument(
@@ -101,6 +104,14 @@ def main(argv: list[str]) -> int:
         type=Path,
         default=None,
         help="Target directory to copy DLLs into (default: dist/Nuummite/_internal).",
+    )
+    parser.add_argument(
+        "--also-copy-portaudio-to-exedir",
+        action="store_true",
+        help=(
+            "If --target points to an `_internal` folder, also copy libportaudio.dll to its parent "
+            "(next to the .exe)."
+        ),
     )
     parser.add_argument("--force", action="store_true", help="Overwrite existing DLLs.")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without copying.")
@@ -134,6 +145,16 @@ def main(argv: list[str]) -> int:
             msg = _copy_file(src, target, force=args.force, dry_run=args.dry_run)
             did_anything = did_anything or msg.startswith(("COPY", "DRY"))
             print(msg)
+
+            if (
+                args.also_copy_portaudio_to_exedir
+                and item.label == "portaudio"
+                and target.name.lower() == "_internal"
+            ):
+                exedir = target.parent
+                msg2 = _copy_file(src, exedir, force=args.force, dry_run=args.dry_run)
+                did_anything = did_anything or msg2.startswith(("COPY", "DRY"))
+                print(msg2)
 
     print("\n[ui]")
     msg = _copy_tree(ui_src, ui_dst, force=args.force, dry_run=args.dry_run)

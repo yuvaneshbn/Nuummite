@@ -11,4 +11,4 @@ bool disable_udp_connreset(SOCKET sock);
 
 }
 
-#endif
+#endif // SOCKET_UTILS_H

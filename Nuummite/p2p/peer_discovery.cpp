@@ -180,4 +180,4 @@ void PeerDiscovery::loop() {
         }
     }
     closesocket(sock);
-}
+} 

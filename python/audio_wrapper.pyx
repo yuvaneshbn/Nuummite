@@ -299,4 +299,4 @@ cdef class PyOpusEncoder:
                 pcm.push_back(<int16_t>v)
 
         out = self.thisptr.encode(pcm)
-        return bytes(out)
+        return bytes(out) 

@@ -26,4 +26,4 @@ private:
     std::unique_ptr<WebRtcApm> apm_;
 };
 
-#endif
+#endif // CLIENT_AUDIO_AEC_PROCESSOR_H

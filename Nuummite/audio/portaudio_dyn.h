@@ -67,4 +67,4 @@ enum {
     paContinue = 0
 };
 
-#endif
+#endif // CLIENT_PORTAUDIO_DYN_H

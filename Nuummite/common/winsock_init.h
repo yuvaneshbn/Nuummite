@@ -14,4 +14,4 @@ private:
     WSADATA wsa_{};
 };
 
-#endif
+#endif // WINSOCK_INIT_H

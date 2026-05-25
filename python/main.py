@@ -4,6 +4,7 @@ import shutil
 import socket
 import time
 import traceback
+import faulthandler
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -33,12 +34,51 @@ def _write_startup_log() -> Path:
     return log_path
 
 
+def _enable_faulthandler() -> None:
+    """
+    Ensure fatal native crashes (access violation) still produce a readable log.
+    """
+    try:
+        log_dir = _log_dir()
+        log_dir.mkdir(parents=True, exist_ok=True)
+        fh_path = log_dir / "faulthandler.log"
+        with fh_path.open("a", encoding="utf-8", errors="replace") as fp:
+            fp.write(f"\n--- faulthandler enabled @ {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
+            fp.flush()
+            faulthandler.enable(file=fp, all_threads=True)
+    except Exception:
+        pass
+
+
 def resource_path(rel: str) -> str:
     """
     Resolve resource paths when running from source or PyInstaller (_MEIPASS).
     """
-    base = Path(getattr(sys, "_MEIPASS", ROOT))
-    return str(base / rel)
+    rel_path = Path(rel)
+
+    bases: list[Path] = []
+
+    # PyInstaller sets sys._MEIPASS to the bundle's application home directory.
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        bases.append(Path(meipass))
+
+    # In a frozen app, sys.executable points to the onedir .exe. Resources often live in `_internal`.
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+        bases.extend([exe_dir / "_internal", exe_dir])
+
+    # Dev/source checkout fallback.
+    bases.append(ROOT)
+
+    for base in bases:
+        candidate = base / rel_path
+        if candidate.exists():
+            return str(candidate)
+
+    # Last resort: return the first base join to keep error messages stable.
+    base0 = bases[0] if bases else ROOT
+    return str(base0 / rel_path)
 
 
 def _center_and_activate(widget: QtWidgets.QWidget, *, always_on_top: bool = False) -> None:
@@ -980,6 +1020,7 @@ def run_app():
 
 
 if __name__ == "__main__":
+    _enable_faulthandler()
     try:
         run_app()
     except Exception:
@@ -994,4 +1035,4 @@ if __name__ == "__main__":
             app.processEvents()
         except Exception:
             pass
-        raise
+        raise 

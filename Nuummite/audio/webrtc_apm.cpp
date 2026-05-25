@@ -145,4 +145,4 @@ void WebRtcApm::setAutoGainEnabled(bool enabled) {
     impl_->config.gain_controller2.enabled = enabled;
     impl_->config.gain_controller2.adaptive_digital.enabled = enabled;
     impl_->apm->ApplyConfig(impl_->config);
-}
+} 

@@ -54,4 +54,4 @@ setup(
     # cythonize from the .pyx so changes don't depend on checked-in .cpp files.
     ext_modules=cythonize([ext], language_level=3, build_dir=str(Path("build") / "cython"), force=True),
     zip_safe=False,
-)
+) 

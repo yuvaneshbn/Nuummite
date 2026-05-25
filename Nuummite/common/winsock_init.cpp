@@ -9,4 +9,4 @@ WinSockInit::~WinSockInit() {
     if (ok_) {
         WSACleanup();
     }
-}
+}  

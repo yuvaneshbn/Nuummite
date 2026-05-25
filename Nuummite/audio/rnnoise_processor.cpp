@@ -54,4 +54,4 @@ void RnNoiseProcessor::processBlock(int16_t* samples, int sample_count) {
         float val = float_frame[i] * 32768.0f;
         samples[i] = static_cast<int16_t>(std::clamp(val, -32768.0f, 32767.0f));
     }
-}
+} 
