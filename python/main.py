@@ -5,6 +5,9 @@ import socket
 import time
 import traceback
 import faulthandler
+import logging
+import threading
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -20,6 +23,118 @@ from python import PyAudioEngine, PyPeerDiscovery
 ROOT = Path(__file__).resolve().parent.parent  # repository root
 UI_DIR = ROOT / "Nuummite" / "ui"
 
+_LOG_FILE: Path | None = None
+_FAULTHANDLER_FP = None
+_DLL_DIRECTORY_COOKIES: list[object] = []
+
+
+def _is_writable_dir(path: Path) -> bool:
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        probe = path / "._nuummite_write_probe"
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+        return True
+    except Exception:
+        return False
+
+
+def _bootstrap_log_dir() -> Path:
+    """
+    Pick a log directory that works for both source runs and frozen apps.
+
+    Prefer next to the launcher `.exe` for frozen runs (if writable), otherwise fall
+    back to per-user storage.
+    """
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+        if _is_writable_dir(exe_dir):
+            return exe_dir
+
+    # Per-user fallback (recommended for installs under Program Files).
+    return _log_dir()
+
+
+def _init_logging() -> Path:
+    global _LOG_FILE
+
+    log_dir = _bootstrap_log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "Nuummite_debug.log"
+    _LOG_FILE = log_path
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+
+    # Avoid duplicate handlers if reloaded (e.g., interactive runs).
+    for h in list(root_logger.handlers):
+        root_logger.removeHandler(h)
+
+    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+
+    file_handler = RotatingFileHandler(
+        str(log_path),
+        maxBytes=2 * 1024 * 1024,
+        backupCount=3,
+        encoding="utf-8",
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(fmt)
+    root_logger.addHandler(file_handler)
+
+    stream_handler = logging.StreamHandler(stream=sys.stderr)
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(fmt)
+    root_logger.addHandler(stream_handler)
+
+    logging.getLogger(__name__).info("Initializing Nuummite bootstrap...")
+    logging.getLogger(__name__).info("Log file: %s", log_path)
+    logging.getLogger(__name__).info("Frozen: %s (_MEIPASS=%s)", getattr(sys, "frozen", False), getattr(sys, "_MEIPASS", None))
+    return log_path
+
+
+def _install_exception_hooks() -> None:
+    """
+    Ensure crashes in GUI and background threads are recorded to the log file,
+    and show a modal dialog when possible.
+    """
+
+    def _show_crash_dialog(message: str, details: str) -> None:
+        try:
+            app = QtWidgets.QApplication.instance()
+            if app is None:
+                return
+            box = QtWidgets.QMessageBox()
+            box.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            box.setWindowTitle("Nuummite crashed")
+            box.setText(message)
+            if _LOG_FILE is not None:
+                box.setInformativeText(f"Log written to:\n{_LOG_FILE}")
+            if details:
+                box.setDetailedText(details)
+            box.exec()
+        except Exception:
+            pass
+
+    def _log_exception(prefix: str, exc_type, exc_value, exc_tb) -> None:
+        tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+        logging.critical("%s\n%s", prefix, tb)
+        _show_crash_dialog("A fatal error occurred during execution.", tb)
+
+    def excepthook(exc_type, exc_value, exc_tb):
+        if issubclass(exc_type, KeyboardInterrupt):
+            return sys.__excepthook__(exc_type, exc_value, exc_tb)
+        _log_exception("Unhandled exception:", exc_type, exc_value, exc_tb)
+        sys.__excepthook__(exc_type, exc_value, exc_tb)
+        raise SystemExit(1)
+
+    sys.excepthook = excepthook
+
+    if hasattr(threading, "excepthook"):
+        def thread_excepthook(args):
+            _log_exception(f"Unhandled thread exception in {args.thread.name}:", args.exc_type, args.exc_value, args.exc_traceback)
+        threading.excepthook = thread_excepthook
+
 
 def _log_dir() -> Path:
     base = os.environ.get("LOCALAPPDATA") or os.environ.get("TEMP") or str(ROOT)
@@ -27,9 +142,22 @@ def _log_dir() -> Path:
 
 
 def _write_startup_log() -> Path:
-    log_dir = _log_dir()
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / "startup_error.log"
+    # Prefer the same directory as the main bootstrap log (next to the .exe if possible).
+    try_dirs = [_bootstrap_log_dir(), _log_dir()]
+    log_path: Path | None = None
+    for d in try_dirs:
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+            candidate = d / "startup_error.log"
+            # Probe writability
+            candidate.touch(exist_ok=True)
+            log_path = candidate
+            break
+        except Exception:
+            continue
+    if log_path is None:
+        # Absolute last resort.
+        log_path = (Path(os.environ.get("TEMP", str(ROOT))) / "Nuummite_startup_error.log").resolve()
     header = []
     try:
         header.append(f"time={time.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -41,7 +169,11 @@ def _write_startup_log() -> Path:
     except Exception:
         header = []
 
-    log_path.write_text("\n".join(header) + traceback.format_exc(), encoding="utf-8", errors="replace")
+    try:
+        log_path.write_text("\n".join(header) + traceback.format_exc(), encoding="utf-8", errors="replace")
+    except Exception:
+        # Don't let logging failures hide the original crash.
+        pass
     return log_path
 
 
@@ -50,13 +182,15 @@ def _enable_faulthandler() -> None:
     Ensure fatal native crashes (access violation) still produce a readable log.
     """
     try:
-        log_dir = _log_dir()
+        log_dir = _bootstrap_log_dir()
         log_dir.mkdir(parents=True, exist_ok=True)
         fh_path = log_dir / "faulthandler.log"
-        with fh_path.open("a", encoding="utf-8", errors="replace") as fp:
-            fp.write(f"\n--- faulthandler enabled @ {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
-            fp.flush()
-            faulthandler.enable(file=fp, all_threads=True)
+        global _FAULTHANDLER_FP
+        _FAULTHANDLER_FP = fh_path.open("a", encoding="utf-8", errors="replace")
+        _FAULTHANDLER_FP.write(f"\n--- faulthandler enabled @ {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
+        _FAULTHANDLER_FP.flush()
+        faulthandler.enable(file=_FAULTHANDLER_FP, all_threads=True)
+        logging.getLogger(__name__).info("Faulthandler log: %s", fh_path)
     except Exception:
         pass
 
@@ -1005,6 +1139,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 def run_app():
+    logging.getLogger(__name__).info("Entering run_app()...")
     # Ensure bundled DLLs are discoverable before any native loads
     bases: list[Path] = []
 
@@ -1052,12 +1187,15 @@ def run_app():
     prepend = ";".join(str(d) for d in dll_dirs if d.exists())
     if prepend:
         os.environ["PATH"] = prepend + ";" + existing_path
+    logging.getLogger(__name__).debug("DLL dir candidates: %s", [str(p) for p in dll_dirs])
     for d in dll_dirs:
-        if d.exists():
-            try:
-                os.add_dll_directory(str(d))
-            except (AttributeError, OSError):
-                pass
+        if not d.exists():
+            continue
+        try:
+            _DLL_DIRECTORY_COOKIES.append(os.add_dll_directory(str(d)))
+        except (AttributeError, OSError):
+            pass
+    logging.getLogger(__name__).info("Configured %d DLL directories.", len(_DLL_DIRECTORY_COOKIES))
 
     # Qt needs this set before QApplication is created for some OpenGL configs.
     # PySide6/Qt6 may expose this attribute differently (or not at all).
@@ -1072,11 +1210,13 @@ def run_app():
         except Exception:
             pass
 
+    logging.getLogger(__name__).info("Creating QApplication...")
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
     app.setOrganizationName("Nuummite")
     app.setApplicationName("Nuummite")
 
+    logging.getLogger(__name__).info("Loading startup dialog UI (Popup_message.ui)...")
     dialog = load_ui("Popup_message.ui")
     name_edit = dialog.findChild(QtWidgets.QLineEdit, "nameEdit")
     room_edit = dialog.findChild(QtWidgets.QLineEdit, "manualIpEdit") or \
@@ -1086,8 +1226,10 @@ def run_app():
     if local_ip_label:
         local_ip_label.setText(get_local_ip())
 
+    logging.getLogger(__name__).info("Showing startup dialog...")
     _center_and_activate(dialog, always_on_top=True)
     if dialog.exec() != QtWidgets.QDialog.Accepted:
+        logging.getLogger(__name__).info("Startup dialog canceled; exiting.")
         sys.exit(0)
 
     my_id = name_edit.text().strip() if name_edit else ""
@@ -1096,6 +1238,7 @@ def run_app():
 
     if not my_id:
         QtWidgets.QMessageBox.warning(None, "Error", "Name is required!")
+        logging.getLogger(__name__).warning("Name is required; exiting.")
         sys.exit(1)
 
     room_passphrase, ok = QtWidgets.QInputDialog.getText(
@@ -1106,8 +1249,10 @@ def run_app():
     )
     room_passphrase = (room_passphrase or "").strip()
     if not ok or not room_passphrase:
+        logging.getLogger(__name__).info("Passphrase dialog canceled; exiting.")
         sys.exit(0)
 
+    logging.getLogger(__name__).info("Initializing audio/discovery stack...")
     audio = PyAudioEngine()
     apply_saved_audio_settings(audio)
     discovery = PyPeerDiscovery()
@@ -1118,14 +1263,18 @@ def run_app():
     win.show()
     win.raise_()
     win.activateWindow()
+    logging.getLogger(__name__).info("Entering Qt event loop...")
     sys.exit(app.exec())
 
 
 if __name__ == "__main__":
+    _init_logging()
+    _install_exception_hooks()
     _enable_faulthandler()
     try:
         run_app()
     except Exception:
+        logging.exception("Nuummite crashed during startup.")
         log_path = _write_startup_log()
         try:
             app = QtWidgets.QApplication.instance() or QtWidgets.QApplication(sys.argv)
