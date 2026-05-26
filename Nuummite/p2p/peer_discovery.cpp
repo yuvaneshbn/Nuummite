@@ -151,12 +151,16 @@ void PeerDiscovery::loop() {
                              char ip_str[INET_ADDRSTRLEN] = {0};
                              inet_ntop(AF_INET, &src.sin_addr, ip_str, sizeof(ip_str));
 
-                             PeerInfo info;
-                             info.id = peer_id;
-                             info.ip = ip_str;
-                             info.port = static_cast<uint16_t>(std::stoi(port_str));
-                             info.room = peer_room;
-                             info.last_seen = std::chrono::steady_clock::now();
+                              PeerInfo info;
+                              info.id = peer_id;
+                              info.ip = ip_str;
+                              try {
+                                  info.port = static_cast<uint16_t>(std::stoi(port_str));
+                              } catch (const std::exception&) {
+                                  info.port = 50002;
+                              }
+                              info.room = peer_room;
+                              info.last_seen = std::chrono::steady_clock::now();
 
                               // Prefer loopback for same-host peers so multiple local instances remain distinct.
                               const bool is_loopback_src = (std::strcmp(ip_str, "127.0.0.1") == 0) ||

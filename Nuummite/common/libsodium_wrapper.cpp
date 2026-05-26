@@ -32,7 +32,17 @@ void addCandidates(std::vector<std::string>& out, const std::string& base) {
     if (base.empty()) {
         return;
     }
+    // Direct root folder queries
     out.push_back(base + "\\libsodium.dll");
+    out.push_back(base + "\\libsodium-26.dll");
+
+    // PyInstaller extraction targets
+    out.push_back(base + "\\_internal\\libsodium.dll");
+    out.push_back(base + "\\_internal\\libsodium-26.dll");
+    out.push_back(base + "\\_internal\\third_party\\libsodium\\libsodium.dll");
+    out.push_back(base + "\\_internal\\third_party\\libsodium\\bin\\libsodium-26.dll");
+
+    // Development directory fallbacks
     out.push_back(base + "\\third_party\\libsodium\\libsodium.dll");
     out.push_back(base + "\\third_party\\libsodium\\bin\\libsodium-26.dll");
     out.push_back(base + "\\..\\third_party\\libsodium\\libsodium.dll");
@@ -58,6 +68,7 @@ bool SodiumWrapper::init() {
     candidates.reserve(24);
 
     candidates.push_back("libsodium.dll");
+    candidates.push_back("libsodium-26.dll");
     addCandidates(candidates, exeDir());
     addCandidates(candidates, cwd());
     candidates.push_back("third_party\\libsodium\\libsodium.dll");
@@ -69,7 +80,7 @@ bool SodiumWrapper::init() {
     }
 
     if (!module_) {
-        std::cerr << " Could not load libsodium.dll\n";
+        std::cerr << " Could not load libsodium.dll/libsodium-26.dll\n";
         return false;
     }
 

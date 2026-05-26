@@ -115,6 +115,8 @@ struct PortAudioApi {
 
         std::vector<std::string> candidates = {
             exeDir() + "\\" + DEFAULT_PORTAUDIO_DLL,
+            exeDir() + "\\_internal\\" + DEFAULT_PORTAUDIO_DLL,
+            exeDir() + "\\_internal\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
             exeDir() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
             cwd() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
             DEFAULT_PORTAUDIO_DLL,
@@ -130,7 +132,7 @@ struct PortAudioApi {
             }
         }
         if (!module) {
-            error = "Could not load libportaudio.dll";
+            error = "Could not load libportaudio.dll (Searched root, _internal, and development paths)";
             return false;
         }
 

@@ -30,7 +30,18 @@ def _write_startup_log() -> Path:
     log_dir = _log_dir()
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / "startup_error.log"
-    log_path.write_text(traceback.format_exc(), encoding="utf-8", errors="replace")
+    header = []
+    try:
+        header.append(f"time={time.strftime('%Y-%m-%d %H:%M:%S')}")
+        header.append(f"executable={sys.executable}")
+        header.append(f"frozen={getattr(sys, 'frozen', False)}")
+        header.append(f"_MEIPASS={getattr(sys, '_MEIPASS', None)}")
+        header.append(f"ROOT={ROOT}")
+        header.append("")
+    except Exception:
+        header = []
+
+    log_path.write_text("\n".join(header) + traceback.format_exc(), encoding="utf-8", errors="replace")
     return log_path
 
 
@@ -98,12 +109,41 @@ def _center_and_activate(widget: QtWidgets.QWidget, *, always_on_top: bool = Fal
 
 def load_ui(filename: str, parent=None):
     loader = QtUiTools.QUiLoader()
-    ui_file = QtCore.QFile(resource_path(f"Nuummite/ui/{filename}"))
-    # PySide6 renamed open mode enum; QFile.ReadOnly is absent. Use OpenModeFlag.
-    if not ui_file.open(QtCore.QFile.OpenModeFlag.ReadOnly):
-        raise RuntimeError(f"Cannot open UI file: {ui_file.fileName()}")
-    widget = loader.load(ui_file, parent)
-    ui_file.close()
+    resolved = resource_path(f"Nuummite/ui/{filename}")
+
+    # Prefer Python I/O to avoid QFile quirks in some frozen environments.
+    widget = None
+    io_error: Exception | None = None
+    try:
+        data = Path(resolved).read_bytes()
+        buf = QtCore.QBuffer()
+        buf.setData(QtCore.QByteArray(data))
+        buf.open(QtCore.QIODevice.OpenModeFlag.ReadOnly)
+        widget = loader.load(buf, parent)
+        buf.close()
+    except Exception as e:
+        io_error = e
+
+    if widget is None:
+        # Secondary fallback: try QFile open (useful if the path is a Qt resource in future).
+        try:
+            ui_file = QtCore.QFile(resolved)
+            if ui_file.open(QtCore.QFile.OpenModeFlag.ReadOnly):
+                widget = loader.load(ui_file, parent)
+                ui_file.close()
+        except Exception:
+            pass
+
+    if widget is None:
+        hint = ""
+        try:
+            if getattr(sys, "frozen", False) and not Path(resolved).exists():
+                hint = "\n\nThis looks like an incomplete install. If you are running the packaged app, keep the entire folder (including the `_internal` directory) next to the `.exe`."
+        except Exception:
+            pass
+        details = f"\n\nDetails: {io_error}" if io_error else ""
+        raise RuntimeError(f"Cannot open UI file: {resolved}{hint}{details}")
+
     if widget is None:
         raise RuntimeError(f"Failed to load UI from {filename}")
     return widget
@@ -966,14 +1006,47 @@ class MainWindow(QtWidgets.QMainWindow):
 
 def run_app():
     # Ensure bundled DLLs are discoverable before any native loads
-    dll_dirs = [
-        ROOT,  # PyInstaller onedir: dist/<app>/_internal
-        ROOT / "third_party" / "opus",
-        ROOT / "third_party" / "libportaudio",
-        ROOT / "third_party" / "libsodium",
-        ROOT / "third_party" / "rnnoise",
-        ROOT / "third_party" / "webrtc_audio_processing" / "bin",
+    bases: list[Path] = []
+
+    # PyInstaller sets sys._MEIPASS for onefile builds.
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        bases.append(Path(meipass))
+
+    # For onedir builds, sys.executable is the launcher .exe next to `_internal`.
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+        bases.extend([exe_dir / "_internal", exe_dir])
+
+    # Source checkout fallback (also equals `_internal` when running from onedir bundle).
+    bases.append(ROOT)
+
+    def _unique_paths(paths: list[Path]) -> list[Path]:
+        seen: set[str] = set()
+        out: list[Path] = []
+        for p in paths:
+            key = str(p)
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(p)
+        return out
+
+    third_party_suffixes = [
+        Path("third_party") / "opus",
+        Path("third_party") / "libportaudio",
+        Path("third_party") / "libsodium",
+        Path("third_party") / "rnnoise",
+        Path("third_party") / "webrtc_audio_processing" / "bin",
     ]
+
+    dll_dirs: list[Path] = []
+    for base in bases:
+        dll_dirs.append(base)
+        for suffix in third_party_suffixes:
+            dll_dirs.append(base / suffix)
+    dll_dirs = _unique_paths(dll_dirs)
+
     # Prepend to PATH so native LoadLibrary finds them without flags
     existing_path = os.environ.get("PATH", "")
     prepend = ";".join(str(d) for d in dll_dirs if d.exists())
@@ -981,9 +1054,23 @@ def run_app():
         os.environ["PATH"] = prepend + ";" + existing_path
     for d in dll_dirs:
         if d.exists():
-            os.add_dll_directory(str(d))
-    # Qt needs this set before QApplication is created for some OpenGL configs
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
+            try:
+                os.add_dll_directory(str(d))
+            except (AttributeError, OSError):
+                pass
+
+    # Qt needs this set before QApplication is created for some OpenGL configs.
+    # PySide6/Qt6 may expose this attribute differently (or not at all).
+    share_attr = None
+    if hasattr(QtCore.Qt, "AA_ShareOpenGLContexts"):
+        share_attr = QtCore.Qt.AA_ShareOpenGLContexts
+    elif hasattr(QtCore.Qt, "ApplicationAttribute") and hasattr(QtCore.Qt.ApplicationAttribute, "AA_ShareOpenGLContexts"):
+        share_attr = QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts
+    if share_attr is not None:
+        try:
+            QtCore.QCoreApplication.setAttribute(share_attr)
+        except Exception:
+            pass
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
