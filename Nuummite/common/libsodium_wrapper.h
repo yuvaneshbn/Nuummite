@@ -5,6 +5,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -31,7 +32,7 @@ public:
 private:
     static HMODULE module_;
     static bool initialized_;
-    static std::vector<uint8_t> key_;
+    static std::shared_ptr<const std::array<uint8_t, 32>> key_;
 
     // Static declarations of cryptographic function templates
     typedef int (*crypto_secretbox_easy_fn)(unsigned char*, const unsigned char*, unsigned long long, const unsigned char*, const unsigned char*);

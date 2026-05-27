@@ -343,14 +343,23 @@ AudioEngine::AudioEngine()
         aec_->setAutoGainEnabled(false);
         aec_->set_stream_delay_ms(180);
     }
+
+    // PortAudio initialization may trigger COM/WASAPI calls. Doing it on a worker thread avoids
+    // re-entrancy issues when the UI thread is unwinding a modal dialog / input-synchronous call.
     std::string pa_error;
-    auto& pa = portAudioApi();
-    if (!pa.load(pa_error)) {
+    std::thread init_thread([&]() {
+        auto& pa = portAudioApi();
+        if (!pa.load(pa_error)) {
+            return;
+        }
+        const PaError pa_init = pa.Initialize();
+        if (pa_init != paNoError) {
+            pa_error = paErrorText(pa_init);
+        }
+    });
+    init_thread.join();
+    if (!pa_error.empty()) {
         throw std::runtime_error(pa_error);
-    }
-    const PaError pa_init = pa.Initialize();
-    if (pa_init!= paNoError) {
-        throw std::runtime_error(paErrorText(pa_init));
     }
 
     recv_sock_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

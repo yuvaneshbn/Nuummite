@@ -1,4 +1,5 @@
 #include "libsodium_wrapper.h"
+#include <algorithm>
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -84,7 +85,7 @@ void addCandidates(std::vector<std::string>& out, const std::string& base) {
 
 HMODULE SodiumWrapper::module_ = nullptr;
 bool SodiumWrapper::initialized_ = false;
-std::vector<uint8_t> SodiumWrapper::key_;
+std::shared_ptr<const std::array<uint8_t, 32>> SodiumWrapper::key_;
 
 SodiumWrapper::crypto_secretbox_easy_fn SodiumWrapper::p_encrypt_ = nullptr;
 SodiumWrapper::crypto_secretbox_open_easy_fn SodiumWrapper::p_decrypt_ = nullptr;
@@ -138,7 +139,7 @@ void SodiumWrapper::shutdown() {
     if (module_) FreeLibrary(module_);
     module_ = nullptr;
     initialized_ = false;
-    key_.clear();
+    std::atomic_store(&key_, std::shared_ptr<const std::array<uint8_t, 32>>());
     p_encrypt_ = nullptr;
     p_decrypt_ = nullptr;
     p_random_ = nullptr;
@@ -195,8 +196,12 @@ std::vector<uint8_t> SodiumWrapper::deriveKey(const std::string& passphrase) {
 void SodiumWrapper::setKey(const std::string& passphrase) {
     if (passphrase.empty()) return;
     if (!initialized_ &&!init()) return;
-    key_ = deriveKey(passphrase);
-    if (!key_.empty()) {
+
+    const std::vector<uint8_t> derived = deriveKey(passphrase);
+    if (derived.size() == 32) {
+        auto next = std::make_shared<std::array<uint8_t, 32>>();
+        std::copy(derived.begin(), derived.end(), next->begin());
+        std::atomic_store(&key_, std::const_pointer_cast<const std::array<uint8_t, 32>>(next));
         std::cout << " Symmetric key derived\n";
     }
 }
@@ -205,13 +210,14 @@ bool SodiumWrapper::encrypt(const uint8_t* data,
                             size_t len,
                             std::vector<uint8_t>& ciphertext,
                             std::array<uint8_t, kNonceSize>& nonce) {
-    if (!initialized_ || key_.size()!= 32 ||!p_random_ ||!p_encrypt_) {
+    auto key = std::atomic_load(&key_);
+    if (!initialized_ || !key ||!p_random_ ||!p_encrypt_) {
         return false;
     }
 
     p_random_(nonce.data(), nonce.size());
     ciphertext.resize(len + kMacSize);
-    return p_encrypt_(ciphertext.data(), data, static_cast<unsigned long long>(len), nonce.data(), key_.data()) == 0;
+    return p_encrypt_(ciphertext.data(), data, static_cast<unsigned long long>(len), nonce.data(), key->data()) == 0;
 }
 
 bool SodiumWrapper::decrypt(const uint8_t* ciphertext,
@@ -219,12 +225,13 @@ bool SodiumWrapper::decrypt(const uint8_t* ciphertext,
                             const uint8_t* nonce,
                             size_t nonce_len,
                             std::vector<uint8_t>& plaintext) {
-    if (!initialized_ || key_.size()!= 32 || nonce_len!= kNonceSize || len < kMacSize ||!p_decrypt_) {
+    auto key = std::atomic_load(&key_);
+    if (!initialized_ || !key || nonce_len!= kNonceSize || len < kMacSize ||!p_decrypt_) {
         return false;
     }
 
     plaintext.resize(len - kMacSize);
-    int rc = p_decrypt_(plaintext.data(), ciphertext, static_cast<unsigned long long>(len), nonce, key_.data());
+    int rc = p_decrypt_(plaintext.data(), ciphertext, static_cast<unsigned long long>(len), nonce, key->data());
     if (rc!= 0) {
         plaintext.clear();
         return false;
