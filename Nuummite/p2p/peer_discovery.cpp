@@ -120,7 +120,8 @@ void PeerDiscovery::loop() {
             sockaddr_in loop{};
             loop.sin_family = AF_INET;
             loop.sin_port = htons(DISCOVERY_PORT);
-            inet_pton(AF_INET, "127.0.0.1", &loop.sin_addr);
+            // On Windows, a loopback broadcast helps deliver to all sockets bound with SO_REUSEADDR.
+            inet_pton(AF_INET, "127.255.255.255", &loop.sin_addr);
             sendto(sock, announce.c_str(), static_cast<int>(announce.size()), 0,
                    reinterpret_cast<const sockaddr*>(&loop), sizeof(loop));
             last_broadcast = now;
@@ -162,12 +163,13 @@ void PeerDiscovery::loop() {
                               info.room = peer_room;
                               info.last_seen = std::chrono::steady_clock::now();
 
-                              // Prefer loopback for same-host peers so multiple local instances remain distinct.
-                              const bool is_loopback_src = (std::strcmp(ip_str, "127.0.0.1") == 0) ||
-                                                           (src.sin_addr.s_addr == htonl(INADDR_LOOPBACK));
-                              const bool is_same_host = is_loopback_src || is_local_interface_ipv4(src.sin_addr);
-                              if (is_same_host) {
-                                  info.ip = "127.0.0.1";
+                               // Prefer loopback for same-host peers so multiple local instances remain distinct.
+                               const bool is_loopback_src = (std::strcmp(ip_str, "127.0.0.1") == 0) ||
+                                                            (std::strcmp(ip_str, "127.255.255.255") == 0) ||
+                                                            (src.sin_addr.s_addr == htonl(INADDR_LOOPBACK));
+                               const bool is_same_host = is_loopback_src || is_local_interface_ipv4(src.sin_addr);
+                               if (is_same_host) {
+                                   info.ip = "127.0.0.1";
                                   info.is_local = true;
                               }
 

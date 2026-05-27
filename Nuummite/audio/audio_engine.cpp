@@ -55,13 +55,25 @@ std::string exeDir() {
     return full.substr(0, slash);
 }
 
-std::string cwd() {
-    char buf[MAX_PATH] = {0};
-    const DWORD len = GetCurrentDirectoryA(MAX_PATH, buf);
-    if (len == 0 || len >= MAX_PATH) {
-        return ".";
+HMODULE SecureLoadPortAudioLibrary(const std::string& full_path) {
+    const bool has_dir = (full_path.find('\\') != std::string::npos) || (full_path.find('/') != std::string::npos);
+    DWORD flags =
+        LOAD_LIBRARY_SEARCH_APPLICATION_DIR |
+        LOAD_LIBRARY_SEARCH_SYSTEM32 |
+        LOAD_LIBRARY_SEARCH_USER_DIRS;
+    if (has_dir) {
+        flags |= LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
     }
-    return std::string(buf, buf + len);
+
+    HMODULE h_module = LoadLibraryExA(full_path.c_str(), nullptr, flags);
+    if (!h_module && GetLastError() == ERROR_INVALID_PARAMETER) {
+        // Older systems may not support LOAD_LIBRARY_SEARCH_* flags.
+        // This still uses an explicit (or app-dir) path for the target DLL.
+        if (has_dir) {
+            h_module = LoadLibraryA(full_path.c_str());
+        }
+    }
+    return h_module;
 }
 
 struct PortAudioApi {
@@ -96,43 +108,69 @@ struct PortAudioApi {
 
     bool load(std::string& error) {
         if (module) return true;
+
+        auto fail = [&](const std::string& msg) -> bool {
+            error = msg;
+            unload();
+            Initialize = nullptr;
+            Terminate = nullptr;
+            GetErrorText = nullptr;
+            GetDeviceCount = nullptr;
+            GetDefaultInputDevice = nullptr;
+            GetDefaultOutputDevice = nullptr;
+            GetDeviceInfo = nullptr;
+            GetHostApiInfo = nullptr;
+            OpenStream = nullptr;
+            CloseStream = nullptr;
+            StartStream = nullptr;
+            StopStream = nullptr;
+            ReadStream = nullptr;
+            return false;
+        };
+
         std::vector<std::string> candidates = {
             exeDir() + "\\" + DEFAULT_PORTAUDIO_DLL,
             exeDir() + "\\_internal\\" + DEFAULT_PORTAUDIO_DLL,
             exeDir() + "\\_internal\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
             exeDir() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
-            cwd() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
-            DEFAULT_PORTAUDIO_DLL,
         };
         for (const auto& candidate : candidates) {
-            module = LoadLibraryA(candidate.c_str());
+            module = SecureLoadPortAudioLibrary(candidate);
             if (module) break;
         }
         if (!module) {
-            error = "Could not load libportaudio.dll (Searched root, _internal, and development paths)";
-            return false;
+            // Safe fallback: restrict search to application dir + system32 (no CWD / PATH probing).
+            module = SecureLoadPortAudioLibrary(DEFAULT_PORTAUDIO_DLL);
+        }
+        if (!module) {
+            return fail("Could not securely resolve libportaudio.dll dependencies");
         }
         auto load_symbol = [this, &error](auto& fn, const char* name) -> bool {
             fn = reinterpret_cast<std::decay_t<decltype(fn)>>(GetProcAddress(module, name));
             if (!fn) {
-                error = std::string("Missing PortAudio symbol: ") + name;
+                error = std::string("Missing dynamic entry: ") + name;
                 return false;
             }
             return true;
         };
-        return load_symbol(Initialize, "Pa_Initialize") &&
-               load_symbol(Terminate, "Pa_Terminate") &&
-               load_symbol(GetErrorText, "Pa_GetErrorText") &&
-               load_symbol(GetDeviceCount, "Pa_GetDeviceCount") &&
-               load_symbol(GetDefaultInputDevice, "Pa_GetDefaultInputDevice") &&
-               load_symbol(GetDefaultOutputDevice, "Pa_GetDefaultOutputDevice") &&
-               load_symbol(GetDeviceInfo, "Pa_GetDeviceInfo") &&
-               load_symbol(GetHostApiInfo, "Pa_GetHostApiInfo") &&
-               load_symbol(OpenStream, "Pa_OpenStream") &&
-               load_symbol(CloseStream, "Pa_CloseStream") &&
-               load_symbol(StartStream, "Pa_StartStream") &&
-               load_symbol(StopStream, "Pa_StopStream") &&
-               load_symbol(ReadStream, "Pa_ReadStream");
+        const bool ok =
+            load_symbol(Initialize, "Pa_Initialize") &&
+            load_symbol(Terminate, "Pa_Terminate") &&
+            load_symbol(GetErrorText, "Pa_GetErrorText") &&
+            load_symbol(GetDeviceCount, "Pa_GetDeviceCount") &&
+            load_symbol(GetDefaultInputDevice, "Pa_GetDefaultInputDevice") &&
+            load_symbol(GetDefaultOutputDevice, "Pa_GetDefaultOutputDevice") &&
+            load_symbol(GetDeviceInfo, "Pa_GetDeviceInfo") &&
+            load_symbol(GetHostApiInfo, "Pa_GetHostApiInfo") &&
+            load_symbol(OpenStream, "Pa_OpenStream") &&
+            load_symbol(CloseStream, "Pa_CloseStream") &&
+            load_symbol(StartStream, "Pa_StartStream") &&
+            load_symbol(StopStream, "Pa_StopStream") &&
+            load_symbol(ReadStream, "Pa_ReadStream");
+        if (!ok) {
+            return fail(error);
+        }
+        return true;
     }
 
     void unload() {
@@ -320,8 +358,13 @@ AudioEngine::AudioEngine()
         throw std::runtime_error("Failed to create UDP socket");
     }
 
-    const int reuse = 1;
-    setsockopt(recv_sock_, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&reuse), sizeof(reuse));
+    const int exclusive = 1;
+    if (setsockopt(recv_sock_, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
+                   reinterpret_cast<const char*>(&exclusive), sizeof(exclusive)) == SOCKET_ERROR) {
+        closesocket(recv_sock_);
+        recv_sock_ = INVALID_SOCKET;
+        throw std::runtime_error("Failed to secure exclusive port binding rules");
+    }
     const int buf_size = 65536;
     setsockopt(recv_sock_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(recv_sock_, IP_TOS_EF);
@@ -349,7 +392,9 @@ AudioEngine::AudioEngine()
     mix_frame_.assign(FRAME, 0);
     playback_fifo_.assign(static_cast<size_t>(FRAME) * 8u, 0); 
     fifo_read_ = fifo_write_ = fifo_size_ = 0;
-    stream_snapshot_.reserve(128);
+    for (auto& buf : stream_snapshot_buffers_) {
+        buf.reserve(128);
+    }
 
     if (!openOutput()) {
         std::cerr << " Failed to open output device\n";
@@ -451,20 +496,51 @@ void AudioEngine::setAecStreamDelayMs(int delay_ms) {
 void AudioEngine::setHearTargets(const std::unordered_set<std::string>& hear_ids) {
     std::lock_guard<std::mutex> lock(streams_mutex_);
     hear_targets_ = hear_ids;
+    rebuildStreamSnapshotLocked_();
 }
 
 AudioEngine::StreamState* AudioEngine::getOrCreateStream(const std::string& id) {
     std::lock_guard<std::mutex> lock(streams_mutex_);
     auto& st = streams_[id];
+    const bool created = (st == nullptr);
     if (!st) {
         st = std::make_unique<StreamState>();
         st->id = id;
     }
-    if (streams_.size() > stream_snapshot_.capacity()) {
-        const size_t want = std::max(stream_snapshot_.capacity() * 2, streams_.size());
-        stream_snapshot_.reserve(want);
+    if (streams_.size() > stream_snapshot_buffers_[0].capacity()) {
+        const size_t want = std::max(stream_snapshot_buffers_[0].capacity() * 2, streams_.size());
+        for (auto& buf : stream_snapshot_buffers_) {
+            buf.reserve(want);
+        }
+    }
+    if (created) {
+        rebuildStreamSnapshotLocked_();
     }
     return st.get();
+}
+
+void AudioEngine::rebuildStreamSnapshotLocked_() {
+    const uint8_t current = stream_snapshot_active_.load(std::memory_order_relaxed);
+    const uint8_t write = static_cast<uint8_t>(current ^ 1u);
+
+    while (stream_snapshot_readers_[write].load(std::memory_order_acquire) != 0) {
+#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
+        _mm_pause();
+#endif
+        std::this_thread::yield();
+    }
+
+    auto& buf = stream_snapshot_buffers_[write];
+    buf.clear();
+    buf.reserve(streams_.size());
+
+    for (const auto& [id, st] : streams_) {
+        if (!st) continue;
+        if (!hear_targets_.empty() && !hear_targets_.count(id)) continue;
+        buf.push_back(st.get());
+    }
+
+    stream_snapshot_active_.store(write, std::memory_order_release);
 }
 
 void AudioEngine::setTxMuted(bool enabled) {
@@ -706,8 +782,46 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     st->releaseLock();
 }
 
+int AudioEngine::getPeerPeak(const std::string& peer_id) const {
+    if (peer_id.empty()) return 0;
+
+    std::unique_lock<std::mutex> lock(streams_mutex_, std::try_to_lock);
+    if (!lock.owns_lock()) {
+        return 0;
+    }
+    auto it = streams_.find(peer_id);
+    if (it == streams_.end() || !it->second) {
+        return 0;
+    }
+    return it->second->peak_pcm.load(std::memory_order_relaxed);
+}
+
 void AudioEngine::renderOutput(int16_t* out, int sample_count) {
     if (!out || sample_count <= 0) return;
+
+    struct StreamSnapshotGuard {
+        AudioEngine* engine = nullptr;
+        uint8_t idx = 0;
+        const std::vector<AudioEngine::StreamState*>* snapshot = nullptr;
+
+        explicit StreamSnapshotGuard(AudioEngine* e) : engine(e) {
+            for (;;) {
+                idx = engine->stream_snapshot_active_.load(std::memory_order_acquire);
+                engine->stream_snapshot_readers_[idx].fetch_add(1, std::memory_order_acq_rel);
+                if (idx == engine->stream_snapshot_active_.load(std::memory_order_acquire)) break;
+                engine->stream_snapshot_readers_[idx].fetch_sub(1, std::memory_order_release);
+            }
+            snapshot = &engine->stream_snapshot_buffers_[idx];
+        }
+
+        ~StreamSnapshotGuard() {
+            if (!engine) return;
+            engine->stream_snapshot_readers_[idx].fetch_sub(1, std::memory_order_release);
+        }
+
+        StreamSnapshotGuard(const StreamSnapshotGuard&) = delete;
+        StreamSnapshotGuard& operator=(const StreamSnapshotGuard&) = delete;
+    };
 
     const size_t need = static_cast<size_t>(sample_count);
     if (playback_fifo_.empty() || mix_frame_.size()!= static_cast<size_t>(FRAME) ||
@@ -744,23 +858,15 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
         int active = 0;
         float peak = 0.0f;
 
-        std::unique_lock<std::mutex> streams_lock(streams_mutex_, std::try_to_lock);
-        if (!streams_lock.owns_lock()) {
+        std::array<int16_t, FRAME> pcm_frame{};
+        StreamSnapshotGuard guard(this);
+        if (!guard.snapshot || guard.snapshot->empty()) {
             std::fill(mix_frame_.begin(), mix_frame_.end(), 0);
             updateMixedLevel(mix_frame_);
             return;
         }
 
-        stream_snapshot_.clear();
-        for (const auto& [id, st] : streams_) {
-            if (!st) continue;
-            if (!hear_targets_.empty() &&!hear_targets_.count(id)) continue;
-            stream_snapshot_.push_back(st.get());
-        }
-        streams_lock.unlock();
-
-        std::array<int16_t, FRAME> pcm_frame{};
-        for (auto* st : stream_snapshot_) {
+        for (auto* st : *guard.snapshot) {
             if (!st) continue;
 
             if (!st->tryAcquireLock()) continue;
@@ -769,6 +875,7 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
             bool is_missing = false;
             const bool has_packet = st->jitter_buffer.pop(view, is_missing);
             if (!has_packet ||!st->decoder) {
+                st->peak_pcm.store(0, std::memory_order_relaxed);
                 st->releaseLock();
                 continue;
             }
@@ -780,11 +887,20 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
                 decoded = st->decoder->decode_into(view.data, static_cast<int>(view.len), pcm_frame.data(), FRAME);
             }
             st->releaseLock();
-            if (decoded < 0) continue;
+            if (decoded < 0) {
+                st->peak_pcm.store(0, std::memory_order_relaxed);
+                continue;
+            }
             if (decoded > FRAME) decoded = FRAME;
             if (decoded < FRAME) {
                 std::fill(pcm_frame.begin() + decoded, pcm_frame.end(), 0);
             }
+
+            int stream_peak = 0;
+            for (int i = 0; i < FRAME; ++i) {
+                stream_peak = std::max(stream_peak, std::abs(static_cast<int>(pcm_frame[static_cast<size_t>(i)])));
+            }
+            st->peak_pcm.store(stream_peak, std::memory_order_relaxed);
 
             active++;
             for (int i = 0; i < FRAME; ++i) {
@@ -911,7 +1027,15 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
     socket_utils::set_dscp(send_sock_, IP_TOS_EF);
     socket_utils::set_non_blocking(send_sock_, true);
     socket_utils::disable_udp_connreset(send_sock_);
-    send_thread_ = std::thread(&AudioEngine::sendLoop, this);
+    try {
+        send_thread_ = std::thread(&AudioEngine::sendLoop, this);
+    } catch (...) {
+        closesocket(send_sock_);
+        send_sock_ = INVALID_SOCKET;
+        running_.store(false);
+        closeInput();
+        throw;
+    }
 
     auto active_destinations = transport_.destinations();
     std::cout << " Audio capture ACTIVE\n";
@@ -1045,22 +1169,8 @@ void AudioEngine::sendLoop() {
             for (const auto sample : frame) {
                 input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
             }
-
-            const bool voice_detected = input_peak > 400;
-            static int silence_frames = 0;
-            constexpr int VAD_HANGOVER_FRAMES = 14; 
-
-            if (voice_detected) {
-                silence_frames = 0;
-            } else {
-                silence_frames++;
-            }
-
-            const bool should_send =!tx_muted_local && (voice_detected || silence_frames <= VAD_HANGOVER_FRAMES);
             capture_level_.store(std::min(100, (input_peak * 100) / 32767));
-            capture_active_.store(should_send);
-
-            if (!should_send) continue;
+            capture_active_.store(!tx_muted_local);
         } else {
             if (tx_muted_local) {
                 std::fill(frame.begin(), frame.end(), 0);
@@ -1072,12 +1182,6 @@ void AudioEngine::sendLoop() {
             }
             capture_level_.store(std::min(100, (input_peak * 100) / 32767));
             capture_active_.store(!tx_muted_local);
-            if (tx_muted_local) continue;
-        }
-
-        {
-            std::lock_guard<std::mutex> lock(config_mutex_);
-            tx_muted_local = tx_muted_;
         }
 
         const std::vector<uint8_t> opus_data = encoder_.encode(frame);

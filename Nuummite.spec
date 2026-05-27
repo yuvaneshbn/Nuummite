@@ -34,7 +34,9 @@ binaries = [
 
 # Qt Designer .ui files loaded at runtime via `resource_path("Nuummite/ui/...")`
 ui_dir = ROOT / "Nuummite" / "ui"
-datas = [(str(p), "Nuummite/ui") for p in sorted(ui_dir.glob("*.ui"))]
+datas = [(str(p), "Nuummite/ui") for p in sorted(
+    list(ui_dir.glob("*.ui")) + list(ui_dir.glob("*.qss")) + list(ui_dir.glob("*.svg"))
+)]
 
 a = Analysis(
     ["python\\main.py"],

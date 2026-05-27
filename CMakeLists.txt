@@ -109,7 +109,7 @@ target_include_directories(voice_shared PUBLIC
     ${WEBRTC_INCLUDE_DIR}/webrtc-audio-processing-1
 )
 target_compile_definitions(voice_shared PUBLIC NOMINMAX)
-target_link_libraries(voice_shared PUBLIC opus libsodium rnnoise webrtc_audio_processing ws2_32 winmm iphlpapi)
+target_link_libraries(voice_shared PUBLIC opus rnnoise webrtc_audio_processing ws2_32 winmm iphlpapi)
 set_target_properties(voice_shared PROPERTIES AUTOMOC OFF AUTOUIC OFF)
 
 if (VOICE_BUILD_AUDIO_NATIVE)

@@ -11,7 +11,7 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Dict, List, Set
 
-from PySide6 import QtCore, QtWidgets, QtUiTools
+from PySide6 import QtCore, QtWidgets, QtUiTools, QtGui
 
 # Allow running as a script or module
 if __package__ in (None, ""):
@@ -72,15 +72,28 @@ def _init_logging() -> Path:
 
     fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
-    file_handler = RotatingFileHandler(
-        str(log_path),
-        maxBytes=2 * 1024 * 1024,
-        backupCount=3,
-        encoding="utf-8",
-    )
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(fmt)
-    root_logger.addHandler(file_handler)
+    file_handler = None
+    for candidate in (
+        log_path,
+        log_dir / f"Nuummite_debug_{os.getpid()}.log",
+        (Path(os.environ.get("TEMP", str(ROOT))) / f"Nuummite_debug_{os.getpid()}.log").resolve(),
+    ):
+        try:
+            file_handler = RotatingFileHandler(
+                str(candidate),
+                maxBytes=2 * 1024 * 1024,
+                backupCount=3,
+                encoding="utf-8",
+            )
+            _LOG_FILE = candidate
+            break
+        except OSError:
+            continue
+
+    if file_handler is not None:
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(fmt)
+        root_logger.addHandler(file_handler)
 
     stream_handler = logging.StreamHandler(stream=sys.stderr)
     stream_handler.setLevel(logging.INFO)
@@ -226,6 +239,46 @@ def resource_path(rel: str) -> str:
     return str(base0 / rel_path)
 
 
+_THEME_KEY = "ui/theme"  # "dark" | "light"
+
+
+def _apply_qss(app: QtWidgets.QApplication, qss_path: str) -> None:
+    try:
+        qss = Path(qss_path).read_text(encoding="utf-8")
+    except Exception as e:
+        logging.getLogger(__name__).warning("Failed to load stylesheet (%s): %s", qss_path, e)
+        return
+
+    placeholders = {
+        "__CHECKMARK_SVG__": Path(resource_path("Nuummite/ui/checkmark.svg")).resolve().as_posix(),
+        "__THEME_SWITCH_OFF_SVG__": Path(resource_path("Nuummite/ui/switch_off.svg")).resolve().as_posix(),
+        "__THEME_SWITCH_ON_SVG__": Path(resource_path("Nuummite/ui/switch_on.svg")).resolve().as_posix(),
+    }
+    for key, value in placeholders.items():
+        qss = qss.replace(key, value)
+
+    app.setStyleSheet(qss)
+
+
+def get_saved_theme() -> str:
+    s = QtCore.QSettings()
+    theme = str(s.value(_THEME_KEY, "dark")).strip().lower()
+    return "light" if theme == "light" else "dark"
+
+
+def set_saved_theme(theme: str) -> None:
+    theme = "light" if str(theme).strip().lower() == "light" else "dark"
+    s = QtCore.QSettings()
+    s.setValue(_THEME_KEY, theme)
+    s.sync()
+
+
+def apply_theme(app: QtWidgets.QApplication, theme: str) -> None:
+    theme = "light" if str(theme).strip().lower() == "light" else "dark"
+    qss_file = "light.qss" if theme == "light" else "dark.qss"
+    _apply_qss(app, resource_path(f"Nuummite/ui/{qss_file}"))
+
+
 def _center_and_activate(widget: QtWidgets.QWidget, *, always_on_top: bool = False) -> None:
     if always_on_top:
         widget.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint, True)
@@ -241,8 +294,82 @@ def _center_and_activate(widget: QtWidgets.QWidget, *, always_on_top: bool = Fal
     widget.activateWindow()
 
 
+class TickSlider(QtWidgets.QSlider):
+    """
+    QSS-styled QSlider tends to lose tick marks, so we paint them manually.
+    """
+
+    def paintEvent(self, event) -> None:
+        super().paintEvent(event)
+
+        if self.orientation() != QtCore.Qt.Orientation.Horizontal:
+            return
+
+        tick_pos = self.tickPosition()
+        if tick_pos == QtWidgets.QSlider.TickPosition.NoTicks:
+            return
+
+        minimum = self.minimum()
+        maximum = self.maximum()
+        if maximum <= minimum:
+            return
+
+        interval = self.tickInterval()
+        if interval <= 0:
+            interval = self.pageStep()
+        if interval <= 0:
+            interval = 1
+
+        opt = QtWidgets.QStyleOptionSlider()
+        self.initStyleOption(opt)
+
+        handle = self.style().subControlRect(
+            QtWidgets.QStyle.ComplexControl.CC_Slider,
+            opt,
+            QtWidgets.QStyle.SubControl.SC_SliderHandle,
+            self,
+        )
+        handle_w = max(1, handle.width())
+        span = float(maximum - minimum)
+        usable = max(1.0, float(self.width() - handle_w))
+        x0 = handle_w / 2.0
+
+        pen = QtGui.QPen(QtGui.QColor("#7A7A7A"))
+        pen.setWidth(1)
+
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, False)
+        painter.setPen(pen)
+
+        tick_h = 4
+        y_top = self.rect().top() + 1
+        y_bot = self.rect().bottom() - 1
+
+        def _x_for_value(v: int) -> int:
+            t = (float(v - minimum) / span) if span > 0 else 0.0
+            return int(round(x0 + t * usable))
+
+        for v in range(minimum, maximum + 1, interval):
+            x = _x_for_value(v)
+            if tick_pos in (QtWidgets.QSlider.TickPosition.TicksBothSides, QtWidgets.QSlider.TickPosition.TicksAbove):
+                painter.drawLine(x, y_top, x, y_top + tick_h)
+            if tick_pos in (QtWidgets.QSlider.TickPosition.TicksBothSides, QtWidgets.QSlider.TickPosition.TicksBelow):
+                painter.drawLine(x, y_bot, x, y_bot - tick_h)
+
+        painter.end()
+
+
+class NuummiteUiLoader(QtUiTools.QUiLoader):
+    def createWidget(self, className: str, parent=None, name: str = ""):
+        if className == "QSlider":
+            w = TickSlider(parent)
+            w.setObjectName(name)
+            return w
+        return super().createWidget(className, parent, name)
+
+
 def load_ui(filename: str, parent=None):
-    loader = QtUiTools.QUiLoader()
+    loader = NuummiteUiLoader()
     resolved = resource_path(f"Nuummite/ui/{filename}")
 
     # Prefer Python I/O to avoid QFile quirks in some frozen environments.
@@ -841,6 +968,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.room_combo = find(QtWidgets.QComboBox, "roomCombo")
         self.join_leave_button = find(QtWidgets.QPushButton, "joinLeaveButton")
         self.refresh_button = find(QtWidgets.QPushButton, "refreshButton")
+        self.theme_switch = find(QtWidgets.QCheckBox, "themeSwitch")
         self.connection_indicator = find(QtWidgets.QLabel, "connectionIndicator")
         self.search_input = find(QtWidgets.QLineEdit, "searchInput")
         self.participant_list = find(QtWidgets.QListWidget, "participantList")
@@ -882,6 +1010,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.broadcast_button.toggled.connect(self.toggle_broadcast)
         self.settings_button.clicked.connect(self.open_settings)
 
+        if self.theme_switch is not None:
+            self.theme_switch.blockSignals(True)
+            self.theme_switch.setChecked(get_saved_theme() == "dark")
+            self._sync_theme_switch_label()
+            self.theme_switch.blockSignals(False)
+            self.theme_switch.toggled.connect(self._on_theme_toggled)
+
         self.stop_capture_timer = QtCore.QTimer(self)
         self.stop_capture_timer.setSingleShot(True)
         self.stop_capture_timer.setInterval(1200)
@@ -912,6 +1047,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.refresh_participants(False)
         self.set_connected_state(True)
+
+    def _on_theme_toggled(self, checked: bool) -> None:
+        theme = "dark" if checked else "light"
+        set_saved_theme(theme)
+        self._sync_theme_switch_label()
+        app = QtWidgets.QApplication.instance()
+        if app is not None:
+            apply_theme(app, theme)
+
+    def _sync_theme_switch_label(self) -> None:
+        if self.theme_switch is None:
+            return
+        self.theme_switch.setText("Dark" if self.theme_switch.isChecked() else "Light")
 
     # ----- UI wiring -----
     def set_connected_state(self, connected: bool, detail: str = ""):
@@ -1101,11 +1249,11 @@ class MainWindow(QtWidgets.QMainWindow):
             row.setMicStatus(not self.audio.tx_muted)
         speaking_state[self.my_id] = self_state
         self.last_voice_ts[self.my_id] = time.monotonic()
-
-        raw_level = self.audio.mixed_peak
         for cid, row in self.rows.items():
             if cid == self.my_id:
                 continue
+
+            raw_level = self.audio.get_peer_peak(cid)
             level = min(100, int((raw_level * 100) / 32767)) if raw_level else 0
             now = time.monotonic()
             is_active_instant = level >= 2
@@ -1215,6 +1363,7 @@ def run_app():
     app.setStyle("Fusion")
     app.setOrganizationName("Nuummite")
     app.setApplicationName("Nuummite")
+    apply_theme(app, get_saved_theme())
 
     logging.getLogger(__name__).info("Loading startup dialog UI (Popup_message.ui)...")
     dialog = load_ui("Popup_message.ui")

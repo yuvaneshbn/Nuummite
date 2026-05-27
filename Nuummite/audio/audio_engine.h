@@ -7,11 +7,12 @@
 #include "jitter_buffer.h"
 
 #include <algorithm>
-#include <array>
 #include <atomic>
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <mutex>
+#include <new>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -19,6 +20,7 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <array>
 
 #include <winsock2.h>
 #if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
@@ -74,6 +76,7 @@ public:
     int captureLevel() const { return capture_level_.load(); }
     bool captureActive() const { return capture_active_.load(); }
     float mixedPeak() const { return mixed_peak_.load(); }
+    int getPeerPeak(const std::string& peer_id) const;
     bool isRunning() const { return running_.load(); }
     bool echoAvailable() const { return aec_!= nullptr; }
     bool echoEnabled() const { return echo_enabled_.load(); }
@@ -134,9 +137,11 @@ private:
         }
 
     private:
+        static constexpr std::size_t kCacheLine = 64;
+
         std::array<T, Capacity> buffer_{};
-        std::atomic<size_t> head_{0};
-        std::atomic<size_t> tail_{0};
+        alignas(kCacheLine) std::atomic<size_t> head_{0};
+        alignas(kCacheLine) std::atomic<size_t> tail_{0};
     };
 
     using CaptureFrame = std::array<int16_t, FRAME>;
@@ -149,6 +154,7 @@ private:
         std::unique_ptr<OpusCodec> decoder;
         JitterBuffer jitter_buffer;
         std::atomic_flag lock = ATOMIC_FLAG_INIT;
+        std::atomic<int> peak_pcm{0};
 
         bool tryAcquireLock() noexcept {
             return!lock.test_and_set(std::memory_order_acquire);
@@ -166,6 +172,7 @@ private:
     };
 
     StreamState* getOrCreateStream(const std::string& id);
+    void rebuildStreamSnapshotLocked_();
 
     int port_ = 0;
     std::string client_id_;
@@ -212,10 +219,13 @@ private:
     std::atomic<int> aec_stream_delay_ms_{180};
 
     OpusCodec encoder_;
-    std::mutex streams_mutex_;
+    mutable std::mutex streams_mutex_;
     std::unordered_map<std::string, std::unique_ptr<StreamState>> streams_;
     std::unordered_set<std::string> hear_targets_;
-    std::vector<StreamState*> stream_snapshot_;
+
+    std::atomic<uint8_t> stream_snapshot_active_{0};
+    std::array<std::atomic<uint32_t>, 2> stream_snapshot_readers_{{0u, 0u}};
+    std::array<std::vector<StreamState*>, 2> stream_snapshot_buffers_{};
 
     LockFreeSpscRingBuffer<CaptureFrame, CAPTURE_RING_CAPACITY> capture_frames_;
     std::atomic<uint32_t> capture_dropped_{0};

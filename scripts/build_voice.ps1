@@ -8,11 +8,17 @@ Set-Location ..
 
 $uiSrc = "Nuummite\ui\*.ui"
 $uiDst = "Nuummite\ui"
+$qssSrc = "Nuummite\ui\*.qss"
+$qssDst = "Nuummite\ui"
+$svgSrc = "Nuummite\ui\*.svg"
+$svgDst = "Nuummite\ui"
 
 pyinstaller -y `
   -D `
   -n "Nuummite-voice" `
   --add-data "$uiSrc;$uiDst" `
+  --add-data "$qssSrc;$qssDst" `
+  --add-data "$svgSrc;$svgDst" `
   -i "Nuummite\technical-support.ico" `
   "python\main.py"
 

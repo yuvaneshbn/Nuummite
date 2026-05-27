@@ -41,6 +41,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="themeSwitch">
+       <property name="text">
+        <string>Dark</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Toggle light/dark theme</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="topSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -131,23 +144,37 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="myControlsGroup">
-       <property name="title">
-        <string>My Controls</string>
-       </property>
-       <layout class="QVBoxLayout" name="controlsPlaceholderLayout">
-        <item>
-         <widget class="QLabel" name="controlsHint">
-          <property name="text">
-           <string>Embed VolumeControl form here</string>
-          </property>
+     <widget class="QGroupBox" name="myControlsGroup">
+      <property name="title">
+       <string>My Controls</string>
+      </property>
+      <layout class="QVBoxLayout" name="myControlsLayout">
+       <item>
+        <widget class="QScrollArea" name="controlsScrollArea">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="controlsScrollContent">
+          <layout class="QVBoxLayout" name="controlsPlaceholderLayout">
+           <item>
+            <widget class="QLabel" name="controlsHint">
+             <property name="text">
+              <string>Embed VolumeControl form here</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </item>
    <item>
     <layout class="QHBoxLayout" name="bottomToolbarLayout">
      <item>

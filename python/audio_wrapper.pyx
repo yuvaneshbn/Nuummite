@@ -65,6 +65,7 @@ cdef extern from "audio/audio_engine.h" namespace "":
         int captureLevel() const
         bool captureActive() const
         float mixedPeak() const
+        int getPeerPeak(const string&) const
         void setHearTargets(const unordered_set[string]&)
         void renderOutput(int16_t* out, int sample_count)
         uint64_t debugPacketsSent() const
@@ -210,6 +211,13 @@ cdef class PyAudioEngine:
     @property
     def mixed_peak(self):
         return self.thisptr.mixedPeak()
+
+    def get_peer_peak(self, str client_id):
+        """
+        Query the peak levels calculated from decoded outputs per remote client.
+        Returns a raw int16-like peak value (0..32767).
+        """
+        return self.thisptr.getPeerPeak(client_id.encode("utf-8"))
 
     @property
     def packets_sent(self):
