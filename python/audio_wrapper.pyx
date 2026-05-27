@@ -7,7 +7,9 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.unordered_set cimport unordered_set
 from libcpp cimport bool
+from libc.stddef cimport size_t
 from libc.stdint cimport uint16_t, uint64_t, int16_t
+from libc.string cimport memcpy
 
 cdef extern from "common/opus_codec.h" namespace "":
     cdef cppclass OpusCodec:
@@ -228,6 +230,7 @@ cdef class PyAudioEngine:
                 cpp_set.insert(t.encode("utf-8"))
         self.thisptr.setHearTargets(cpp_set)
 
+
 cdef class PyPeerDiscovery:
     cdef PeerDiscovery* thisptr
 
@@ -284,34 +287,41 @@ cdef class PyOpusEncoder:
     def __dealloc__(self):
         del self.thisptr
 
+    # Fixed Manual Byte Loop: Optimized with read-only typed memoryviews and C memcpy.
     def encode(self, samples):
         """
         Encode one frame of mono int16 PCM.
-        `samples` can be a list/tuple of ints or a bytes-like object containing int16 little-endian.
+        `samples` can be a list/tuple of ints or a bytes-like object containing int16 little-endian samples.
         """
         cdef vector[int16_t] pcm
+        cdef const unsigned char[::1] memory_view
+        cdef Py_ssize_t length_in_bytes
+        cdef Py_ssize_t sample_count
+        cdef int index
+        cdef int cast_value
+
         if isinstance(samples, (bytes, bytearray, memoryview)):
-            b = memoryview(samples).tobytes()
-            if len(b) % 2 != 0:
-                raise ValueError("PCM bytes must be int16 little-endian")
-            n = len(b) // 2
-            if n == 0:
-                raise ValueError("Empty PCM")
-            pcm.resize(n)
-            for i in range(n):
-                u = (<unsigned int>b[2*i]) | ((<unsigned int>b[2*i+1]) << 8)
-                if u >= 32768:
-                    pcm[i] = <int16_t>(u - 65536)
-                else:
-                    pcm[i] = <int16_t>u
+            # Direct buffer extraction using a contiguous read-only memoryview to avoid heap copying [9]
+            memory_view = samples
+            length_in_bytes = memory_view.shape[0]
+            if length_in_bytes % 2!= 0:
+                raise ValueError("PCM buffer size must be even (containing int16 samples)")
+            sample_count = length_in_bytes // 2
+            if sample_count == 0:
+                raise ValueError("PCM buffer cannot be empty")
+            
+            pcm.resize(<size_t>sample_count)
+            # Bulk copy from bytes to int16_t vector storage.
+            memcpy(&pcm[0], &memory_view[0], <size_t>length_in_bytes)
         else:
-            for s in samples:
-                v = int(s)
-                if v > 32767:
-                    v = 32767
-                elif v < -32768:
-                    v = -32768
-                pcm.push_back(<int16_t>v)
+            # Fallback for standard Python iterables (e.g., lists or tuples)
+            for item in samples:
+                cast_value = int(item)
+                if cast_value > 32767:
+                    cast_value = 32767
+                elif cast_value < -32768:
+                    cast_value = -32768
+                pcm.push_back(<int16_t>cast_value)
 
         out = self.thisptr.encode(pcm)
-        return bytes(out) 
+        return bytes(out)

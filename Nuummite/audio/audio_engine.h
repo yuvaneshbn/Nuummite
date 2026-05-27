@@ -25,7 +25,10 @@
 #include <immintrin.h>
 #endif
 
-struct AudioDeviceInfo { int index; std::string name; };
+struct AudioDeviceInfo { 
+    int index;
+    std::string name; 
+};
 
 class AecProcessor;
 class RnNoiseProcessor;
@@ -72,40 +75,39 @@ public:
     bool captureActive() const { return capture_active_.load(); }
     float mixedPeak() const { return mixed_peak_.load(); }
     bool isRunning() const { return running_.load(); }
-    bool echoAvailable() const { return aec_ != nullptr; }
+    bool echoAvailable() const { return aec_!= nullptr; }
     bool echoEnabled() const { return echo_enabled_.load(); }
     bool isTxMuted() const;
 
-    // Diagnostics
     uint64_t debugPacketsSent() const { return packets_sent_.load(std::memory_order_relaxed); }
     uint64_t debugPacketsRecv() const { return packets_recv_.load(std::memory_order_relaxed); }
     uint64_t debugPacketsDecrypted() const { return packets_decrypted_.load(std::memory_order_relaxed); }
 
-    // Local hear list for mixing
     void setHearTargets(const std::unordered_set<std::string>& hear_ids);
 
 private:
     static constexpr int RATE = 48000;
-    static constexpr int FRAME = 960; // 20 ms @ 48 kHz
-    static constexpr size_t CAPTURE_QUEUE_MAX = 16; // ~320ms @ 20ms frames
+    static constexpr int FRAME = 960;
+    static constexpr size_t CAPTURE_QUEUE_MAX = 16;
 
     void listenLoop();
     void handleIncomingPacket(const std::vector<uint8_t>& data);
     void sendLoop();
-    bool openOutput(); void closeOutput();
-    bool openInput(); void closeInput();
+    bool openOutput(); 
+    void closeOutput();
+    bool openInput(); 
+    void closeInput();
     void updateMixedLevel(const std::vector<int16_t>& frame);
 
     template <typename T, size_t Capacity>
     class LockFreeSpscRingBuffer {
     public:
         static_assert(Capacity >= 2, "Capacity must be at least 2");
-
         bool push(const T& data) noexcept {
             const size_t head = head_.load(std::memory_order_relaxed);
             const size_t next = (head + 1) % Capacity;
             if (next == tail_.load(std::memory_order_acquire)) {
-                return false; // full
+                return false;
             }
             buffer_[head] = data;
             head_.store(next, std::memory_order_release);
@@ -115,7 +117,7 @@ private:
         bool pop(T& out) noexcept {
             const size_t tail = tail_.load(std::memory_order_relaxed);
             if (tail == head_.load(std::memory_order_acquire)) {
-                return false; // empty
+                return false;
             }
             out = buffer_[tail];
             tail_.store((tail + 1) % Capacity, std::memory_order_release);
@@ -133,24 +135,23 @@ private:
 
     private:
         std::array<T, Capacity> buffer_{};
-        std::atomic<size_t> head_{0}; // producer index
-        std::atomic<size_t> tail_{0}; // consumer index
+        std::atomic<size_t> head_{0};
+        std::atomic<size_t> tail_{0};
     };
 
     using CaptureFrame = std::array<int16_t, FRAME>;
-    static constexpr size_t CAPTURE_RING_CAPACITY = CAPTURE_QUEUE_MAX + 1; // one-slot-empty SPSC ring
+    static constexpr size_t CAPTURE_RING_CAPACITY = CAPTURE_QUEUE_MAX + 1;
 
     bool popCaptureFrame(CaptureFrame& out) noexcept;
 
     struct StreamState {
         std::string id;
         std::unique_ptr<OpusCodec> decoder;
-
         JitterBuffer jitter_buffer;
         std::atomic_flag lock = ATOMIC_FLAG_INIT;
 
         bool tryAcquireLock() noexcept {
-            return !lock.test_and_set(std::memory_order_acquire);
+            return!lock.test_and_set(std::memory_order_acquire);
         }
         void acquireLock() noexcept {
             while (lock.test_and_set(std::memory_order_acquire)) {
@@ -181,7 +182,6 @@ private:
     
     int input_device_index_ = -1;
     int output_device_index_ = -1;
-
     std::atomic<int> capture_level_{0};
     std::atomic<bool> capture_active_{false};
     std::atomic<float> mixed_peak_{0.0f};
@@ -190,18 +190,16 @@ private:
     std::atomic<uint64_t> packets_recv_{0};
     std::atomic<uint64_t> packets_decrypted_{0};
 
-    // config
-    bool pure_opus_ = false;        // debug: bypass all DSP (AEC/AGC/RNNoise/VAD/manual gain)
-    float master_volume_ = 1.0f;   // default master volume
+    bool pure_opus_ = false;
+    float master_volume_ = 1.0f;
     float output_volume_ = 1.0f;
     float tx_gain_db_ = 0.0f;
-    int mic_sensitivity_ = 45;     // default input sensitivity
+    int mic_sensitivity_ = 45;
     int noise_suppression_ = 0;
-    bool noise_suppression_enabled_ = false;   // testing: keep RNNoise off while tuning clarity
+    bool noise_suppression_enabled_ = false;
     bool auto_gain_ = false;
     std::atomic<bool> echo_enabled_{false};
-    // Queue WebRTC APM configuration updates to be applied on the capture thread
-    // (avoid locking / reconfiguring inside UI threads).
+
     std::atomic<bool> pending_aec_update_{false};
     std::atomic<bool> pending_agc_update_{false};
     std::atomic<bool> target_aec_enabled_{false};
@@ -221,28 +219,26 @@ private:
 
     LockFreeSpscRingBuffer<CaptureFrame, CAPTURE_RING_CAPACITY> capture_frames_;
     std::atomic<uint32_t> capture_dropped_{0};
-
     uint16_t seq_ = 0;
     uint32_t timestamp_ = 0;
 
     SOCKET recv_sock_ = INVALID_SOCKET;
     SOCKET send_sock_ = INVALID_SOCKET;
     RTPTransport transport_;
-
     void* wave_out_ = nullptr;
     void* wave_in_ = nullptr;
 
-    // Output callback must be real-time friendly: avoid allocations and blocking locks.
-    // We render fixed 20ms (960-sample) mix frames into a small FIFO and then satisfy
-    // whatever frame_count PortAudio asks for.
     std::vector<float> mix_accum_;
     std::vector<int16_t> mix_frame_;
     std::vector<int16_t> playback_fifo_;
     size_t fifo_read_ = 0;
     size_t fifo_write_ = 0;
     size_t fifo_size_ = 0;
-
     bool audio_debug_ = false;
+
+    // Kernel notification handles to replace thread-sleep polling
+    HANDLE capture_semaphore_ = nullptr;
+    std::atomic<bool> is_mic_testing_{false};
 };
 
 #endif // AUDIO_ENGINE_H
