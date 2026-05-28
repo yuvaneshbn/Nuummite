@@ -14,6 +14,7 @@ RnNoiseProcessor::RnNoiseProcessor() {
 
 RnNoiseProcessor::~RnNoiseProcessor() {
     if (state_) rnnoise_destroy(state_);
+    state_ = nullptr;
 }
 
 void RnNoiseProcessor::process(std::vector<int16_t>& frame) {
@@ -41,17 +42,13 @@ void RnNoiseProcessor::processBlock(int16_t* samples, int sample_count) {
     }
 
     float float_frame[480];
-
-    // Convert to float
     for (int i = 0; i < 480; ++i) {
-        float_frame[i] = static_cast<float>(samples[i]) / 32768.0f;
+        float_frame[i] = static_cast<float>(samples[i]);
     }
 
     rnnoise_process_frame(state_, float_frame, float_frame);
 
-    // Convert back to int16 with clamp
     for (int i = 0; i < 480; ++i) {
-        float val = float_frame[i] * 32768.0f;
-        samples[i] = static_cast<int16_t>(std::clamp(val, -32768.0f, 32767.0f));
+        samples[i] = static_cast<int16_t>(std::clamp(float_frame[i], -32768.0f, 32767.0f));
     }
 } 

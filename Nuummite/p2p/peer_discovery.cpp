@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <chrono>
 #include <cstring>
+#include <cstdio>
+#include <unordered_map>
 #include <vector>
 
 namespace {
@@ -64,25 +66,47 @@ void PeerDiscovery::stop() {
 }
 
 std::vector<PeerInfo> PeerDiscovery::peers() const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    auto snapshot = std::atomic_load(&snapshot_);
     std::vector<PeerInfo> out;
-    for (const auto& entry : peers_) {
-        if (entry.second.room == my_room_) {
-            out.push_back(entry.second);
-        }
+    if (!snapshot) {
+        return out;
+    }
+    for (const auto& entry : *snapshot) {
+        PeerInfo info;
+        info.id = entry.id;
+        info.ip = entry.ip;
+        info.port = entry.port;
+        info.room = entry.room;
+        info.is_local = entry.is_local;
+        out.push_back(std::move(info));
     }
     return out;
 }
 
-void PeerDiscovery::pruneLocked() {
-    const auto now = std::chrono::steady_clock::now();
-    for (auto it = peers_.begin(); it != peers_.end();) {
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second.last_seen).count() > PEER_STALE_MS) {
-            it = peers_.erase(it);
-        } else {
-            ++it;
-        }
+std::vector<PeerSnapshot> PeerDiscovery::peerSnapshots() const {
+    auto snapshot = std::atomic_load(&snapshot_);
+    if (!snapshot) {
+        return {};
     }
+    return *snapshot;
+}
+
+std::vector<std::string> PeerDiscovery::peerLines() const {
+    std::fprintf(stderr, "[peer_discovery] peerLines enter\n");
+    auto snapshot = std::atomic_load(&snapshot_);
+    if (!snapshot) {
+        std::fprintf(stderr, "[peer_discovery] no snapshot\n");
+        return {};
+    }
+    std::vector<std::string> out;
+    out.reserve(snapshot->size());
+    for (const auto& entry : *snapshot) {
+        out.push_back(entry.id + "|" + entry.ip + "|" +
+                      std::to_string(entry.port) + "|" + entry.room + "|" +
+                      (entry.is_local ? "1" : "0"));
+    }
+    std::fprintf(stderr, "[peer_discovery] peerLines exit count=%zu\n", out.size());
+    return out;
 }
 
 void PeerDiscovery::loop() {
@@ -103,6 +127,25 @@ void PeerDiscovery::loop() {
     setsockopt(sock, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char*>(&broadcast), sizeof(broadcast));
 
     const std::string announce = std::string(PEER_PREFIX) + my_id_ + ":" + my_room_ + ":" + std::to_string(my_port_);
+    std::unordered_map<std::string, PeerInfo> peers;
+    auto publish_snapshot = [&]() {
+        auto next = std::make_shared<std::vector<PeerSnapshot>>();
+        next->reserve(peers.size());
+        for (const auto& [peer_id, info] : peers) {
+            (void)peer_id;
+            if (info.room != my_room_) {
+                continue;
+            }
+            PeerSnapshot snapshot;
+            snapshot.id = info.id;
+            snapshot.ip = info.ip;
+            snapshot.port = info.port;
+            snapshot.room = info.room;
+            snapshot.is_local = info.is_local;
+            next->push_back(std::move(snapshot));
+        }
+        std::atomic_store(&snapshot_, std::const_pointer_cast<const std::vector<PeerSnapshot>>(next));
+    };
 
     auto last_broadcast = std::chrono::steady_clock::now() - std::chrono::milliseconds(BROADCAST_INTERVAL_MS);
 
@@ -148,9 +191,9 @@ void PeerDiscovery::loop() {
                         std::string peer_room = (second != std::string::npos) ? data.substr(first+1, second-first-1) : "main";
                         std::string port_str = (second != std::string::npos) ? data.substr(second+1) : "50002";
 
-                         if (peer_id != my_id_) {
-                             char ip_str[INET_ADDRSTRLEN] = {0};
-                             inet_ntop(AF_INET, &src.sin_addr, ip_str, sizeof(ip_str));
+                          if (peer_id != my_id_) {
+                              char ip_str[INET_ADDRSTRLEN] = {0};
+                              inet_ntop(AF_INET, &src.sin_addr, ip_str, sizeof(ip_str));
 
                               PeerInfo info;
                               info.id = peer_id;
@@ -167,23 +210,37 @@ void PeerDiscovery::loop() {
                                const bool is_loopback_src = (std::strcmp(ip_str, "127.0.0.1") == 0) ||
                                                             (std::strcmp(ip_str, "127.255.255.255") == 0) ||
                                                             (src.sin_addr.s_addr == htonl(INADDR_LOOPBACK));
-                               const bool is_same_host = is_loopback_src || is_local_interface_ipv4(src.sin_addr);
-                               if (is_same_host) {
-                                   info.ip = "127.0.0.1";
+                              const bool is_same_host = is_loopback_src || is_local_interface_ipv4(src.sin_addr);
+                              if (is_same_host) {
+                                  info.ip = "127.0.0.1";
                                   info.is_local = true;
                               }
 
-                             std::lock_guard<std::mutex> lock(mutex_);
-                             peers_[peer_id] = info;
-                             pruneLocked();
-                         }
-                    }
-                }
-            }
-        } else {
-            std::lock_guard<std::mutex> lock(mutex_);
-            pruneLocked();
-        }
-    }
-    closesocket(sock);
-} 
+                             peers[peer_id] = info;
+                             const auto now_seen = std::chrono::steady_clock::now();
+                             for (auto it = peers.begin(); it != peers.end();) {
+                                 if (std::chrono::duration_cast<std::chrono::milliseconds>(now_seen - it->second.last_seen).count() > PEER_STALE_MS) {
+                                     it = peers.erase(it);
+                                 } else {
+                                     ++it;
+                                 }
+                             }
+                             publish_snapshot();
+                          }
+                     }
+                 }
+             }
+         } else {
+             const auto now_seen = std::chrono::steady_clock::now();
+             for (auto it = peers.begin(); it != peers.end();) {
+                 if (std::chrono::duration_cast<std::chrono::milliseconds>(now_seen - it->second.last_seen).count() > PEER_STALE_MS) {
+                     it = peers.erase(it);
+                 } else {
+                     ++it;
+                 }
+             }
+             publish_snapshot();
+         }
+     }
+     closesocket(sock);
+ } 

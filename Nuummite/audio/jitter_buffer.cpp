@@ -128,7 +128,6 @@ void JitterBuffer::reset() {
     started_ = false;
     late_packets_ = 0;
     good_packets_ = 0;
-    buffer_target_ = 4;
     expected_seq_ = 0;
     consecutive_missing_ = 0;
     buffered_ = 0;

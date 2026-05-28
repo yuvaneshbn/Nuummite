@@ -3,82 +3,93 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <string>
 
 namespace {
 
-HMODULE SecureLoadDynamicLibrary(const std::string& full_path) {
-    const DWORD flags =
-        LOAD_LIBRARY_SEARCH_APPLICATION_DIR |
-        LOAD_LIBRARY_SEARCH_SYSTEM32 |
-        LOAD_LIBRARY_SEARCH_USER_DIRS |
-        LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
+std::wstring getEnvironmentPathW(const wchar_t* name) {
+    DWORD size = 260;
+    std::wstring value;
 
-    HMODULE h_module = LoadLibraryExA(full_path.c_str(), nullptr, flags);
-    if (!h_module) {
-        // Fallback for older systems that don't support LOAD_LIBRARY_SEARCH_* flags.
-        // This still uses an explicit path (no insecure directory searching for the DLL itself).
-        const DWORD err = GetLastError();
-        if (err == ERROR_INVALID_PARAMETER) {
-            h_module = LoadLibraryA(full_path.c_str());
+    for (;;) {
+        value.resize(size);
+        const DWORD len = GetEnvironmentVariableW(name, value.data(), size);
+        if (len == 0) {
+            return {};
         }
+        if (len < size) {
+            value.resize(len);
+            return value;
+        }
+        size = len + 1;
     }
-
-    if (!h_module) {
-        std::cerr << " Blocked unsecure DLL search path for: " << full_path << "\n";
-    }
-    return h_module;
 }
 
-HMODULE SecureLoadDynamicLibraryByName(const char* dll_name) {
-    const DWORD flags =
+std::wstring getModuleDirectoryW() {
+    DWORD size = MAX_PATH;
+    std::wstring value;
+
+    for (;;) {
+        value.resize(size);
+        const DWORD len = GetModuleFileNameW(nullptr, value.data(), size);
+        if (len == 0) {
+            return L".";
+        }
+        if (len < size) {
+            value.resize(len);
+            const size_t slash = value.find_last_of(L"\\/");
+            if (slash == std::wstring::npos) {
+                return L".";
+            }
+            return value.substr(0, slash);
+        }
+        size *= 2;
+    }
+}
+
+std::wstring getSecureDllDirectoryW() {
+    const std::wstring meipass = getEnvironmentPathW(L"_MEIPASS");
+    if (!meipass.empty()) {
+        return meipass;
+    }
+    return getModuleDirectoryW();
+}
+
+HMODULE SecureLoadDynamicLibraryW(const std::wstring& full_path) {
+    const bool has_dir = (full_path.find(L'\\')!= std::wstring::npos) ||
+                         (full_path.find(L'/')!= std::wstring::npos);
+
+    DWORD flags =
         LOAD_LIBRARY_SEARCH_APPLICATION_DIR |
         LOAD_LIBRARY_SEARCH_SYSTEM32 |
         LOAD_LIBRARY_SEARCH_USER_DIRS;
+    if (has_dir) {
+        flags |= LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
+    }
 
-    HMODULE h_module = LoadLibraryExA(dll_name, nullptr, flags);
+    HMODULE h_module = LoadLibraryExW(full_path.c_str(), nullptr, flags);
     if (!h_module) {
         const DWORD err = GetLastError();
         if (err == ERROR_INVALID_PARAMETER) {
-            // Without safe search flags we do not attempt a name-only load.
-            return nullptr;
+            h_module = LoadLibraryW(full_path.c_str());
         }
     }
     return h_module;
 }
 
-std::string exeDir() {
-    char path[MAX_PATH] = {0};
-    const DWORD len = GetModuleFileNameA(nullptr, path, MAX_PATH);
-    if (len == 0 || len >= MAX_PATH) {
-        return {};
-    }
-    std::string full(path, path + len);
-    const size_t slash = full.find_last_of("\\/");
-    if (slash == std::string::npos) {
-        return {};
-    }
-    return full.substr(0, slash);
-}
-
-void addCandidates(std::vector<std::string>& out, const std::string& base) {
+void addCandidatesW(std::vector<std::wstring>& out, const std::wstring& base) {
     if (base.empty()) {
         return;
     }
 
-    // Restrict resolution to the executable's install directory tree.
-    // Primary: DLLs placed next to the executable.
-    out.push_back(base + "\\libsodium-26.dll");
-    out.push_back(base + "\\libsodium.dll");
-
-    // PyInstaller-style extraction targets (still under exeDir()).
-    out.push_back(base + "\\_internal\\libsodium-26.dll");
-    out.push_back(base + "\\_internal\\libsodium.dll");
-    out.push_back(base + "\\_internal\\third_party\\libsodium\\bin\\libsodium-26.dll");
-    out.push_back(base + "\\_internal\\third_party\\libsodium\\libsodium.dll");
-
-    // Optional embedded third_party layout under the install directory.
-    out.push_back(base + "\\third_party\\libsodium\\bin\\libsodium-26.dll");
-    out.push_back(base + "\\third_party\\libsodium\\libsodium.dll");
+    out.push_back(base + L"\\libsodium-26.dll");
+    out.push_back(base + L"\\libsodium.dll");
+    out.push_back(base + L"\\_internal\\libsodium-26.dll");
+    out.push_back(base + L"\\_internal\\libsodium.dll");
+    out.push_back(base + L"\\_internal\\third_party\\libsodium\\bin\\libsodium-26.dll");
+    out.push_back(base + L"\\_internal\\third_party\\libsodium\\libsodium.dll");
+    out.push_back(base + L"\\third_party\\libsodium\\bin\\libsodium-26.dll");
+    out.push_back(base + L"\\third_party\\libsodium\\libsodium.dll");
 }
 
 } // namespace
@@ -94,22 +105,22 @@ SodiumWrapper::randombytes_buf_fn SodiumWrapper::p_random_ = nullptr;
 bool SodiumWrapper::init() {
     if (initialized_) return true;
 
-    std::vector<std::string> candidates;
+    std::vector<std::wstring> candidates;
     candidates.reserve(24);
 
-    const std::string secure_dir = exeDir();
-    addCandidates(candidates, secure_dir);
+    const std::wstring secure_dir = getSecureDllDirectoryW();
+    addCandidatesW(candidates, secure_dir);
      
     for (const auto& c : candidates) {
-        module_ = SecureLoadDynamicLibrary(c);
+        module_ = SecureLoadDynamicLibraryW(c);
         if (module_) break;
     }
 
     if (!module_) {
         // Safe fallback for host processes (e.g. python.exe) that configure DLL roots via AddDllDirectory().
-        module_ = SecureLoadDynamicLibraryByName("libsodium-26.dll");
+        module_ = SecureLoadDynamicLibraryW(L"libsodium-26.dll");
         if (!module_) {
-            module_ = SecureLoadDynamicLibraryByName("libsodium.dll");
+            module_ = SecureLoadDynamicLibraryW(L"libsodium.dll");
         }
     }
 

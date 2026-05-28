@@ -159,13 +159,13 @@
          </property>
          <widget class="QWidget" name="controlsScrollContent">
           <layout class="QVBoxLayout" name="controlsPlaceholderLayout">
-           <item>
-            <widget class="QLabel" name="controlsHint">
-             <property name="text">
-              <string>Embed VolumeControl form here</string>
-             </property>
-            </widget>
-           </item>
+            <item>
+             <widget class="QLabel" name="controlsHint">
+              <property name="text">
+               <string>Embed VolumeControl form here</string>
+              </property>
+             </widget>
+            </item>
           </layout>
          </widget>
         </widget>
@@ -227,4 +227,4 @@
  </widget>
  <resources/>
  <connections/>
-</ui> 
+</ui>

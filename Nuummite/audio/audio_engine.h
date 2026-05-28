@@ -153,22 +153,8 @@ private:
         std::string id;
         std::unique_ptr<OpusCodec> decoder;
         JitterBuffer jitter_buffer;
-        std::atomic_flag lock = ATOMIC_FLAG_INIT;
+        std::mutex mutex;
         std::atomic<int> peak_pcm{0};
-
-        bool tryAcquireLock() noexcept {
-            return!lock.test_and_set(std::memory_order_acquire);
-        }
-        void acquireLock() noexcept {
-            while (lock.test_and_set(std::memory_order_acquire)) {
-#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
-                _mm_pause();
-#endif
-            }
-        }
-        void releaseLock() noexcept {
-            lock.clear(std::memory_order_release);
-        }
     };
 
     StreamState* getOrCreateStream(const std::string& id);
@@ -198,21 +184,20 @@ private:
     std::atomic<uint64_t> packets_decrypted_{0};
 
     bool pure_opus_ = false;
-    float master_volume_ = 1.0f;
-    float output_volume_ = 1.0f;
-    float tx_gain_db_ = 0.0f;
-    int mic_sensitivity_ = 45;
-    int noise_suppression_ = 0;
-    bool noise_suppression_enabled_ = false;
-    bool auto_gain_ = false;
+    std::atomic<float> master_volume_{1.0f};
+    std::atomic<float> output_volume_{1.0f};
+    std::atomic<float> tx_gain_db_{0.0f};
+    std::atomic<int> mic_sensitivity_{45};
+    std::atomic<int> noise_suppression_{0};
+    std::atomic<bool> noise_suppression_enabled_{false};
+    std::atomic<bool> auto_gain_{false};
     std::atomic<bool> echo_enabled_{false};
 
     std::atomic<bool> pending_aec_update_{false};
     std::atomic<bool> pending_agc_update_{false};
     std::atomic<bool> target_aec_enabled_{false};
     std::atomic<bool> target_agc_enabled_{false};
-    bool tx_muted_ = false;
-    mutable std::mutex config_mutex_;
+    std::atomic<bool> tx_muted_{false};
 
     std::unique_ptr<AecProcessor> aec_;
     std::mutex echo_mutex_;

@@ -39,7 +39,7 @@ ext = Extension(
         str(rnnoise_dir),
         str(webrtc_dir / "lib"),
     ],
-    libraries=["opus", "rnnoise", "webrtc-audio-processing-1-msvc", "ws2_32", "winmm", "iphlpapi"],
+    libraries=["opus", "rnnoise", "webrtc-audio-processing-1-msvc", "ws2_32", "winmm", "iphlpapi", "ole32"],
     language="c++",
     define_macros=[("NOMINMAX", None)],
     extra_compile_args=["/std:c++17", "/O2"],
@@ -48,10 +48,10 @@ ext = Extension(
 setup(
     name="nuummite-python",
     version="0.1.0",
-    packages=["python"],
+    packages=["python", "python.ui"],
     package_dir={"python": "python"},
     # Generate C++ into a build directory (keeps the repo clean) and always
     # cythonize from the .pyx so changes don't depend on checked-in .cpp files.
     ext_modules=cythonize([ext], language_level=3, build_dir=str(Path("build") / "cython"), force=True),
     zip_safe=False,
-) 
+)

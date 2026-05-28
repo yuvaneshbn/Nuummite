@@ -10,6 +10,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+#include <objbase.h>
 #include <algorithm>
 #include <chrono>
 #include <cctype>
@@ -17,6 +18,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -31,7 +33,7 @@ constexpr int AUDIO_PORT = 50002;
 constexpr int DSCP_EF = 46;
 constexpr int IP_TOS_EF = DSCP_EF << 2;
 constexpr int RX_QUEUE_MAX_FRAMES = 8;
-constexpr const char* DEFAULT_PORTAUDIO_DLL = "libportaudio.dll";
+constexpr const wchar_t* DEFAULT_PORTAUDIO_DLL_W = L"libportaudio.dll";
 static WinSockInit g_wsa;
 
 std::string toLower(std::string value) {
@@ -41,22 +43,76 @@ std::string toLower(std::string value) {
     return value;
 }
 
-std::string exeDir() {
-    char path[MAX_PATH] = {0};
-    const DWORD len = GetModuleFileNameA(nullptr, path, MAX_PATH);
-    if (len == 0 || len >= MAX_PATH) {
-        return ".";
+std::wstring getEnvironmentPathW(const wchar_t* name) {
+    DWORD size = 260;
+    std::wstring value;
+
+    for (;;) {
+        value.resize(size);
+        const DWORD len = GetEnvironmentVariableW(name, value.data(), size);
+        if (len == 0) {
+            return {};
+        }
+        if (len < size) {
+            value.resize(len);
+            return value;
+        }
+        size = len + 1;
     }
-    std::string full(path, path + len);
-    const size_t slash = full.find_last_of("\\/");
-    if (slash == std::string::npos) {
-        return ".";
-    }
-    return full.substr(0, slash);
 }
 
-HMODULE SecureLoadPortAudioLibrary(const std::string& full_path) {
-    const bool has_dir = (full_path.find('\\') != std::string::npos) || (full_path.find('/') != std::string::npos);
+std::wstring getModuleDirectoryW() {
+    DWORD size = MAX_PATH;
+    std::wstring value;
+
+    for (;;) {
+        value.resize(size);
+        const DWORD len = GetModuleFileNameW(nullptr, value.data(), size);
+        if (len == 0) {
+            return L".";
+        }
+        if (len < size) {
+            value.resize(len);
+            const size_t slash = value.find_last_of(L"\\/");
+            if (slash == std::wstring::npos) {
+                return L".";
+            }
+            return value.substr(0, slash);
+        }
+        size *= 2;
+    }
+}
+
+std::wstring getSecureDllDirectoryW() {
+    const std::wstring meipass = getEnvironmentPathW(L"_MEIPASS");
+    if (!meipass.empty()) {
+        return meipass;
+    }
+    return getModuleDirectoryW();
+}
+
+std::wstring getNativeDebugLogPathW() {
+    return getSecureDllDirectoryW() + L"\\native_audio_debug.log";
+}
+
+void appendNativeDebugLog(const char* message) {
+    if (!message) {
+        return;
+    }
+
+    FILE* file = nullptr;
+    const std::wstring path = getNativeDebugLogPathW();
+    if (_wfopen_s(&file, path.c_str(), L"a") != 0 || !file) {
+        return;
+    }
+    std::fprintf(file, "%s\n", message);
+    std::fflush(file);
+    std::fclose(file);
+}
+
+HMODULE SecureLoadPortAudioLibraryW(const std::wstring& full_path) {
+    const bool has_dir = (full_path.find(L'\\')!= std::wstring::npos) ||
+                         (full_path.find(L'/')!= std::wstring::npos);
     DWORD flags =
         LOAD_LIBRARY_SEARCH_APPLICATION_DIR |
         LOAD_LIBRARY_SEARCH_SYSTEM32 |
@@ -65,12 +121,11 @@ HMODULE SecureLoadPortAudioLibrary(const std::string& full_path) {
         flags |= LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
     }
 
-    HMODULE h_module = LoadLibraryExA(full_path.c_str(), nullptr, flags);
-    if (!h_module && GetLastError() == ERROR_INVALID_PARAMETER) {
-        // Older systems may not support LOAD_LIBRARY_SEARCH_* flags.
-        // This still uses an explicit (or app-dir) path for the target DLL.
-        if (has_dir) {
-            h_module = LoadLibraryA(full_path.c_str());
+    HMODULE h_module = LoadLibraryExW(full_path.c_str(), nullptr, flags);
+    if (!h_module) {
+        const DWORD err = GetLastError();
+        if (err == ERROR_INVALID_PARAMETER) {
+            h_module = LoadLibraryW(full_path.c_str());
         }
     }
     return h_module;
@@ -105,10 +160,10 @@ struct PortAudioApi {
     Pa_StartStream_Fn StartStream = nullptr;
     Pa_StopStream_Fn StopStream = nullptr;
     Pa_ReadStream_Fn ReadStream = nullptr;
+    bool initialized = false;
 
     bool load(std::string& error) {
         if (module) return true;
-
         auto fail = [&](const std::string& msg) -> bool {
             error = msg;
             unload();
@@ -128,19 +183,19 @@ struct PortAudioApi {
             return false;
         };
 
-        std::vector<std::string> candidates = {
-            exeDir() + "\\" + DEFAULT_PORTAUDIO_DLL,
-            exeDir() + "\\_internal\\" + DEFAULT_PORTAUDIO_DLL,
-            exeDir() + "\\_internal\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
-            exeDir() + "\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL,
+        const std::wstring secure_base = getSecureDllDirectoryW();
+        std::vector<std::wstring> candidates = {
+            secure_base + L"\\" + DEFAULT_PORTAUDIO_DLL_W,
+            secure_base + L"\\_internal\\" + DEFAULT_PORTAUDIO_DLL_W,
+            secure_base + L"\\_internal\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL_W,
+            secure_base + L"\\third_party\\libportaudio\\" + DEFAULT_PORTAUDIO_DLL_W,
         };
         for (const auto& candidate : candidates) {
-            module = SecureLoadPortAudioLibrary(candidate);
+            module = SecureLoadPortAudioLibraryW(candidate);
             if (module) break;
         }
         if (!module) {
-            // Safe fallback: restrict search to application dir + system32 (no CWD / PATH probing).
-            module = SecureLoadPortAudioLibrary(DEFAULT_PORTAUDIO_DLL);
+            module = SecureLoadPortAudioLibraryW(DEFAULT_PORTAUDIO_DLL_W);
         }
         if (!module) {
             return fail("Could not securely resolve libportaudio.dll dependencies");
@@ -173,11 +228,34 @@ struct PortAudioApi {
         return true;
     }
 
+    bool ensureReady(std::string& error) {
+        if (initialized) {
+            return true;
+        }
+        if (!load(error)) {
+            return false;
+        }
+
+        const PaError err = Initialize();
+        if (err != paNoError) {
+            error = "PortAudio dynamic initialization failed: ";
+            error += (GetErrorText ? GetErrorText(err) : "PortAudio error");
+            return false;
+        }
+
+        initialized = true;
+        return true;
+    }
+
     void unload() {
         if (module) {
+            if (initialized && Terminate) {
+                Terminate();
+            }
             FreeLibrary(module);
             module = nullptr;
         }
+        initialized = false;
     }
 };
 
@@ -214,6 +292,10 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
     result.push_back(AudioDeviceInfo{-1, input? "Default Input" : "Default Output"});
 
     auto& api = portAudioApi();
+    std::string pa_error;
+    if (!api.ensureReady(pa_error)) {
+        return result;
+    }
     const int count = static_cast<int>(api.GetDeviceCount());
     if (count < 0) return result;
 
@@ -223,7 +305,6 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
         if (!info) continue;
         if (input && info->maxInputChannels <= 0) continue;
         if (!input && info->maxOutputChannels <= 0) continue;
-
         std::string raw_name = info->name? info->name : (input? "Input" : "Output");
         std::string host_name;
         const PaHostApiInfo* host = api.GetHostApiInfo(info->hostApi);
@@ -241,16 +322,15 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
     }
 
     if (entries.empty()) return result;
-
     std::vector<DeviceEntry> candidates;
     std::copy_if(entries.begin(), entries.end(), std::back_inserter(candidates), [](const DeviceEntry& entry) {
-        return!entry.is_generic;
+        return !entry.is_generic;
     });
     if (candidates.empty()) candidates = entries;
 
-    int best_rank = 99;
+    int_fast32_t best_rank = 99;
     for (const auto& entry : candidates) {
-        best_rank = std::min(best_rank, entry.rank);
+        best_rank = std::min(best_rank, static_cast<int_fast32_t>(entry.rank));
     }
 
     std::unordered_map<std::string, DeviceEntry> deduped;
@@ -280,6 +360,10 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
 
 PaDeviceIndex resolveInputDevice(int requested_index) {
     auto& api = portAudioApi();
+    std::string pa_error;
+    if (!api.ensureReady(pa_error)) {
+        return paNoDevice;
+    }
     PaDeviceIndex device = (requested_index < 0)? api.GetDefaultInputDevice() : requested_index;
     if (device == paNoDevice) return paNoDevice;
     const PaDeviceInfo* info = api.GetDeviceInfo(device);
@@ -289,6 +373,10 @@ PaDeviceIndex resolveInputDevice(int requested_index) {
 
 PaDeviceIndex resolveOutputDevice(int requested_index) {
     auto& api = portAudioApi();
+    std::string pa_error;
+    if (!api.ensureReady(pa_error)) {
+        return paNoDevice;
+    }
     PaDeviceIndex device = (requested_index < 0)? api.GetDefaultOutputDevice() : requested_index;
     if (device == paNoDevice) return paNoDevice;
     const PaDeviceInfo* info = api.GetDeviceInfo(device);
@@ -314,11 +402,17 @@ int paInputCallback(const void* input, void*, unsigned long frame_count, const P
 
 AudioEngine::AudioEngine()
     : encoder_(RATE, 1, FRAME, false, 0, 48000, 10, false, OPUS_APPLICATION_VOIP, true, false) {
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: entry");
     SodiumWrapper::init();
-
-    // Instantiate Win32 semaphore with anonymous security attributes
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine after SodiumWrapper::init\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: after SodiumWrapper::init");
     capture_semaphore_ = CreateSemaphore(nullptr, 0, CAPTURE_QUEUE_MAX, nullptr);
-
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine after CreateSemaphore\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: after CreateSemaphore");
     {
         char* value = nullptr;
         size_t len = 0;
@@ -337,36 +431,26 @@ AudioEngine::AudioEngine()
     }
 
     rnnoise_ = std::make_unique<RnNoiseProcessor>();
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine after RnNoiseProcessor\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: after RnNoiseProcessor");
     aec_ = std::make_unique<AecProcessor>(RATE, FRAME);
-    if (aec_) {
-        aec_->setEchoEnabled(false);
-        aec_->setAutoGainEnabled(false);
-        aec_->set_stream_delay_ms(180);
-    }
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine after AecProcessor\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: after AecProcessor");
 
-    // PortAudio initialization may trigger COM/WASAPI calls. Doing it on a worker thread avoids
-    // re-entrancy issues when the UI thread is unwinding a modal dialog / input-synchronous call.
-    std::string pa_error;
-    std::thread init_thread([&]() {
-        auto& pa = portAudioApi();
-        if (!pa.load(pa_error)) {
-            return;
-        }
-        const PaError pa_init = pa.Initialize();
-        if (pa_init != paNoError) {
-            pa_error = paErrorText(pa_init);
-        }
-    });
-    init_thread.join();
-    if (!pa_error.empty()) {
-        throw std::runtime_error(pa_error);
-    }
-
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine before socket()\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: before socket()");
     recv_sock_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (recv_sock_ == INVALID_SOCKET) {
         throw std::runtime_error("Failed to create UDP socket");
     }
+    appendNativeDebugLog("AudioEngine ctor: after socket()");
 
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine before SO_EXCLUSIVEADDRUSE\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: before SO_EXCLUSIVEADDRUSE");
     const int exclusive = 1;
     if (setsockopt(recv_sock_, SOL_SOCKET, SO_EXCLUSIVEADDRUSE,
                    reinterpret_cast<const char*>(&exclusive), sizeof(exclusive)) == SOCKET_ERROR) {
@@ -374,12 +458,19 @@ AudioEngine::AudioEngine()
         recv_sock_ = INVALID_SOCKET;
         throw std::runtime_error("Failed to secure exclusive port binding rules");
     }
+    appendNativeDebugLog("AudioEngine ctor: after SO_EXCLUSIVEADDRUSE");
     const int buf_size = 65536;
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine before buffer sockopts\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: before buffer sockopts");
     setsockopt(recv_sock_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(recv_sock_, IP_TOS_EF);
     socket_utils::set_non_blocking(recv_sock_, true);
     socket_utils::disable_udp_connreset(recv_sock_);
 
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine before bind()\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: before bind()");
     sockaddr_in bind_addr{};
     bind_addr.sin_family = AF_INET;
     bind_addr.sin_port = htons(0);
@@ -388,6 +479,7 @@ AudioEngine::AudioEngine()
         closesocket(recv_sock_);
         throw std::runtime_error("Failed to bind UDP socket");
     }
+    appendNativeDebugLog("AudioEngine ctor: after bind()");
 
     sockaddr_in name{};
     int name_len = sizeof(name);
@@ -396,7 +488,6 @@ AudioEngine::AudioEngine()
     }
 
     echo_enabled_.store(false);
-
     mix_accum_.assign(FRAME, 0.0f);
     mix_frame_.assign(FRAME, 0);
     playback_fifo_.assign(static_cast<size_t>(FRAME) * 8u, 0); 
@@ -405,9 +496,9 @@ AudioEngine::AudioEngine()
         buf.reserve(128);
     }
 
-    if (!openOutput()) {
-        std::cerr << " Failed to open output device\n";
-    }
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine deferred openOutput until streaming starts\n");
+    fflush(stderr);
+    appendNativeDebugLog("AudioEngine ctor: after deferred openOutput");
 
     listen_thread_ = std::thread(&AudioEngine::listenLoop, this);
 }
@@ -429,64 +520,81 @@ std::vector<AudioDeviceInfo> AudioEngine::listOutputDevices() const {
 }
 
 bool AudioEngine::setInputDevice(int device_index) {
+    fprintf(stderr, "[debug] AudioEngine::setInputDevice requested=%d thread=%lu\n", device_index, (unsigned long)GetCurrentThreadId());
+    fflush(stderr);
     input_device_index_ = device_index;
+    fprintf(stderr, "[debug] AudioEngine::setInputDevice stored index\n");
+    fflush(stderr);
+    if (!running_.load()) {
+        fprintf(stderr, "[debug] AudioEngine::setInputDevice exit true (not running)\n");
+        fflush(stderr);
+        return true;
+    }
+
     std::vector<std::string> destinations;
     {
+        fprintf(stderr, "[debug] AudioEngine::setInputDevice before routing lock\n");
+        fflush(stderr);
         std::lock_guard<std::mutex> lock(routing_mutex_);
         destinations = send_destinations_;
     }
-    if (running_.load() &&!destinations.empty()) {
+    fprintf(stderr, "[debug] AudioEngine::setInputDevice after routing lock count=%zu\n", destinations.size());
+    fflush(stderr);
+    if (!destinations.empty()) {
+        fprintf(stderr, "[debug] AudioEngine::setInputDevice restarting active session\n");
+        fflush(stderr);
         stop();
         return start(destinations);
     }
-    closeInput();
-    const bool ok = openInput();
-    closeInput();
-    return ok;
+    fprintf(stderr, "[debug] AudioEngine::setInputDevice exit true\n");
+    fflush(stderr);
+    return true;
 }
 
 bool AudioEngine::setOutputDevice(int device_index) {
+    fprintf(stderr, "[debug] AudioEngine::setOutputDevice requested=%d thread=%lu\n", device_index, (unsigned long)GetCurrentThreadId());
+    fflush(stderr);
     output_device_index_ = device_index;
-    closeOutput();
-    return openOutput();
+    if (running_.load()) {
+        closeOutput();
+        return openOutput();
+    }
+    fprintf(stderr, "[debug] AudioEngine::setOutputDevice exit true\n");
+    fflush(stderr);
+    return true;
 }
 
 void AudioEngine::setMasterVolume(int value) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    master_volume_ = std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.5f);
+    appendNativeDebugLog("AudioEngine::setMasterVolume enter");
+    master_volume_.store(std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.5f), std::memory_order_relaxed);
+    appendNativeDebugLog("AudioEngine::setMasterVolume exit");
 }
 
 void AudioEngine::setOutputVolume(int value) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    output_volume_ = std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.5f);
+    appendNativeDebugLog("AudioEngine::setOutputVolume enter");
+    output_volume_.store(std::clamp(static_cast<float>(value) / 100.0f, 0.0f, 2.5f), std::memory_order_relaxed);
+    appendNativeDebugLog("AudioEngine::setOutputVolume exit");
 }
 
 void AudioEngine::setGainDb(int value) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    tx_gain_db_ = std::clamp(static_cast<float>(value), -20.0f, 20.0f);
+    tx_gain_db_.store(std::clamp(static_cast<float>(value), -20.0f, 20.0f), std::memory_order_relaxed);
 }
 
 void AudioEngine::setMicSensitivity(int value) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    mic_sensitivity_ = std::clamp(value, 0, 100);
+    mic_sensitivity_.store(std::clamp(value, 0, 100), std::memory_order_relaxed);
 }
 
 void AudioEngine::setNoiseSuppression(int value) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    noise_suppression_ = std::clamp(value, 0, 100);
+    noise_suppression_.store(std::clamp(value, 0, 100), std::memory_order_relaxed);
 }
 
 void AudioEngine::setNoiseSuppressionEnabled(bool enabled) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    noise_suppression_enabled_ = enabled;
+    noise_suppression_enabled_.store(enabled, std::memory_order_relaxed);
 }
 
 void AudioEngine::setAutoGain(bool enabled) {
     const bool apply_enabled = (!pure_opus_) && enabled;
-    {
-        std::lock_guard<std::mutex> lock(config_mutex_);
-        auto_gain_ = apply_enabled;
-    }
+    auto_gain_.store(apply_enabled, std::memory_order_relaxed);
     target_agc_enabled_.store(apply_enabled, std::memory_order_relaxed);
     pending_agc_update_.store(true, std::memory_order_release);
 }
@@ -516,8 +624,9 @@ AudioEngine::StreamState* AudioEngine::getOrCreateStream(const std::string& id) 
         st = std::make_unique<StreamState>();
         st->id = id;
     }
-    if (streams_.size() > stream_snapshot_buffers_[0].capacity()) {
-        const size_t want = std::max(stream_snapshot_buffers_[0].capacity() * 2, streams_.size());
+    const size_t cur_cap = stream_snapshot_buffers_[0].capacity();
+    if (streams_.size() > cur_cap) {
+        const size_t want = std::max(cur_cap * 2, streams_.size());
         for (auto& buf : stream_snapshot_buffers_) {
             buf.reserve(want);
         }
@@ -532,7 +641,7 @@ void AudioEngine::rebuildStreamSnapshotLocked_() {
     const uint8_t current = stream_snapshot_active_.load(std::memory_order_relaxed);
     const uint8_t write = static_cast<uint8_t>(current ^ 1u);
 
-    while (stream_snapshot_readers_[write].load(std::memory_order_acquire) != 0) {
+    while (stream_snapshot_readers_[write].load(std::memory_order_acquire)!= 0) {
 #if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
         _mm_pause();
 #endif
@@ -542,10 +651,9 @@ void AudioEngine::rebuildStreamSnapshotLocked_() {
     auto& buf = stream_snapshot_buffers_[write];
     buf.clear();
     buf.reserve(streams_.size());
-
     for (const auto& [id, st] : streams_) {
         if (!st) continue;
-        if (!hear_targets_.empty() && !hear_targets_.count(id)) continue;
+        if (!hear_targets_.empty() &&!hear_targets_.count(id)) continue;
         buf.push_back(st.get());
     }
 
@@ -553,22 +661,18 @@ void AudioEngine::rebuildStreamSnapshotLocked_() {
 }
 
 void AudioEngine::setTxMuted(bool enabled) {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    tx_muted_ = enabled;
+    tx_muted_.store(enabled, std::memory_order_relaxed);
 }
 
 bool AudioEngine::isTxMuted() const {
-    std::lock_guard<std::mutex> lock(config_mutex_);
-    return tx_muted_;
+    return tx_muted_.load(std::memory_order_relaxed);
 }
 
-// Fixed GUI Blocking: Spawns an asynchronous background thread for microphone testing.
 int AudioEngine::testMicrophoneLevel(double duration_sec) {
     if (running_.load(std::memory_order_acquire)) {
         return capture_level_.load(std::memory_order_relaxed);
     }
 
-    // Ensure only one background testing thread executes at a time
     if (is_mic_testing_.exchange(true, std::memory_order_acq_rel)) {
         return capture_level_.load(std::memory_order_relaxed);
     }
@@ -631,12 +735,13 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
         is_mic_testing_.store(false, std::memory_order_release);
     }).detach();
 
-    return 0; // Return control immediately to keep the GUI responsive
+    return 0;
 }
 
 bool AudioEngine::openOutput() {
+    fprintf(stderr, "[debug] AudioEngine::openOutput entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
+    fflush(stderr);
     if (wave_out_) return true;
-
     auto& pa = portAudioApi();
     PaDeviceIndex device = resolveOutputDevice(output_device_index_);
     if (device == paNoDevice) return false;
@@ -652,25 +757,28 @@ bool AudioEngine::openOutput() {
     PaStream* stream = nullptr;
     PaError err = pa.OpenStream(&stream, nullptr, &params, RATE, FRAME, paNoFlag, &paOutputCallback, this);
     if (err!= paNoError ||!stream) {
-        std::cerr << " PortAudio output open failed: " << paErrorText(err) << "\n";
+        fprintf(stderr, "[debug] AudioEngine::openOutput open failed err=%d\n", static_cast<int>(err));
+        fflush(stderr);
         return false;
     }
     err = pa.StartStream(stream);
     if (err!= paNoError) {
+        fprintf(stderr, "[debug] AudioEngine::openOutput start failed err=%d\n", static_cast<int>(err));
+        fflush(stderr);
         pa.CloseStream(stream);
-        std::cerr << " PortAudio output start failed: " << paErrorText(err) << "\n";
         return false;
     }
 
     wave_out_ = stream;
     playback_running_.store(true);
+    fprintf(stderr, "[debug] AudioEngine::openOutput success\n");
+    fflush(stderr);
     return true;
 }
 
 void AudioEngine::closeOutput() {
     playback_running_.store(false);
     if (!wave_out_) return;
-
     auto& pa = portAudioApi();
     PaStream* stream = reinterpret_cast<PaStream*>(wave_out_);
     pa.StopStream(stream);
@@ -679,6 +787,7 @@ void AudioEngine::closeOutput() {
 }
 
 bool AudioEngine::openInput() {
+    fprintf(stderr, "[debug] AudioEngine::openInput entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
     if (wave_in_) return true;
 
     auto& pa = portAudioApi();
@@ -696,13 +805,11 @@ bool AudioEngine::openInput() {
     PaStream* stream = nullptr;
     PaError err = pa.OpenStream(&stream, &params, nullptr, RATE, FRAME, paNoFlag, &paInputCallback, this);
     if (err!= paNoError ||!stream) {
-        std::cerr << " PortAudio input open failed: " << paErrorText(err) << "\n";
         return false;
     }
     err = pa.StartStream(stream);
     if (err!= paNoError) {
         pa.CloseStream(stream);
-        std::cerr << " PortAudio input start failed: " << paErrorText(err) << "\n";
         return false;
     }
 
@@ -712,7 +819,6 @@ bool AudioEngine::openInput() {
 
 void AudioEngine::closeInput() {
     if (!wave_in_) return;
-
     auto& pa = portAudioApi();
     PaStream* stream = reinterpret_cast<PaStream*>(wave_in_);
     pa.StopStream(stream);
@@ -720,16 +826,12 @@ void AudioEngine::closeInput() {
     wave_in_ = nullptr;
 }
 
-// Fixed Socket Polling: Replaced Sleep(1) polling with low-overhead WSAPoll kernel-level blocks.
 void AudioEngine::listenLoop() {
-    std::cout << " Socket processing loop configured to use kernel descriptor blocks\n";
-    
     WSAPOLLFD poll_fd{};
     poll_fd.fd = recv_sock_;
     poll_fd.events = POLLRDNORM;
 
     while (listen_running_.load()) {
-        // Blocks execution until voice packets arrive, checking state every 100ms
         int poll_result = WSAPoll(&poll_fd, 1, 100);
         if (poll_result == SOCKET_ERROR) {
             const int err = WSAGetLastError();
@@ -740,7 +842,7 @@ void AudioEngine::listenLoop() {
             continue;
         }
         if (poll_result == 0) {
-            continue; // WSAPoll timeout; loop to recheck listen_running_ flag
+            continue;
         }
 
         if (poll_fd.revents & POLLRDNORM) {
@@ -771,13 +873,13 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     if (!packet.has_value() || packet->kind!= VoicePacketKind::ClientAudio ||
         packet->sender_id.empty() || packet->sender_id == client_id_) {
         return;
-    }
+}
     packets_decrypted_.fetch_add(1, std::memory_order_relaxed);
 
     auto* st = getOrCreateStream(packet->sender_id);
     if (!st) return;
 
-    st->acquireLock();
+    std::unique_lock<std::mutex> lock(st->mutex);
     if (!st->decoder) {
         st->decoder = std::make_unique<OpusCodec>(
             RATE, 1, FRAME, true, 10, 24000, 10, false, OPUS_APPLICATION_VOIP, false, true
@@ -788,7 +890,6 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     if (!packet->payload.empty()) {
         st->jitter_buffer.push(packet->seq, packet->payload.data(), packet->payload.size());
     }
-    st->releaseLock();
 }
 
 int AudioEngine::getPeerPeak(const std::string& peer_id) const {
@@ -799,7 +900,7 @@ int AudioEngine::getPeerPeak(const std::string& peer_id) const {
         return 0;
     }
     auto it = streams_.find(peer_id);
-    if (it == streams_.end() || !it->second) {
+    if (it == streams_.end() ||!it->second) {
         return 0;
     }
     return it->second->peak_pcm.load(std::memory_order_relaxed);
@@ -807,7 +908,6 @@ int AudioEngine::getPeerPeak(const std::string& peer_id) const {
 
 void AudioEngine::renderOutput(int16_t* out, int sample_count) {
     if (!out || sample_count <= 0) return;
-
     struct StreamSnapshotGuard {
         AudioEngine* engine = nullptr;
         uint8_t idx = 0;
@@ -831,7 +931,6 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
         StreamSnapshotGuard(const StreamSnapshotGuard&) = delete;
         StreamSnapshotGuard& operator=(const StreamSnapshotGuard&) = delete;
     };
-
     const size_t need = static_cast<size_t>(sample_count);
     if (playback_fifo_.empty() || mix_frame_.size()!= static_cast<size_t>(FRAME) ||
         mix_accum_.size()!= static_cast<size_t>(FRAME)) {
@@ -866,6 +965,7 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
         std::fill(mix_accum_.begin(), mix_accum_.end(), 0.0f);
         int active = 0;
         float peak = 0.0f;
+        int lock_failures = 0;
 
         std::array<int16_t, FRAME> pcm_frame{};
         StreamSnapshotGuard guard(this);
@@ -877,15 +977,17 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
 
         for (auto* st : *guard.snapshot) {
             if (!st) continue;
-
-            if (!st->tryAcquireLock()) continue;
+            std::unique_lock<std::mutex> lock(st->mutex, std::try_to_lock);
+            if (!lock.owns_lock()) {
+                lock_failures++;
+                continue;
+            }
 
             JitterBuffer::PacketView view{};
             bool is_missing = false;
             const bool has_packet = st->jitter_buffer.pop(view, is_missing);
             if (!has_packet ||!st->decoder) {
                 st->peak_pcm.store(0, std::memory_order_relaxed);
-                st->releaseLock();
                 continue;
             }
 
@@ -895,7 +997,6 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
             } else {
                 decoded = st->decoder->decode_into(view.data, static_cast<int>(view.len), pcm_frame.data(), FRAME);
             }
-            st->releaseLock();
             if (decoded < 0) {
                 st->peak_pcm.store(0, std::memory_order_relaxed);
                 continue;
@@ -919,6 +1020,14 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
 
         if (active == 0) {
             std::fill(mix_frame_.begin(), mix_frame_.end(), 0);
+            if (lock_failures > 0) {
+                static uint32_t rng = 0xC0FFEEu;
+                for (int i = 0; i < FRAME; ++i) {
+                    rng = rng * 1664525u + 1013904223u;
+                    const int32_t r = static_cast<int32_t>(rng >> 16) - 32768;
+                    mix_frame_[static_cast<size_t>(i)] = static_cast<int16_t>(std::clamp(r / 1024, -64, 64));
+                }
+            }
             updateMixedLevel(mix_frame_);
             return;
         }
@@ -946,12 +1055,8 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
                 }
             }
 
-            float master = 1.0f, output = 1.0f;
-            std::unique_lock<std::mutex> cfg_lock(config_mutex_, std::try_to_lock);
-            if (cfg_lock.owns_lock()) {
-                master = master_volume_;
-                output = output_volume_;
-            }
+            const float master = master_volume_.load(std::memory_order_relaxed);
+            const float output = output_volume_.load(std::memory_order_relaxed);
             const float volume_factor = std::clamp(master * output, 0.0f, 2.5f);
             if (std::abs(volume_factor - 1.0f) > 0.0001f) {
                 for (auto& sample : mix_frame_) {
@@ -992,7 +1097,6 @@ void AudioEngine::pushCaptureFrame(const int16_t* samples, int sample_count) {
     }
 
     if (capture_frames_.push(frame)) {
-        // Release the semaphore to notify the send loop that a new frame is ready
         ReleaseSemaphore(capture_semaphore_, 1, nullptr);
     } else {
         capture_dropped_.fetch_add(1, std::memory_order_relaxed);
@@ -1004,10 +1108,10 @@ bool AudioEngine::popCaptureFrame(CaptureFrame& out) noexcept {
 }
 
 bool AudioEngine::start(const std::vector<std::string>& destinations) {
+    fprintf(stderr, "[debug] AudioEngine::start entry thread=%lu destinations=%zu\n", (unsigned long)GetCurrentThreadId(), destinations.size());
     if (client_id_.empty()) return false;
     if (running_.load()) return true;
     if (destinations.empty()) return false;
-
     {
         std::lock_guard<std::mutex> lock(routing_mutex_);
         send_destinations_ = destinations;
@@ -1021,7 +1125,12 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
 
     if (!openInput()) {
         running_.store(false);
-        std::cerr << " Failed to start capture\n";
+        return false;
+    }
+
+    if (!openOutput()) {
+        closeInput();
+        running_.store(false);
         return false;
     }
 
@@ -1029,6 +1138,7 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
     if (send_sock_ == INVALID_SOCKET) {
         running_.store(false);
         closeInput();
+        closeOutput();
         return false;
     }
     const int buf_size = 65536;
@@ -1043,11 +1153,10 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
         send_sock_ = INVALID_SOCKET;
         running_.store(false);
         closeInput();
+        closeOutput();
         throw;
     }
 
-    auto active_destinations = transport_.destinations();
-    std::cout << " Audio capture ACTIVE\n";
     return true;
 }
 
@@ -1061,18 +1170,17 @@ bool AudioEngine::updateDestinations(const std::vector<std::string>& destination
     return transport_.hasDestinations();
 }
 
-// Fixed Queue Polling: Used native Win32 Semaphore blocking to eliminate the capture thread Sleep(1) loop.
 void AudioEngine::sendLoop() {
     std::vector<int16_t> frame;
     frame.resize(FRAME);
+    constexpr int kVoiceHangoverFrames = 18;
+    int voice_hangover = 0;
 
     while (running_.load()) {
         AudioEngine::CaptureFrame raw{};
-
-        // Sleep until a new frame is pushed by the capture callback, checking state every 100ms
         DWORD wait_result = WaitForSingleObject(capture_semaphore_, 100);
         if (wait_result!= WAIT_OBJECT_0) {
-            continue; // Semaphore timeout; loop to recheck running_ flag
+            continue;
         }
 
         if (!popCaptureFrame(raw)) {
@@ -1081,21 +1189,13 @@ void AudioEngine::sendLoop() {
 
         std::copy(raw.begin(), raw.end(), frame.begin());
 
-        bool tx_muted_local = false;
-        bool autogain_local = false;
-        bool rnnoise_local = false;
-        float tx_gain_db_local = 0.0f;
-        int mic_sens_local = 50;
-        int ns_amount_local = 0;
-        {
-            std::lock_guard<std::mutex> lock(config_mutex_);
-            tx_muted_local = tx_muted_;
-            autogain_local = auto_gain_;
-            rnnoise_local = noise_suppression_enabled_;
-            tx_gain_db_local = tx_gain_db_;
-            mic_sens_local = mic_sensitivity_;
-            ns_amount_local = noise_suppression_;
-        }
+        const bool tx_muted_local = tx_muted_.load(std::memory_order_relaxed);
+        const bool autogain_local = auto_gain_.load(std::memory_order_relaxed);
+        const bool rnnoise_local = noise_suppression_enabled_.load(std::memory_order_relaxed);
+        const float tx_gain_db_local = tx_gain_db_.load(std::memory_order_relaxed);
+        const int mic_sens_local = mic_sensitivity_.load(std::memory_order_relaxed);
+        const int ns_amount_local = noise_suppression_.load(std::memory_order_relaxed);
+        const int voice_peak_threshold = std::clamp(260 - (mic_sens_local * 2), 60, 220);
 
         if (!pure_opus_) {
             if (aec_ && aec_->available()) {
@@ -1139,7 +1239,7 @@ void AudioEngine::sendLoop() {
             if (!tx_muted_local && rnnoise_local && rnnoise_ && rnnoise_->isAvailable() && frame.size() == FRAME) {
                 const float amount = std::clamp(static_cast<float>(ns_amount_local) / 100.0f, 0.0f, 1.0f);
                 if (amount > 0.0001f) {
-                    constexpr int blockSize = FRAME / 2; 
+                    constexpr int blockSize = FRAME / 2;
                     for (int off = 0; off < FRAME; off += blockSize) {
                         std::array<int16_t, blockSize> orig{};
                         std::array<int16_t, blockSize> denoised{};
@@ -1150,10 +1250,8 @@ void AudioEngine::sendLoop() {
                             std::copy_n(denoised.begin(), blockSize, frame.begin() + off);
                         } else {
                             for (int i = 0; i < blockSize; ++i) {
-                                const float mixed = (1.0f - amount) * static_cast<float>(orig[i]) +
-                                                    amount * static_cast<float>(denoised[i]);
-                                frame[static_cast<size_t>(off + i)] =
-                                    static_cast<int16_t>(std::clamp(mixed, -32768.0f, 32767.0f));
+                                const float mixed = (1.0f - amount) * static_cast<float>(orig[i]) + amount * static_cast<float>(denoised[i]);
+                                frame[static_cast<size_t>(off + i)] = static_cast<int16_t>(std::clamp(mixed, -32768.0f, 32767.0f));
                             }
                         }
                     }
@@ -1179,7 +1277,19 @@ void AudioEngine::sendLoop() {
                 input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
             }
             capture_level_.store(std::min(100, (input_peak * 100) / 32767));
-            capture_active_.store(!tx_muted_local);
+            const bool apm_voice = (aec_ && aec_->available() && aec_->hasVoice());
+            const bool voice_detected = !tx_muted_local && (apm_voice || input_peak >= voice_peak_threshold);
+            if (voice_detected) {
+                voice_hangover = kVoiceHangoverFrames;
+            }
+            const bool voice_active = !tx_muted_local && (voice_detected || voice_hangover > 0);
+            capture_active_.store(voice_active);
+            if (!voice_active) {
+                continue;
+            }
+            if (!voice_detected && voice_hangover > 0) {
+                --voice_hangover;
+            }
         } else {
             if (tx_muted_local) {
                 std::fill(frame.begin(), frame.end(), 0);
@@ -1190,18 +1300,27 @@ void AudioEngine::sendLoop() {
                 input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
             }
             capture_level_.store(std::min(100, (input_peak * 100) / 32767));
-            capture_active_.store(!tx_muted_local);
+            const bool voice_detected = !tx_muted_local && input_peak >= voice_peak_threshold;
+            if (voice_detected) {
+                voice_hangover = kVoiceHangoverFrames;
+            }
+            const bool voice_active = !tx_muted_local && (voice_detected || voice_hangover > 0);
+            capture_active_.store(voice_active);
+            if (!voice_active) {
+                continue;
+            }
+            if (!voice_detected && voice_hangover > 0) {
+                --voice_hangover;
+            }
         }
 
         const std::vector<uint8_t> opus_data = encoder_.encode(frame);
         if (opus_data.empty()) continue;
-
         std::vector<uint8_t> packet = build_client_audio_packet(client_id_, seq_, timestamp_, opus_data);
         if (packet.empty()) continue;
 
         seq_ = static_cast<uint16_t>((seq_ + 1) & 0xFFFF);
         timestamp_ += FRAME;
-
         const int sent = transport_.sendPacket(send_sock_, packet);
         if (sent > 0) {
             packets_sent_.fetch_add(static_cast<uint64_t>(sent), std::memory_order_relaxed);
@@ -1211,8 +1330,6 @@ void AudioEngine::sendLoop() {
 
 void AudioEngine::stop() {
     running_.store(false);
-
-    // Release the Win32 semaphore to instantly wake up and stop the send loop thread
     if (capture_semaphore_) {
         ReleaseSemaphore(capture_semaphore_, 1, nullptr);
     }
@@ -1221,7 +1338,6 @@ void AudioEngine::stop() {
         send_thread_.join();
     }
     capture_frames_.reset();
-
     capture_active_.store(false);
     capture_level_.store(0);
 

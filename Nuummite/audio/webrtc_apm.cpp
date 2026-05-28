@@ -36,6 +36,7 @@ WebRtcApm::WebRtcApm(int sample_rate_hz) {
     config.noise_suppression.enabled = false;
     config.gain_controller1.enabled = false;
     config.gain_controller2.enabled = false;
+    config.voice_detection.enabled = true;
 
     webrtc::AudioProcessingBuilder builder;
     impl_->apm.reset(builder.Create());
@@ -106,7 +107,8 @@ bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
         }
     }
     if (ok) {
-        impl_->has_voice = true;
+        auto stats = impl_->apm->GetStatistics();
+        impl_->has_voice = stats.voice_detected.value_or(false);
         return true;
     }
     return false;

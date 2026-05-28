@@ -24,8 +24,8 @@ cdef extern from "common/opus_codec.h" namespace "":
                   int application,
                   bool create_encoder,
                   bool create_decoder) except +
-        vector[unsigned char] encode(const int16_t* pcm, int frame_samples)
-        vector[unsigned char] encode(const vector[int16_t]& pcm)
+        vector[unsigned char] encode(const int16_t* pcm, int frame_samples) except +
+        vector[unsigned char] encode(const vector[int16_t]& pcm) except +
 
 cdef extern from "audio/audio_engine.h" namespace "":
     cdef struct AudioDeviceInfo:
@@ -37,43 +37,43 @@ cdef extern from "audio/audio_engine.h" namespace "":
         int port() const
         vector[AudioDeviceInfo] listInputDevices() const
         vector[AudioDeviceInfo] listOutputDevices() const
-        bool setInputDevice(int)
-        bool setOutputDevice(int)
+        bool setInputDevice(int) except +
+        bool setOutputDevice(int) except +
         int inputDeviceIndex() const
         int outputDeviceIndex() const
-        void setClientId(const string&)
-        void setRoomSecret(const string&)
-        void setMasterVolume(int)
-        void setOutputVolume(int)
-        void setGainDb(int)
-        void setMicSensitivity(int)
-        void setNoiseSuppression(int)
-        void setNoiseSuppressionEnabled(bool)
-        void setAutoGain(bool)
-        void setEchoEnabled(bool)
-        void setAecStreamDelayMs(int)
+        void setClientId(const string&) except +
+        void setRoomSecret(const string&) except +
+        void setMasterVolume(int) except +
+        void setOutputVolume(int) except +
+        void setGainDb(int) except +
+        void setMicSensitivity(int) except +
+        void setNoiseSuppression(int) except +
+        void setNoiseSuppressionEnabled(bool) except +
+        void setAutoGain(bool) except +
+        void setEchoEnabled(bool) except +
+        void setAecStreamDelayMs(int) except +
         bool echoAvailable() const
         bool echoEnabled() const
-        void setTxMuted(bool)
+        void setTxMuted(bool) except +
         bool isTxMuted() const
-        int testMicrophoneLevel(double duration_sec)
-        bool start(const vector[string]&)
-        bool updateDestinations(const vector[string]&)
-        void stop()
-        void shutdown()
+        int testMicrophoneLevel(double duration_sec) except +
+        bool start(const vector[string]&) except +
+        bool updateDestinations(const vector[string]&) except +
+        void stop() except +
+        void shutdown() except +
         bool isRunning() const
         int captureLevel() const
         bool captureActive() const
         float mixedPeak() const
         int getPeerPeak(const string&) const
-        void setHearTargets(const unordered_set[string]&)
-        void renderOutput(int16_t* out, int sample_count)
+        void setHearTargets(const unordered_set[string]&) except +
+        void renderOutput(int16_t* out, int sample_count) except +
         uint64_t debugPacketsSent() const
         uint64_t debugPacketsRecv() const
         uint64_t debugPacketsDecrypted() const
 
 cdef extern from "p2p/peer_discovery.h" namespace "":
-    cdef struct PeerInfo:
+    cdef struct PeerSnapshot:
         string id
         string ip
         uint16_t port
@@ -82,19 +82,26 @@ cdef extern from "p2p/peer_discovery.h" namespace "":
 
     cdef cppclass PeerDiscovery:
         PeerDiscovery() except +
-        void start(const string&, uint16_t, const string&)
-        void stop()
-        vector[PeerInfo] peers() const
+        void start(const string&, uint16_t, const string&) except +
+        void stop() except +
+        vector[string] peerLines() const
         string currentRoom() const
 
 cdef class PyAudioEngine:
     cdef AudioEngine* thisptr
 
     def __cinit__(self):
-        self.thisptr = new AudioEngine()
+        self.thisptr = NULL
+        try:
+            self.thisptr = new AudioEngine()
+        except Exception as exc:
+            self.thisptr = NULL
+            raise RuntimeError(f"AudioEngine construction failed: {exc}")
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr != NULL:
+            del self.thisptr
+            self.thisptr = NULL
 
     def port(self):
         return self.thisptr.port()
@@ -130,86 +137,134 @@ cdef class PyAudioEngine:
         return self.thisptr.outputDeviceIndex()
 
     def set_client_id(self, str client_id):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setClientId(client_id.encode("utf-8"))
 
     def set_room_secret(self, str secret):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setRoomSecret(secret.encode("utf-8"))
 
     def set_master_volume(self, int value):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setMasterVolume(value)
 
     def set_output_volume(self, int value):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setOutputVolume(value)
 
     def set_gain_db(self, int value):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setGainDb(value)
 
     def set_mic_sensitivity(self, int value):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setMicSensitivity(value)
 
     def set_noise_suppression(self, int value):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setNoiseSuppression(value)
 
     def set_noise_suppression_enabled(self, bool enabled):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setNoiseSuppressionEnabled(enabled)
 
     def set_auto_gain(self, bool enabled):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setAutoGain(enabled)
 
     def set_echo_enabled(self, bool enabled):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setEchoEnabled(enabled)
 
     def set_aec_stream_delay_ms(self, int delay_ms):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setAecStreamDelayMs(delay_ms)
 
     def echo_available(self):
+        if self.thisptr == NULL:
+            return False
         return self.thisptr.echoAvailable()
 
     def echo_enabled(self):
+        if self.thisptr == NULL:
+            return False
         return self.thisptr.echoEnabled()
 
     def set_tx_muted(self, bool enabled):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         self.thisptr.setTxMuted(enabled)
 
     @property
     def tx_muted(self):
+        if self.thisptr == NULL:
+            return False
         return self.thisptr.isTxMuted()
 
     def test_microphone_level(self, double duration_sec=1.0):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         return self.thisptr.testMicrophoneLevel(duration_sec)
 
     def start(self, list destinations):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         cdef vector[string] cpp_dest
         for dest in destinations:
             cpp_dest.push_back(dest.encode("utf-8"))
         return self.thisptr.start(cpp_dest)
 
     def update_destinations(self, list destinations):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         cdef vector[string] cpp_dest
         for dest in destinations:
             cpp_dest.push_back(dest.encode("utf-8"))
         return self.thisptr.updateDestinations(cpp_dest)
 
     def stop(self):
+        if self.thisptr == NULL:
+            return
         self.thisptr.stop()
 
     def shutdown(self):
+        if self.thisptr == NULL:
+            return
         self.thisptr.shutdown()
 
     @property
     def is_running(self):
+        if self.thisptr == NULL:
+            return False
         return self.thisptr.isRunning()
 
     @property
     def capture_level(self):
+        if self.thisptr == NULL:
+            return 0
         return self.thisptr.captureLevel()
 
     @property
     def capture_active(self):
+        if self.thisptr == NULL:
+            return False
         return self.thisptr.captureActive()
 
     @property
     def mixed_peak(self):
+        if self.thisptr == NULL:
+            return 0.0
         return self.thisptr.mixedPeak()
 
     def get_peer_peak(self, str client_id):
@@ -217,6 +272,8 @@ cdef class PyAudioEngine:
         Query the peak levels calculated from decoded outputs per remote client.
         Returns a raw int16-like peak value (0..32767).
         """
+        if self.thisptr == NULL:
+            return 0
         return self.thisptr.getPeerPeak(client_id.encode("utf-8"))
 
     @property
@@ -232,6 +289,8 @@ cdef class PyAudioEngine:
         return self.thisptr.debugPacketsDecrypted()
 
     def set_hear_targets(self, set targets):
+        if self.thisptr == NULL:
+            raise RuntimeError("Audio engine is not initialized")
         cdef unordered_set[string] cpp_set
         for t in targets:
             if isinstance(t, str):
@@ -243,10 +302,17 @@ cdef class PyPeerDiscovery:
     cdef PeerDiscovery* thisptr
 
     def __cinit__(self):
-        self.thisptr = new PeerDiscovery()
+        self.thisptr = NULL
+        try:
+            self.thisptr = new PeerDiscovery()
+        except Exception as exc:
+            self.thisptr = NULL
+            raise RuntimeError(f"PeerDiscovery construction failed: {exc}")
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr != NULL:
+            del self.thisptr
+            self.thisptr = NULL
 
     def start(self, str my_id, uint16_t audio_port, str room_name="main"):
         self.thisptr.start(my_id.encode("utf-8"), audio_port, room_name.encode("utf-8"))
@@ -255,16 +321,21 @@ cdef class PyPeerDiscovery:
         self.thisptr.stop()
 
     def peers(self):
-        cdef vector[PeerInfo] ps = self.thisptr.peers()
+        if self.thisptr == NULL:
+            return []
+        cdef vector[string] ps = self.thisptr.peerLines()
         result = []
         for i in range(ps.size()):
-            p = ps[i]
+            line = ps[i].decode("utf-8", errors="replace")
+            parts = line.split("|")
+            if len(parts) != 5:
+                continue
             result.append({
-                "id": p.id.decode("utf-8", errors="replace"),
-                "ip": p.ip.decode("utf-8", errors="replace"),
-                "port": p.port,
-                "room": p.room.decode("utf-8", errors="replace"),
-                "is_local": True if p.is_local else False,
+                "id": parts[0],
+                "ip": parts[1],
+                "port": int(parts[2]) if parts[2].isdigit() else 50002,
+                "room": parts[3],
+                "is_local": parts[4] == "1",
             })
         return result
 
@@ -277,23 +348,30 @@ cdef class PyOpusEncoder:
     cdef int frame_size
 
     def __cinit__(self,
-                 int rate=48000,
-                 int channels=1,
-                 int frame_size=960,
-                 int bitrate=24000,
+                  int rate=48000,
+                  int channels=1,
+                  int frame_size=960,
+                  int bitrate=24000,
                  int complexity=10,
                  bint fec=True,
                  int packet_loss_perc=10,
-                 bint dtx=False,
-                 int application=2048):  # OPUS_APPLICATION_VOIP
+                  bint dtx=False,
+                  int application=2048):  # OPUS_APPLICATION_VOIP
         self.frame_size = frame_size
-        self.thisptr = new OpusCodec(rate, channels, frame_size,
-                                     fec, packet_loss_perc, bitrate, complexity,
-                                     dtx, application,
-                                     True, False)
+        self.thisptr = NULL
+        try:
+            self.thisptr = new OpusCodec(rate, channels, frame_size,
+                                         fec, packet_loss_perc, bitrate, complexity,
+                                         dtx, application,
+                                         True, False)
+        except Exception as exc:
+            self.thisptr = NULL
+            raise RuntimeError(f"OpusCodec construction failed: {exc}")
 
     def __dealloc__(self):
-        del self.thisptr
+        if self.thisptr != NULL:
+            del self.thisptr
+            self.thisptr = NULL
 
     # Fixed Manual Byte Loop: Optimized with read-only typed memoryviews and C memcpy.
     def encode(self, samples):

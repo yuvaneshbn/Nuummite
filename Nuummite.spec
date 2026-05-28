@@ -1,13 +1,13 @@
-﻿# -*- mode: python ; coding: utf-8 -*-
+# -*- mode: python ; coding: utf-8 -*-
 
-from PyInstaller.building.datastruct import Tree
+from pathlib import Path
 
 
 a = Analysis(
     ['python\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[(str(path), 'Nuummite\\ui') for path in Path('Nuummite/ui').iterdir() if path.is_file()],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -16,9 +16,6 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
-
-# Bundle Qt Designer UI files, QSS, and SVG assets.
-a.datas += Tree('Nuummite\\ui', prefix='Nuummite\\ui')
 pyz = PYZ(a.pure)
 
 exe = EXE(
