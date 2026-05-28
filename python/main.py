@@ -1361,6 +1361,10 @@ class MainWindow(QtWidgets.QMainWindow):
         elif self.audio.is_running and not self.stop_capture_timer.isActive():
             self.stop_capture_timer.start()
 
+        if not dest_ips and not self.hear_targets and not self.audio.is_running:
+            self.sync_broadcast_button()
+            return
+
         self.audio.set_hear_targets(self.hear_targets)
         self.sync_broadcast_button()
 
