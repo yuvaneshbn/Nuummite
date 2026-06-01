@@ -1,0 +1,5 @@
+set(__QT_DEPLOY_TARGET_voice_client_FILE C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/bin/voice_client.exe)
+set(__QT_DEPLOY_TARGET_voice_client_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_voice_client_RUNTIME_DLLS C:/Qt/6.11.1/msvc2022_64/bin/Qt6Networkd.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6UiToolsd.dll;C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/opus.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6OpenGLWidgetsd.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Widgetsd.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6OpenGLd.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Guid.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Cored.dll)
+set(__QT_DEPLOY_TARGET_voice_shared_FILE C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/lib/voice_shared.lib)
+set(__QT_DEPLOY_TARGET_voice_shared_TYPE STATIC_LIBRARY)

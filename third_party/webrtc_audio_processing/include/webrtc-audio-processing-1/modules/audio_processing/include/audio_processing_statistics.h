@@ -1,0 +1,12 @@
+#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_AUDIO_PROCESSING_STATISTICS_H_
+#define WEBRTC_MODULES_AUDIO_PROCESSING_AUDIO_PROCESSING_STATISTICS_H_
+
+namespace webrtc {
+
+struct AudioProcessingStats {
+    bool voice_detected = false;
+};
+
+} // namespace webrtc
+
+#endif // WEBRTC_MODULES_AUDIO_PROCESSING_AUDIO_PROCESSING_STATISTICS_H_
