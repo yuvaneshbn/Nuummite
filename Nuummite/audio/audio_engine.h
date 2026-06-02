@@ -23,6 +23,7 @@
 #include <array>
 
 #include <winsock2.h>
+#include <mmsystem.h>
 #if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
 #include <immintrin.h>
 #endif
@@ -81,12 +82,13 @@ public:
     bool echoAvailable() const { return aec_!= nullptr; }
     bool echoEnabled() const { return echo_enabled_.load(); }
     bool isTxMuted() const;
-
     uint64_t debugPacketsSent() const { return packets_sent_.load(std::memory_order_relaxed); }
     uint64_t debugPacketsRecv() const { return packets_recv_.load(std::memory_order_relaxed); }
     uint64_t debugPacketsDecrypted() const { return packets_decrypted_.load(std::memory_order_relaxed); }
 
     void setHearTargets(const std::unordered_set<std::string>& hear_ids);
+    void handleWaveInBuffer(WAVEHDR* header);
+    void requeueWaveInBuffer(HWAVEIN handle, WAVEHDR* header);
 
 private:
     static constexpr int RATE = 48000;
@@ -98,8 +100,10 @@ private:
     void sendLoop();
     bool openOutput(); 
     void closeOutput();
-    bool openInput(); 
+    bool openInput();
+    bool openInputWaveIn();
     void closeInput();
+    void closeInputWaveIn();
     void updateMixedLevel(const std::vector<int16_t>& frame);
 
     template <typename T, size_t Capacity>
@@ -138,7 +142,6 @@ private:
 
     private:
         static constexpr std::size_t kCacheLine = 64;
-
         std::array<T, Capacity> buffer_{};
         alignas(kCacheLine) std::atomic<size_t> head_{0};
         alignas(kCacheLine) std::atomic<size_t> tail_{0};
@@ -148,7 +151,6 @@ private:
     static constexpr size_t CAPTURE_RING_CAPACITY = CAPTURE_QUEUE_MAX + 1;
 
     bool popCaptureFrame(CaptureFrame& out) noexcept;
-
     struct StreamState {
         std::string id;
         std::unique_ptr<OpusCodec> decoder;
@@ -175,6 +177,11 @@ private:
     
     int input_device_index_ = -1;
     int output_device_index_ = -1;
+
+    // Added adaptive stream channel tracking parameters
+    int input_channels_ = 1;
+    int output_channels_ = 1;
+
     std::atomic<int> capture_level_{0};
     std::atomic<bool> capture_active_{false};
     std::atomic<float> mixed_peak_{0.0f};
@@ -198,7 +205,6 @@ private:
     std::atomic<bool> target_aec_enabled_{false};
     std::atomic<bool> target_agc_enabled_{false};
     std::atomic<bool> tx_muted_{false};
-
     std::unique_ptr<AecProcessor> aec_;
     std::mutex echo_mutex_;
     std::atomic<int> aec_stream_delay_ms_{180};
@@ -216,12 +222,15 @@ private:
     std::atomic<uint32_t> capture_dropped_{0};
     uint16_t seq_ = 0;
     uint32_t timestamp_ = 0;
-
     SOCKET recv_sock_ = INVALID_SOCKET;
     SOCKET send_sock_ = INVALID_SOCKET;
     RTPTransport transport_;
     void* wave_out_ = nullptr;
     void* wave_in_ = nullptr;
+    bool use_wave_in_input_ = false;
+    int wave_in_channels_ = 1;
+    std::vector<std::vector<uint8_t>> wave_in_buffers_;
+    std::vector<WAVEHDR> wave_in_headers_;
 
     std::vector<float> mix_accum_;
     std::vector<int16_t> mix_frame_;
@@ -230,10 +239,7 @@ private:
     size_t fifo_write_ = 0;
     size_t fifo_size_ = 0;
     bool audio_debug_ = false;
-
-    // Kernel notification handles to replace thread-sleep polling
     HANDLE capture_semaphore_ = nullptr;
     std::atomic<bool> is_mic_testing_{false};
 };
-
 #endif // AUDIO_ENGINE_H

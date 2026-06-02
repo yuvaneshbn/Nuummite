@@ -43,10 +43,22 @@ std::string toLower(std::string value) {
     return value;
 }
 
+std::string wideToUtf8(const wchar_t* text) {
+    if (!text || !*text) {
+        return {};
+    }
+    const int required = WideCharToMultiByte(CP_UTF8, 0, text, -1, nullptr, 0, nullptr, nullptr);
+    if (required <= 0) {
+        return {};
+    }
+    std::string result(static_cast<size_t>(required - 1), '\0');
+    WideCharToMultiByte(CP_UTF8, 0, text, -1, result.data(), required, nullptr, nullptr);
+    return result;
+}
+
 std::wstring getEnvironmentPathW(const wchar_t* name) {
     DWORD size = 260;
     std::wstring value;
-
     for (;;) {
         value.resize(size);
         const DWORD len = GetEnvironmentVariableW(name, value.data(), size);
@@ -64,7 +76,6 @@ std::wstring getEnvironmentPathW(const wchar_t* name) {
 std::wstring getModuleDirectoryW() {
     DWORD size = MAX_PATH;
     std::wstring value;
-
     for (;;) {
         value.resize(size);
         const DWORD len = GetModuleFileNameW(nullptr, value.data(), size);
@@ -102,7 +113,7 @@ void appendNativeDebugLog(const char* message) {
 
     FILE* file = nullptr;
     const std::wstring path = getNativeDebugLogPathW();
-    if (_wfopen_s(&file, path.c_str(), L"a") != 0 || !file) {
+    if (_wfopen_s(&file, path.c_str(), L"a")!= 0 ||!file) {
         return;
     }
     std::fprintf(file, "%s\n", message);
@@ -145,7 +156,6 @@ struct PortAudioApi {
     using Pa_StartStream_Fn = PaError (*)(PaStream*);
     using Pa_StopStream_Fn = PaError (*)(PaStream*);
     using Pa_ReadStream_Fn = PaError (*)(PaStream*, void*, unsigned long);
-
     HMODULE module = nullptr;
     Pa_Initialize_Fn Initialize = nullptr;
     Pa_Terminate_Fn Terminate = nullptr;
@@ -237,9 +247,9 @@ struct PortAudioApi {
         }
 
         const PaError err = Initialize();
-        if (err != paNoError) {
+        if (err!= paNoError) {
             error = "PortAudio dynamic initialization failed: ";
-            error += (GetErrorText ? GetErrorText(err) : "PortAudio error");
+            error += (GetErrorText? GetErrorText(err) : "PortAudio error");
             return false;
         }
 
@@ -298,6 +308,22 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
     }
     const int count = static_cast<int>(api.GetDeviceCount());
     if (count < 0) return result;
+    if (count <= 0 && input) {
+        const UINT wave_count = waveInGetNumDevs();
+        for (UINT i = 0; i < wave_count; ++i) {
+            WAVEINCAPSW caps{};
+            std::string name = "Microphone ";
+            name += std::to_string(i);
+            if (waveInGetDevCapsW(i, &caps, sizeof(caps)) == MMSYSERR_NOERROR) {
+                const std::string device_name = wideToUtf8(caps.szPname);
+                if (!device_name.empty()) {
+                    name = device_name;
+                }
+            }
+            result.push_back(AudioDeviceInfo{static_cast<int>(i), name});
+        }
+        return result;
+    }
 
     std::vector<DeviceEntry> entries;
     for (int i = 0; i < count; ++i) {
@@ -313,7 +339,8 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
         DeviceEntry entry;
         entry.index = i;
         entry.raw_name = raw_name;
-        entry.display_name = host_name.empty()? raw_name : raw_name + " [" + host_name + "]";
+        entry.display_name = host_name.empty()?
+        raw_name : raw_name + " [" + host_name + "]";
         entry.rank = 99;
         auto it = host_priority.find(toLower(host_name));
         if (it!= host_priority.end()) entry.rank = it->second;
@@ -324,7 +351,7 @@ std::vector<AudioDeviceInfo> listPreferredDevices(bool input) {
     if (entries.empty()) return result;
     std::vector<DeviceEntry> candidates;
     std::copy_if(entries.begin(), entries.end(), std::back_inserter(candidates), [](const DeviceEntry& entry) {
-        return !entry.is_generic;
+        return!entry.is_generic;
     });
     if (candidates.empty()) candidates = entries;
 
@@ -398,6 +425,22 @@ int paInputCallback(const void* input, void*, unsigned long frame_count, const P
     audio->pushCaptureFrame(reinterpret_cast<const int16_t*>(input), static_cast<int>(frame_count));
     return paContinue;
 }
+
+void CALLBACK waveInCallback(HWAVEIN handle, UINT msg, DWORD_PTR instance, DWORD_PTR param1, DWORD_PTR) {
+    if (msg != WIM_DATA || !instance || !param1) {
+        return;
+    }
+    auto* audio = reinterpret_cast<AudioEngine*>(instance);
+    if (!audio) {
+        return;
+    }
+    auto* header = reinterpret_cast<WAVEHDR*>(param1);
+    if (!header || header->dwBytesRecorded == 0) {
+        return;
+    }
+    audio->handleWaveInBuffer(header);
+    audio->requeueWaveInBuffer(handle, header);
+}
 } // namespace
 
 AudioEngine::AudioEngine()
@@ -438,7 +481,6 @@ AudioEngine::AudioEngine()
     fprintf(stderr, "[debug] AudioEngine::AudioEngine after AecProcessor\n");
     fflush(stderr);
     appendNativeDebugLog("AudioEngine ctor: after AecProcessor");
-
     fprintf(stderr, "[debug] AudioEngine::AudioEngine before socket()\n");
     fflush(stderr);
     appendNativeDebugLog("AudioEngine ctor: before socket()");
@@ -499,7 +541,6 @@ AudioEngine::AudioEngine()
     fprintf(stderr, "[debug] AudioEngine::AudioEngine deferred openOutput until streaming starts\n");
     fflush(stderr);
     appendNativeDebugLog("AudioEngine ctor: after deferred openOutput");
-
     listen_thread_ = std::thread(&AudioEngine::listenLoop, this);
 }
 
@@ -544,9 +585,6 @@ bool AudioEngine::setInputDevice(int device_index) {
     fflush(stderr);
     stop();
     return start(destinations);
-    fprintf(stderr, "[debug] AudioEngine::setInputDevice exit true\n");
-    fflush(stderr);
-    return true;
 }
 
 bool AudioEngine::setOutputDevice(int device_index) {
@@ -693,7 +731,7 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
 
         PaStreamParameters params{};
         params.device = device;
-        params.channelCount = 1;
+        params.channelCount = (info->maxInputChannels >= 2)? 2 : 1;
         params.sampleFormat = paInt16;
         params.suggestedLatency = info->defaultLowInputLatency;
         PaStream* stream = nullptr;
@@ -709,17 +747,24 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
             return;
         }
 
-        std::vector<int16_t> frame(FRAME, 0);
+        std::vector<int16_t> temp_input_buf(FRAME * params.channelCount, 0);
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(static_cast<int>(duration_sec * 1000));
 
         while (std::chrono::steady_clock::now() < deadline &&!running_.load(std::memory_order_acquire)) {
-            err = pa.ReadStream(stream, frame.data(), FRAME);
+            err = pa.ReadStream(stream, temp_input_buf.data(), FRAME);
             if (err!= paNoError) {
                 break;
             }
             int max_peak = 0;
-            for (const auto sample : frame) {
-                max_peak = std::max(max_peak, static_cast<int>(std::abs(sample)));
+            if (params.channelCount == 2) {
+                for (int i = 0; i < FRAME; ++i) {
+                    int32_t mixed = (static_cast<int32_t>(temp_input_buf[2 * i]) + static_cast<int32_t>(temp_input_buf[2 * i + 1])) / 2;
+                    max_peak = std::max(max_peak, std::abs(mixed));
+                }
+            } else {
+                for (const auto sample : temp_input_buf) {
+                    max_peak = std::max(max_peak, static_cast<int>(std::abs(sample)));
+                }
             }
             if (max_peak > 0) {
                 capture_level_.store(std::min(100, static_cast<int>((max_peak * 100) / 32767)), std::memory_order_relaxed);
@@ -742,20 +787,34 @@ bool AudioEngine::openOutput() {
     if (wave_out_) return true;
     auto& pa = portAudioApi();
     PaDeviceIndex device = resolveOutputDevice(output_device_index_);
-    if (device == paNoDevice) return false;
+    if (device == paNoDevice) {
+        fprintf(stderr, "[debug] AudioEngine::openOutput no usable output device (requested=%d)\n", output_device_index_);
+        fflush(stderr);
+        return false;
+    }
 
     const PaDeviceInfo* info = pa.GetDeviceInfo(device);
-    if (!info) return false;
+    if (!info) {
+        fprintf(stderr, "[debug] AudioEngine::openOutput missing device info for device=%d\n", static_cast<int>(device));
+        fflush(stderr);
+        return false;
+    }
 
     PaStreamParameters params{};
     params.device = device;
-    params.channelCount = 1;
+    
+    // Fixed Defect 1: Dynamically allocate stereo channels if supported by WASAPI driver interface
+    params.channelCount = (info->maxOutputChannels >= 2)? 2 : 1;
     params.sampleFormat = paInt16;
     params.suggestedLatency = info->defaultHighOutputLatency;
+    
+    output_channels_ = params.channelCount;
+
     PaStream* stream = nullptr;
     PaError err = pa.OpenStream(&stream, nullptr, &params, RATE, FRAME, paNoFlag, &paOutputCallback, this);
     if (err!= paNoError ||!stream) {
-        fprintf(stderr, "[debug] AudioEngine::openOutput open failed err=%d\n", static_cast<int>(err));
+        fprintf(stderr, "[debug] AudioEngine::openOutput open failed err=%d (Format rejection text: %s)\n", 
+                static_cast<int>(err), paErrorText(err).c_str());
         fflush(stderr);
         return false;
     }
@@ -769,7 +828,7 @@ bool AudioEngine::openOutput() {
 
     wave_out_ = stream;
     playback_running_.store(true);
-    fprintf(stderr, "[debug] AudioEngine::openOutput success\n");
+    fprintf(stderr, "[debug] AudioEngine::openOutput success with %d configured playback channels\n", output_channels_);
     fflush(stderr);
     return true;
 }
@@ -784,45 +843,212 @@ void AudioEngine::closeOutput() {
     wave_out_ = nullptr;
 }
 
-bool AudioEngine::openInput() {
-    fprintf(stderr, "[debug] AudioEngine::openInput entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
+bool AudioEngine::openInputWaveIn() {
+    fprintf(stderr, "[debug] AudioEngine::openInputWaveIn entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
+    fflush(stderr);
     if (wave_in_) return true;
 
-    auto& pa = portAudioApi();
-    PaDeviceIndex device = resolveInputDevice(input_device_index_);
-    if (device == paNoDevice) return false;
-
-    const PaDeviceInfo* info = pa.GetDeviceInfo(device);
-    if (!info) return false;
-
-    PaStreamParameters params{};
-    params.device = device;
-    params.channelCount = 1;
-    params.sampleFormat = paInt16;
-    params.suggestedLatency = info->defaultLowInputLatency;
-    PaStream* stream = nullptr;
-    PaError err = pa.OpenStream(&stream, &params, nullptr, RATE, FRAME, paNoFlag, &paInputCallback, this);
-    if (err!= paNoError ||!stream) {
-        fprintf(stderr, "[debug] AudioEngine::openInput open failed err=%d device=%d\n", static_cast<int>(err), static_cast<int>(device));
+    const UINT device_count = waveInGetNumDevs();
+    if (device_count == 0) {
+        fprintf(stderr, "[debug] AudioEngine::openInputWaveIn no waveIn devices available\n");
         fflush(stderr);
         return false;
     }
-    err = pa.StartStream(stream);
-    if (err!= paNoError) {
-        fprintf(stderr, "[debug] AudioEngine::openInput start failed err=%d device=%d\n", static_cast<int>(err), static_cast<int>(device));
+
+    const UINT device_id = (input_device_index_ >= 0 && static_cast<UINT>(input_device_index_) < device_count)
+        ? static_cast<UINT>(input_device_index_)
+        : WAVE_MAPPER;
+
+    WAVEFORMATEX format{};
+    format.wFormatTag = WAVE_FORMAT_PCM;
+    format.nChannels = 1;
+    format.nSamplesPerSec = RATE;
+    format.wBitsPerSample = 16;
+    format.nBlockAlign = static_cast<WORD>(format.nChannels * (format.wBitsPerSample / 8));
+    format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
+    format.cbSize = 0;
+
+    HWAVEIN handle = nullptr;
+    MMRESULT mr = waveInOpen(&handle, device_id, &format, reinterpret_cast<DWORD_PTR>(&waveInCallback), reinterpret_cast<DWORD_PTR>(this), CALLBACK_FUNCTION);
+    if (mr != MMSYSERR_NOERROR || !handle) {
+        fprintf(stderr, "[debug] AudioEngine::openInputWaveIn waveInOpen failed err=%u device=%u\n", static_cast<unsigned>(mr), static_cast<unsigned>(device_id));
         fflush(stderr);
-        pa.CloseStream(stream);
         return false;
     }
 
-    wave_in_ = stream;
-    fprintf(stderr, "[debug] AudioEngine::openInput success device=%d\n", static_cast<int>(device));
+    const size_t buffer_count = 4;
+    const size_t buffer_bytes = static_cast<size_t>(FRAME) * sizeof(int16_t);
+    wave_in_buffers_.clear();
+    wave_in_headers_.clear();
+    wave_in_buffers_.resize(buffer_count);
+    wave_in_headers_.resize(buffer_count);
+    for (size_t i = 0; i < buffer_count; ++i) {
+        wave_in_buffers_[i].assign(buffer_bytes, 0);
+        WAVEHDR& header = wave_in_headers_[i];
+        std::memset(&header, 0, sizeof(header));
+        header.lpData = reinterpret_cast<LPSTR>(wave_in_buffers_[i].data());
+        header.dwBufferLength = static_cast<DWORD>(wave_in_buffers_[i].size());
+        mr = waveInPrepareHeader(handle, &header, sizeof(header));
+        if (mr != MMSYSERR_NOERROR) {
+            fprintf(stderr, "[debug] AudioEngine::openInputWaveIn prepare failed err=%u buffer=%zu\n", static_cast<unsigned>(mr), i);
+            fflush(stderr);
+            waveInReset(handle);
+            for (size_t j = 0; j <= i; ++j) {
+                if (wave_in_headers_[j].dwFlags & WHDR_PREPARED) {
+                    waveInUnprepareHeader(handle, &wave_in_headers_[j], sizeof(WAVEHDR));
+                }
+            }
+            waveInClose(handle);
+            wave_in_buffers_.clear();
+            wave_in_headers_.clear();
+            return false;
+        }
+        mr = waveInAddBuffer(handle, &header, sizeof(header));
+        if (mr != MMSYSERR_NOERROR) {
+            fprintf(stderr, "[debug] AudioEngine::openInputWaveIn add buffer failed err=%u buffer=%zu\n", static_cast<unsigned>(mr), i);
+            fflush(stderr);
+            waveInReset(handle);
+            for (size_t j = 0; j <= i; ++j) {
+                if (wave_in_headers_[j].dwFlags & WHDR_PREPARED) {
+                    waveInUnprepareHeader(handle, &wave_in_headers_[j], sizeof(WAVEHDR));
+                }
+            }
+            waveInClose(handle);
+            wave_in_buffers_.clear();
+            wave_in_headers_.clear();
+            return false;
+        }
+    }
+
+    mr = waveInStart(handle);
+    if (mr != MMSYSERR_NOERROR) {
+        fprintf(stderr, "[debug] AudioEngine::openInputWaveIn start failed err=%u\n", static_cast<unsigned>(mr));
+        fflush(stderr);
+        waveInReset(handle);
+        for (auto& header : wave_in_headers_) {
+            if (header.dwFlags & WHDR_PREPARED) {
+                waveInUnprepareHeader(handle, &header, sizeof(WAVEHDR));
+            }
+        }
+        waveInClose(handle);
+        wave_in_buffers_.clear();
+        wave_in_headers_.clear();
+        return false;
+    }
+
+    wave_in_ = handle;
+    use_wave_in_input_ = true;
+    wave_in_channels_ = 1;
+    input_channels_ = 1;
+    fprintf(stderr, "[debug] AudioEngine::openInputWaveIn success device=%u\n", static_cast<unsigned>(device_id));
     fflush(stderr);
     return true;
 }
 
+void AudioEngine::closeInputWaveIn() {
+    if (!wave_in_) {
+        wave_in_buffers_.clear();
+        wave_in_headers_.clear();
+        return;
+    }
+
+    HWAVEIN handle = reinterpret_cast<HWAVEIN>(wave_in_);
+    waveInStop(handle);
+    waveInReset(handle);
+    for (auto& header : wave_in_headers_) {
+        if (header.dwFlags & WHDR_PREPARED) {
+            waveInUnprepareHeader(handle, &header, sizeof(WAVEHDR));
+        }
+    }
+    waveInClose(handle);
+    wave_in_ = nullptr;
+    use_wave_in_input_ = false;
+    wave_in_buffers_.clear();
+    wave_in_headers_.clear();
+}
+
+void AudioEngine::handleWaveInBuffer(WAVEHDR* header) {
+    if (!header || !header->lpData || header->dwBytesRecorded == 0 || !running_.load()) {
+        return;
+    }
+    const int sample_count = static_cast<int>(header->dwBytesRecorded / sizeof(int16_t));
+    const auto* samples = reinterpret_cast<const int16_t*>(header->lpData);
+    if (!samples || sample_count <= 0) {
+        return;
+    }
+
+    for (int offset = 0; offset + FRAME <= sample_count; offset += FRAME) {
+        pushCaptureFrame(samples + offset, FRAME);
+    }
+}
+
+void AudioEngine::requeueWaveInBuffer(HWAVEIN handle, WAVEHDR* header) {
+    if (!handle || !header || !running_.load() || !use_wave_in_input_ || wave_in_ != reinterpret_cast<void*>(handle)) {
+        return;
+    }
+    const MMRESULT mr = waveInAddBuffer(handle, header, sizeof(WAVEHDR));
+    if (mr != MMSYSERR_NOERROR) {
+        fprintf(stderr, "[debug] AudioEngine::requeueWaveInBuffer add failed err=%u\n", static_cast<unsigned>(mr));
+        fflush(stderr);
+    }
+}
+
+bool AudioEngine::openInput() {
+    fprintf(stderr, "[debug] AudioEngine::openInput entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
+    if (wave_in_) return true;
+    auto& pa = portAudioApi();
+    PaDeviceIndex device = resolveInputDevice(input_device_index_);
+    if (device != paNoDevice) {
+        const PaDeviceInfo* info = pa.GetDeviceInfo(device);
+        if (!info) {
+            fprintf(stderr, "[debug] AudioEngine::openInput missing device info for device=%d\n", static_cast<int>(device));
+            fflush(stderr);
+        } else {
+            PaStreamParameters params{};
+            params.device = device;
+            params.channelCount = (info->maxInputChannels >= 2)? 2 : 1;
+            params.sampleFormat = paInt16;
+            params.suggestedLatency = info->defaultLowInputLatency;
+
+            input_channels_ = params.channelCount;
+
+            PaStream* stream = nullptr;
+            PaError err = pa.OpenStream(&stream, &params, nullptr, RATE, FRAME, paNoFlag, &paInputCallback, this);
+            if (err == paNoError && stream) {
+                err = pa.StartStream(stream);
+                if (err == paNoError) {
+                    wave_in_ = stream;
+                    use_wave_in_input_ = false;
+                    fprintf(stderr, "[debug] AudioEngine::openInput success device=%d with %d recording channels\n", static_cast<int>(device), input_channels_);
+                    fflush(stderr);
+                    return true;
+                }
+                fprintf(stderr, "[debug] AudioEngine::openInput start failed err=%d device=%d\n", static_cast<int>(err), static_cast<int>(device));
+                fflush(stderr);
+                pa.CloseStream(stream);
+            } else {
+                fprintf(stderr, "[debug] AudioEngine::openInput open failed err=%d device=%d\n", static_cast<int>(err), static_cast<int>(device));
+                fflush(stderr);
+            }
+        }
+    } else {
+        fprintf(stderr, "[debug] AudioEngine::openInput no usable input device (requested=%d)\n", input_device_index_);
+        fflush(stderr);
+    }
+
+    if (openInputWaveIn()) {
+        return true;
+    }
+
+    return false;
+}
+
 void AudioEngine::closeInput() {
     if (!wave_in_) return;
+    if (use_wave_in_input_) {
+        closeInputWaveIn();
+        return;
+    }
     auto& pa = portAudioApi();
     PaStream* stream = reinterpret_cast<PaStream*>(wave_in_);
     pa.StopStream(stream);
@@ -834,7 +1060,6 @@ void AudioEngine::listenLoop() {
     WSAPOLLFD poll_fd{};
     poll_fd.fd = recv_sock_;
     poll_fd.events = POLLRDNORM;
-
     while (listen_running_.load()) {
         int poll_result = WSAPoll(&poll_fd, 1, 100);
         if (poll_result == SOCKET_ERROR) {
@@ -877,7 +1102,7 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     if (!packet.has_value() || packet->kind!= VoicePacketKind::ClientAudio ||
         packet->sender_id.empty() || packet->sender_id == client_id_) {
         return;
-}
+    }
     packets_decrypted_.fetch_add(1, std::memory_order_relaxed);
 
     auto* st = getOrCreateStream(packet->sender_id);
@@ -938,19 +1163,19 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
     const size_t need = static_cast<size_t>(sample_count);
     if (playback_fifo_.empty() || mix_frame_.size()!= static_cast<size_t>(FRAME) ||
         mix_accum_.size()!= static_cast<size_t>(FRAME)) {
-        std::fill(out, out + need, 0);
+        std::fill(out, out + (need * output_channels_), 0);
         return;
     }
 
-    const size_t cap = playback_fifo_.size();
+    const size_t max_capacity = playback_fifo_.size();
     auto fifoWrite = [&](const int16_t* data, size_t n) {
         for (size_t i = 0; i < n; ++i) {
-            if (fifo_size_ >= cap) {
-                fifo_read_ = (fifo_read_ + 1) % cap;
+            if (fifo_size_ >= max_capacity) {
+                fifo_read_ = (fifo_read_ + 1) % max_capacity;
                 fifo_size_--;
             }
             playback_fifo_[fifo_write_] = data[i];
-            fifo_write_ = (fifo_write_ + 1) % cap;
+            fifo_write_ = (fifo_write_ + 1) % max_capacity;
             fifo_size_++;
         }
     };
@@ -961,7 +1186,7 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
                 continue;
             }
             dst[i] = playback_fifo_[fifo_read_];
-            fifo_read_ = (fifo_read_ + 1) % cap;
+            fifo_read_ = (fifo_read_ + 1) % max_capacity;
             fifo_size_--;
         }
     };
@@ -1044,8 +1269,8 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
         for (int i = 0; i < FRAME; ++i) {
             mix_accum_[i] = (mix_accum_[i] * pre_scale) / 32768.0f;
         }
-        static float softclip_mem[1] = {0.0f};
-        opus_pcm_soft_clip(mix_accum_.data(), FRAME, 1, softclip_mem);
+        static float softclip_mem = 0.0f;
+        opus_pcm_soft_clip(mix_accum_.data(), FRAME, 1, &softclip_mem);
         for (int i = 0; i < FRAME; ++i) {
             const float v = mix_accum_[i] * 32767.0f;
             mix_frame_[i] = static_cast<int16_t>(std::clamp(v, -32768.0f, 32767.0f));
@@ -1078,7 +1303,17 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
         fifoWrite(mix_frame_.data(), static_cast<size_t>(FRAME));
     }
 
-    fifoRead(out, need);
+    // Fixed Defect 4: Map mono samples to stereo channels during output rendering to prevent underflows
+    if (output_channels_ == 2) {
+        std::vector<int16_t> mono_temp(need);
+        fifoRead(mono_temp.data(), need);
+        for (size_t i = 0; i < need; ++i) {
+            out[2 * i] = mono_temp[i];     // Left channel
+            out[2 * i + 1] = mono_temp[i]; // Right channel
+        }
+    } else {
+        fifoRead(out, need);
+    }
 }
 
 void AudioEngine::updateMixedLevel(const std::vector<int16_t>& frame) {
@@ -1094,10 +1329,20 @@ void AudioEngine::pushCaptureFrame(const int16_t* samples, int sample_count) {
     if (!samples || sample_count <= 0 ||!running_.load()) return;
 
     AudioEngine::CaptureFrame frame{};
-    const int n = std::min(sample_count, FRAME);
-    std::copy_n(samples, n, frame.begin());
-    if (n < FRAME) {
-        std::fill(frame.begin() + n, frame.end(), 0);
+    
+    // Fixed Defect 3: Downmix interleaved stereo frames to mono before processing
+    if (input_channels_ == 2) {
+        const int n = std::min(sample_count, FRAME);
+        for (int i = 0; i < n; ++i) {
+            int32_t mixed = (static_cast<int32_t>(samples[2 * i]) + static_cast<int32_t>(samples[2 * i + 1])) / 2;
+            frame[i] = static_cast<int16_t>(std::clamp(mixed, -32768, 32767));
+        }
+    } else {
+        const int n = std::min(sample_count, FRAME);
+        std::copy_n(samples, n, frame.begin());
+        if (n < FRAME) {
+            std::fill(frame.begin() + n, frame.end(), 0);
+        }
     }
 
     if (capture_frames_.push(frame)) {
@@ -1124,7 +1369,6 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
     capture_frames_.reset();
     capture_dropped_.store(0, std::memory_order_relaxed);
     running_.store(true);
-
     if (!openInput()) {
         running_.store(false);
         return false;
@@ -1196,12 +1440,11 @@ void AudioEngine::sendLoop() {
         const int mic_sens_local = mic_sensitivity_.load(std::memory_order_relaxed);
         const int ns_amount_local = noise_suppression_.load(std::memory_order_relaxed);
         const int voice_peak_threshold = std::clamp(260 - (mic_sens_local * 2), 60, 220);
-
         if (!pure_opus_) {
             if (aec_ && aec_->available()) {
                 const bool need_update =
-                    pending_aec_update_.load(std::memory_order_acquire) ||
-                    pending_agc_update_.load(std::memory_order_acquire);
+                pending_aec_update_.load(std::memory_order_acquire) ||
+                pending_agc_update_.load(std::memory_order_acquire);
                 if (need_update) {
                     std::lock_guard<std::mutex> lock(echo_mutex_);
                     if (aec_) {
@@ -1278,11 +1521,11 @@ void AudioEngine::sendLoop() {
             }
             capture_level_.store(std::min(100, (input_peak * 100) / 32767));
             const bool apm_voice = (aec_ && aec_->available() && aec_->hasVoice());
-            const bool voice_detected = !tx_muted_local && (apm_voice || input_peak >= voice_peak_threshold);
+            const bool voice_detected =!tx_muted_local && (apm_voice || input_peak >= voice_peak_threshold);
             if (voice_detected) {
                 voice_hangover = kVoiceHangoverFrames;
             }
-            const bool voice_active = !tx_muted_local && (voice_detected || voice_hangover > 0);
+            const bool voice_active =!tx_muted_local && (voice_detected || voice_hangover > 0);
             capture_active_.store(voice_active);
             if (!voice_active) {
                 continue;
@@ -1300,11 +1543,11 @@ void AudioEngine::sendLoop() {
                 input_peak = std::max(input_peak, std::abs(static_cast<int>(sample)));
             }
             capture_level_.store(std::min(100, (input_peak * 100) / 32767));
-            const bool voice_detected = !tx_muted_local && input_peak >= voice_peak_threshold;
+            const bool voice_detected =!tx_muted_local && input_peak >= voice_peak_threshold;
             if (voice_detected) {
                 voice_hangover = kVoiceHangoverFrames;
             }
-            const bool voice_active = !tx_muted_local && (voice_detected || voice_hangover > 0);
+            const bool voice_active =!tx_muted_local && (voice_detected || voice_hangover > 0);
             capture_active_.store(voice_active);
             if (!voice_active) {
                 continue;
