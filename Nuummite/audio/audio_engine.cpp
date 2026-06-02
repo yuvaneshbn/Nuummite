@@ -1111,7 +1111,7 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     std::unique_lock<std::mutex> lock(st->mutex);
     if (!st->decoder) {
         st->decoder = std::make_unique<OpusCodec>(
-            RATE, 1, FRAME, true, 10, 24000, 10, false, OPUS_APPLICATION_VOIP, false, true
+            RATE, 1, FRAME, false, 0, 48000, 10, false, OPUS_APPLICATION_VOIP, false, true
         );
         st->jitter_buffer.reset();
     }
