@@ -12,7 +12,6 @@ public:
 private:
     bool ok_ = false;
     WSADATA wsa_{};
-    bool com_initialized_ = false;
 };
 
 #endif // WINSOCK_INIT_H

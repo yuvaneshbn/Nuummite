@@ -540,9 +540,16 @@ AudioEngine::AudioEngine()
         buf.reserve(128);
     }
 
-    fprintf(stderr, "[debug] AudioEngine::AudioEngine deferred openOutput until streaming starts\n");
+    fprintf(stderr, "[debug] AudioEngine::AudioEngine attempting initial openOutput\n");
     fflush(stderr);
-    appendNativeDebugLog("AudioEngine ctor: after deferred openOutput");
+    appendNativeDebugLog("AudioEngine ctor: attempting initial openOutput");
+    if (!openOutput()) {
+        fprintf(stderr, "[debug] AudioEngine::AudioEngine initial openOutput failed; playback will retry on start\n");
+        fflush(stderr);
+        appendNativeDebugLog("AudioEngine ctor: initial openOutput failed");
+    } else {
+        appendNativeDebugLog("AudioEngine ctor: initial openOutput succeeded");
+    }
     listen_thread_ = std::thread(&AudioEngine::listenLoop, this);
 }
 
@@ -798,6 +805,14 @@ bool AudioEngine::openOutput() {
     fflush(stderr);
     if (wave_out_) return true;
     auto& pa = portAudioApi();
+    std::string load_error;
+    if (!pa.ensureReady(load_error)) {
+        fprintf(stderr, "[debug] AudioEngine::openOutput PortAudio load failed: %s\n", load_error.c_str());
+        fflush(stderr);
+        appendNativeDebugLog((std::string("PortAudio load failure: ") + load_error).c_str());
+        return false;
+    }
+
     PaDeviceIndex device = resolveOutputDevice(output_device_index_);
     if (device == paNoDevice) {
         fprintf(stderr, "[debug] AudioEngine::openOutput no usable output device (requested=%d)\n", output_device_index_);
@@ -825,8 +840,9 @@ bool AudioEngine::openOutput() {
     PaStream* stream = nullptr;
     PaError err = pa.OpenStream(&stream, nullptr, &params, RATE, FRAME, paNoFlag, &paOutputCallback, this);
     if (err!= paNoError ||!stream) {
-        fprintf(stderr, "[debug] AudioEngine::openOutput open failed err=%d (Format rejection text: %s)\n", 
-                static_cast<int>(err), paErrorText(err).c_str());
+        const std::string err_text = paErrorText(err);
+        fprintf(stderr, "[debug] AudioEngine::openOutput open failed err=%d (Format rejection text: %s)\n",
+                static_cast<int>(err), err_text.c_str());
         fflush(stderr);
         return false;
     }
@@ -1367,8 +1383,9 @@ bool AudioEngine::popCaptureFrame(CaptureFrame& out) noexcept {
     return capture_frames_.pop(out);
 }
 
-bool AudioEngine::start(const std::vector<std::string>& destinations) {
-    fprintf(stderr, "[debug] AudioEngine::start entry thread=%lu destinations=%zu\n", (unsigned long)GetCurrentThreadId(), destinations.size());
+bool AudioEngine::start(const std::vector<std::string>& destinations, bool enable_input, bool enable_output) {
+    fprintf(stderr, "[debug] AudioEngine::start entry thread=%lu destinations=%zu input=%d output=%d\n",
+            (unsigned long)GetCurrentThreadId(), destinations.size(), enable_input ? 1 : 0, enable_output ? 1 : 0);
     if (client_id_.empty()) return false;
     if (running_.load()) return true;
     {
@@ -1380,14 +1397,22 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
     capture_frames_.reset();
     capture_dropped_.store(0, std::memory_order_relaxed);
     running_.store(true);
-    if (!openInput()) {
-        running_.store(false);
-        return false;
+    if (enable_input) {
+        if (!openInput()) {
+            running_.store(false);
+            return false;
+        }
+    } else {
+        closeInput();
     }
 
-    if (!openOutput()) {
-        fprintf(stderr, "[debug] AudioEngine::start continuing without output stream\n");
-        fflush(stderr);
+    if (enable_output) {
+        if (!openOutput()) {
+            fprintf(stderr, "[debug] AudioEngine::start continuing without output stream\n");
+            fflush(stderr);
+        }
+    } else {
+        closeOutput();
     }
 
     try {

@@ -1,23 +1,16 @@
 #include "winsock_init.h"
-#include <objbase.h>
+#include <iostream>
 
 WinSockInit::WinSockInit() {
+    // Initialize Winsock 2.2 without touching OLE/COM apartments [2]
     const int rc = WSAStartup(MAKEWORD(2, 2), &wsa_);
     ok_ = (rc == 0);
-
-    if (ok_) {
-        const HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-        if (hr == S_OK || hr == S_FALSE) {
-            com_initialized_ = true;
-        }
+    if (!ok_) {
+        std::cerr << " Failed to initialize Winsock stack, error: " << rc << "\n";
     }
 }
 
 WinSockInit::~WinSockInit() {
-    if (com_initialized_) {
-        CoUninitialize();
-        com_initialized_ = false;
-    }
     if (ok_) {
         WSACleanup();
     }

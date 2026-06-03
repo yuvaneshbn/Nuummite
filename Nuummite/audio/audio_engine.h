@@ -41,7 +41,7 @@ public:
     AudioEngine();
     ~AudioEngine();
 
-    bool start(const std::vector<std::string>& destinations);
+    bool start(const std::vector<std::string>& destinations, bool enable_input = true, bool enable_output = true);
     bool updateDestinations(const std::vector<std::string>& destinations);
     void stop();
     void shutdown();

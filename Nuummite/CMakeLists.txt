@@ -51,6 +51,7 @@ target_link_libraries(voice_client PRIVATE
     iphlpapi
     ${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.lib
     ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/lib/webrtc-audio-processing-1-msvc.lib
+    ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/lib/webrtc-audio-coding-1.lib
 )
 
 target_compile_definitions(voice_client PRIVATE
@@ -79,14 +80,7 @@ if (PORTAUDIO_DLL AND EXISTS "${PORTAUDIO_DLL}")
     )
 endif()
 
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.dll
-            $<TARGET_FILE_DIR:voice_client>/rnnoise.dll
-    )
-endif()
-
+# Deploy libsodium runtime libraries from third_party
 if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/libsodium.dll")
     add_custom_command(TARGET voice_client POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -103,6 +97,30 @@ if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll")
     )
 endif()
 
+if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll")
+    add_custom_command(TARGET voice_client POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll
+            $<TARGET_FILE_DIR:voice_client>/libgcc_s_seh-1.dll
+    )
+endif()
+
+if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll")
+    add_custom_command(TARGET voice_client POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll
+            $<TARGET_FILE_DIR:voice_client>/libwinpthread-1.dll
+    )
+endif()
+
+if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.dll")
+    add_custom_command(TARGET voice_client POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.dll
+            $<TARGET_FILE_DIR:voice_client>/rnnoise.dll
+    )
+endif()
+
 if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-processing-1-3.dll")
     add_custom_command(TARGET voice_client POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -111,17 +129,11 @@ if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-a
     )
 endif()
 
-if (EXISTS "C:/mingw64/bin/libgcc_s_seh-1.dll")
+if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-coding-1-3.dll")
     add_custom_command(TARGET voice_client POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            C:/mingw64/bin/libgcc_s_seh-1.dll
-            $<TARGET_FILE_DIR:voice_client>/libgcc_s_seh-1.dll
-    )
-elseif (EXISTS "C:/msys64/ucrt64/bin/libgcc_s_seh-1.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            C:/msys64/ucrt64/bin/libgcc_s_seh-1.dll
-            $<TARGET_FILE_DIR:voice_client>/libgcc_s_seh-1.dll
+            ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-coding-1-3.dll
+            $<TARGET_FILE_DIR:voice_client>/webrtc-audio-coding-1-3.dll
     )
 endif()
 

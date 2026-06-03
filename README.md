@@ -1,70 +1,110 @@
-# Nuummite - LAN P2P Voice Chat (Windows)
+# Nuummite - Decentralized LAN P2P Voice Communication (Windows)
 
 **High-performance, peer-to-peer voice communication for local networks with zero central server.**
 
-Nuummite enables real-time encrypted voice chat across your LAN using a decentralized P2P mesh topology. Audio is processed by a high-performance C++ engine with automatic device selection, noise suppression, echo cancellation, and adaptive bitrate encoding—wrapped in a responsive PySide6 UI.
+Nuummite is a full-mesh, decentralized P2P voice communication platform built for local area networks (LANs) without central media routing servers. All routing, synchronization, and audio processing tasks run directly on edge clients. The system features a decoupled architecture separating the graphical user interface from real-time processing threads, ensuring low-latency, full-duplex audio with comprehensive acoustic preprocessing, end-to-end encryption, and adaptive network handling.
 
 **Key Features:**
-- ✅ UDP peer-to-peer discovery on port 50000
-- ✅ Opus codec @ 48 kHz, 20 ms frames, mono audio
-- ✅ End-to-end encryption (libsodium secretbox)
+- ✅ Full-mesh peer-to-peer topology with zero central server
+- ✅ UDP peer discovery on port 50000 (1000ms broadcast cycle, 3500ms peer pruning)
+- ✅ Low-latency audio: 48 kHz @ 20ms frames (960 samples), Opus codec @ 48 kbps
+- ✅ End-to-end encryption: libsodium secretbox (XSalsa20-Poly1305) with Argon2id KDF
+- ✅ Multi-stage acoustic preprocessing: WebRTC AEC, RNNoise deep denoising, AGC
+- ✅ Atomic double-buffering for lock-free UI/real-time thread synchronization
+- ✅ Jitter buffer with adaptive target sizing and Opus packet loss concealment (PLC)
+- ✅ Dual-driver fallback: WASAPI/PortAudio → WaveIn if primary fails
+- ✅ Dynamic CPU protection during playback callbacks (x86 pause instructions)
+- ✅ Peak-aware soft-clipping for multi-stream mixing
+- ✅ DSCP QoS marking (DSCP 46, TOS 0xB8) for network prioritization
 - ✅ Real-time device selection, volume controls, per-participant muting
-- ✅ Noise suppression, echo cancellation (WebRTC APM), RNNoise denoising
-- ✅ Zero-config LAN discovery—just enter a name and room
 - ✅ Packagable as standalone `.exe` with PyInstaller
-- ✅ Native C++/Qt client available for advanced users
+- ✅ Native C++/Qt client available for embedded/advanced deployments
 
 **Target OS:** Windows 10/11 (x64), Python 3.11+  
-**Architecture:** C++ audio engine (Cython wrapper) + PySide6 UI  
+**Architecture:** C++ real-time audio engine (48 kHz, 20ms frames) + Qt6 UI  
 **License:** MIT
 
 ---
 
 ## Table of Contents
 
-1. [Quick Start (Python UI)](#quick-start-python-ui)
-2. [Detailed Installation](#detailed-installation)
-3. [Compilation & Build](#compilation--build)
-4. [Running the Application](#running-the-application)
-5. [Development Workflow](#development-workflow)
-6. [Packaging as .exe](#packaging-as-exe)
-7. [Native C++/Qt Client](#native-c-qt-client)
-8. [Troubleshooting](#troubleshooting)
-9. [Runtime Configuration](#runtime-configuration)
-10. [Network & Security](#network--security)
+1. [System Architecture](#system-architecture)
+3. [Detailed Installation](#detailed-installation)
+4. [Compilation & Build](#compilation--build)
+5. [Running the Application](#running-the-application)
+6. [Real-Time Audio Pipelines](#real-time-audio-pipelines)
+7. [Development Workflow](#development-workflow)
+8. [Packaging as .exe](#packaging-as-exe)
+9. [Native C++/Qt Client](#native-c-qt-client)
+10. [Troubleshooting](#troubleshooting)
+11. [Runtime Configuration](#runtime-configuration)
+12. [Network & Security](#network--security)
 
 ---
 
-## Quick Start (Python UI)
+## System Architecture
 
-### For Impatient Users
+### Architectural Foundation and Component Interconnections
 
-If you have Python 3.11+, Git, and MSVC Build Tools installed, do this:
+The Nuummite client is built on a full-mesh topology with five primary subsystems operating across decoupled threads:
 
-```powershell
-# Clone and enter directory
-git clone https://github.com/yuvaneshbn/Nuummite.git
-cd Nuummite
+| Module | Files | Dependencies | Thread Domain | Runtime Resolution |
+|--------|-------|--------------|----------------|-------------------|
+| **Graphical User Interface** | MainWindow.cpp, SettingsDialog.cpp, VolumeControlPanel.cpp | Qt6 Gui, Widgets, Network | Main GUI Thread (Qt Event Loop) | Static CMake linkage |
+| **Peer Discovery Protocol** | peer_discovery.cpp | Winsock2, IPHlpApi (GetAdaptersAddresses) | Dedicated Discovery Thread | Static ws2_32.lib, iphlpapi.lib |
+| **Core Audio Engine** | audio_engine.cpp | PortAudio, Windows Multimedia (winmm.lib) | Hardware Callbacks & sendLoop | Dynamic libportaudio.dll loading |
+| **Acoustic Preprocessor** | aec_processor.cpp, webrtc_apm.cpp, rnnoise_processor.cpp | WebRTC APM, RNNoise | sendLoop (TX) & Playback (RX) | Static DLL imports |
+| **Cryptographic Shield** | libsodium_wrapper.cpp, audio_packet.cpp | Libsodium | Main GUI (KDF) & Real-Time Threads | Dynamic libsodium.dll loading |
 
-# Create virtual environment and activate
-python -m venv .venv
-.\.venv\Scripts\activate
+### Dynamic System Initialization and Runtime Bootstrap Sequence
 
-# Install Nuummite and dependencies
-pip install --upgrade pip
-pip install -e .
+**Phase 1: Winsock & COM Initialization**
+The application calls WSAStartup (Winsock v2.2) and CoInitializeEx(COINIT_MULTITHREADED) to prepare networking and COM libraries for multi-threaded WASAPI operations.
 
-# Run!
-python -m python.main
+**Phase 2: Room Setup Dialog**
+User enters client nickname, multicast/loopback room identifier, and passphrase.
+
+**Phase 3: Cryptographic Key Derivation**
+The passphrase is processed through libsodium's crypto_pwhash (Argon2id) with KDF salt "NuummiteVoiceKDF" to derive a 256-bit symmetric key. Fallback to crypto_generichash (BLAKE2b) if Argon2id unavailable.
+
+**Phase 4: Audio Engine Allocation**
+AudioEngine allocates a non-blocking UDP socket (recv_sock_) with SO_EXCLUSIVEADDRUSE and SO_RCVBUF (65,536 bytes). SIO_UDP_CONNRESET is disabled to prevent ICMP errors from crashing the receiver loop.
+
+**Phase 5: Subsystem Thread Spawning**
+- AudioEngine::listenLoop begins polling the media receiver socket
+- PeerDiscovery::start initializes discovery broadcasts on local subnet
+
+| Phase | API Functions | Security Flags | Created Handles | Target State |
+|-------|---------------|----------------|-----------------|--------------|
+| Winsock & COM | WSAStartup, CoInitializeEx | COINIT_MULTITHREADED | Static g_wsa handle | Networking & WASAPI initialized |
+| Dynamic DLL Load | LoadLibraryExW, GetProcAddress | LOAD_LIBRARY_SEARCH_SYSTEM32 | HMODULE for Libsodium, PortAudio | DLL entry points resolved |
+| KDF Pipeline | crypto_pwhash, crypto_generichash | Interactive ops/mem limits | Thread-safe atomic KDF key | 256-bit symmetric key derived |
+| Socket Allocation | socket, setsockopt, WSAIoctl | SO_EXCLUSIVEADDRUSE, SIO_UDP_CONNRESET | SOCKET recv_sock_ | Non-blocking receiver active |
+| Discovery Spawning | std::thread, bind | SO_REUSEADDR, SO_BROADCAST | SOCKET (Port 50000), loop thread | P2P advertising active |
+
+### Peer Discovery Protocol and Atomics-Based UI Synchronization
+
+The PeerDiscovery module implements zero-coordinator peer detection on UDP port 50000:
+
+**Discovery Broadcasts:** At 1000ms intervals, a structured payload broadcasts to 255.255.255.255 (local subnet) and 127.255.255.255 (loopback):
+```
+VOICE_PEER:<client_id>:<room_name>:<audio_port>
 ```
 
-First launch will prompt for:
-- **Client Name:** e.g., "Alice", "Bob" (must be unique on your LAN)
-- **Room Name:** e.g., "office", "gaming" (default: "main")
+**Peer Registry Management:** Uses synchronous select() with 250ms timeout to poll inbound advertisements. Peers matching the local room are added to the registry. Local IPs are marked is_local=true and remapped to 127.0.0.1 for multi-instance support. Peers inactive for 3500ms are pruned.
 
-**Firewall:** Allow private network access for `python.exe` on UDP 50000 & 50002.
+**Lock-Free UI Synchronization:** The discovery thread maintains std::shared_ptr<const std::vector<PeerSnapshot>> and uses std::atomic_store for double-buffering peer updates. The UI thread (1500ms auto-refresh timer) reads via std::atomic_load in O(1) time without locks.
+
+| Parameter | Port | Protocol | Cycle / Timeout | Payload / Behavior |
+|-----------|------|----------|-----------------|-------------------|
+| Discovery Broadcast | 50000 | UDP Broadcast | 1000ms | VOICE_PEER:<id>:<room>:<port> |
+| Socket Polling | 50000 | Synchronous Select | 250ms Timeout | Inbound 512-byte buffer |
+| Peer Pruning | N/A | Local Timer | 3500ms Inactivity | Removes stale records |
+| UI Polling (Mic/Peaks) | N/A | Qt QTimer | 200ms | Live level display |
+| UI Auto-Refresh | N/A | Qt QTimer | 1500ms | Rebuilds participant list |
 
 ---
+
 
 ## Detailed Installation
 
@@ -73,21 +113,10 @@ First launch will prompt for:
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
 | OS | Windows 10 x64 | Windows 11 x64 |
-| Python | 3.11 | 3.12 |
 | MSVC | Build Tools 2022 | Visual Studio 2022 (v143) |
 | RAM | 4 GB | 8 GB |
 | Network | 1 Mbps LAN | Gigabit LAN |
 
-### Step 1: Install Prerequisites
-
-#### 1a. Python 3.11+
-Download from [python.org](https://www.python.org/downloads/):
-- Choose Python 3.11.9 or 3.12.x
-- ✅ **During installation:** Check **"Add Python to PATH"**
-- ✅ Verify: Open PowerShell and run:
-  ```powershell
-  python --version
-  ```
 
 #### 1b. Microsoft Visual C++ Build Tools 2022
 Required to compile Cython extensions and C++ code.
@@ -145,56 +174,11 @@ third_party/        (prebuilt DLLs: opus, libsodium, rnnoise)
 tools/              (diagnostic utilities)
 CMakeLists.txt
 CMakePresets.json
-setup.py
 README.md
-```
-
-### Step 3: Create Python Virtual Environment
-
-```powershell
-# Create venv in project directory (isolated Python)
-python -m venv .venv
-
-# Activate (Windows PowerShell)
-.\.venv\Scripts\Activate.ps1
-
-# If you get a "running scripts is disabled" error:
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-# Then run Activate.ps1 again
-
-# You should see (.venv) at start of your PowerShell prompt
-```
-
-**For Command Prompt (cmd.exe):**
-```cmd
-.venv\Scripts\activate.bat
-```
-
-### Step 4: Upgrade pip and Install Build Tools
-
-```powershell
-# Inside venv (.venv) prompt
-pip install --upgrade pip setuptools wheel
-
-# Install Cython (required for C++ extension)
-pip install "cython==3.2.4"
 ```
 
 ### Step 5: Install Nuummite
 
-```powershell
-# Install in development mode (links to repo, editable)
-pip install -e .
-```
-
-This will:
-1. Run CMake to compile C++ audio engine
-2. Cythonize `python/audio_wrapper.pyx` to `audio_wrapper.pyd`
-3. Install Python dependencies:
-   - `PySide6` (Qt6 bindings)
-   - `Pillow` (image processing)
-   - `psutil` (system monitoring)
-   - Others as needed
 
 **Expected output:**
 ```
@@ -209,107 +193,43 @@ Successfully installed nuummite-0.1.0
 ### Build System Overview
 
 - **CMake:** Orchestrates C++ compilation
-- **MSVC 2022:** Compiles C++17 code
-- **Cython:** Converts `.pyx` to `.pyd` (Python extension)
-- **setuptools:** Handles Python packaging
+- **MSVC 2022:** Compiles C++17 code with full optimization
 
-### Python UI Build (Automatic)
-
-When you run `pip install -e .`, the build happens automatically:
-
-```
-1. setup.py calls CMake to build C++ static library
-2. Cython compiles python/audio_wrapper.pyx → audio_wrapper.pyd
-3. setuptools links .pyd with C++ library → audio_wrapper.cp311-win_amd64.pyd
-4. Python dependencies installed from PyPI
-```
-
-**To rebuild after changing C++ code:**
-
-```powershell
-# Option 1: Full rebuild
-pip install -e . --force-reinstall --no-cache-dir
-
-# Option 2: Quick rebuild (faster)
-pip install -e . --no-deps
-
-# Option 3: Manual Cython rebuild
-python setup.py build_ext --inplace --force
-```
 
 ### C++/Qt Native Client Build
 
 **Prerequisites:**
 - CMake 3.20+
-- Visual Studio 2022
-- vcpkg (optional; CMake can fetch deps)
-- Qt6 (via vcpkg or system)
+- Visual Studio 2022 Build Tools or Visual Studio 2022
+- Qt 6.11.x for MSVC 2022 x64
+- The bundled `third_party` DLLs and `.lib` files in this repo
 
-**Step 1: Set up vcpkg (recommended)**
-
-```powershell
-# Clone vcpkg (first time only)
-cd C:\
-git clone https://github.com/Microsoft/vcpkg.git
-cd vcpkg
-.\bootstrap-vcpkg.bat
-
-# Set environment variable (PowerShell)
-$env:VCPKG_ROOT = "C:\vcpkg"
-# For permanent: Add to System Environment Variables
-
-# Verify
-echo $env:VCPKG_ROOT
-```
-
-**Step 2: Configure CMake**
+**Build**
 
 ```powershell
-cd C:\Projects\Nuummite
+cd C:\Users\YUVANESH\Downloads\Nuummite
 
-# Option A: Visual Studio 2022 (generates .sln file)
-cmake --preset vs-release
+# Recommended: open "x64 Native Tools Command Prompt for VS 2022"
+# If you stay in PowerShell, bootstrap MSVC inside cmd.exe so the environment persists:
+cmd /c ""C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake -S . -B .\build-msvc -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/Qt/6.11.1/msvc2022_64 && cmake --build .\build-msvc"
 
-# Option B: Ninja (single-config, fast)
-cmake --preset ninja-release
+# If you are already inside the Developer Command Prompt, these two commands also work:
+# cmake -S . -B .\build-msvc -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/Qt/6.11.1/msvc2022_64
+# cmake --build .\build-msvc
 ```
 
-CMake will fetch and build:
-- Qt6 Core, Gui, Widgets
-- Opus codec
-- Other dependencies
-
-**Step 3: Build**
+**Run**
 
 ```powershell
-# Option A: Visual Studio
-cmake --build --preset vs-release
-
-# Option B: Ninja
-cmake --build --preset ninja-release
+.\build-msvc\bin\voice_client.exe
 ```
 
-**Output:** `.\build\bin\Release\voice_client.exe` or `.\build-ninja\voice_client.exe`
-
-**Step 4: Run native client**
-
-```powershell
-.\build\bin\Release\voice_client.exe
-```
+The executable is staged into `build-msvc\bin\` along with the required Qt plugins and runtime DLLs.
 
 ---
 
 ## Running the Application
 
-### Python UI
-
-```powershell
-# Make sure venv is activated
-.\.venv\Scripts\Activate.ps1
-
-# Run
-python -m python.main
-```
 
 **First Launch Wizard:**
 1. Enter **Client Name** (must be unique, e.g., "Alice")
@@ -326,93 +246,157 @@ python -m python.main
 ### Native C++/Qt Client
 
 ```powershell
-.\build\bin\Release\voice_client.exe
-```
-
-Same launch wizard as Python UI.
-
----
-
-## Development Workflow
-
-### Edit Python UI Only
-
-If you only modify `python/main.py`, `python/*.py`, etc.:
-
-```powershell
-# No rebuild needed, just run
-python -m python.main
-```
-
-Changes appear on next launch.
-
-### Edit C++ Audio Engine
-
-If you modify any files in `Nuummite/audio/`, `Nuummite/common/`, `Nuummite/p2p/`:
-
-```powershell
-# Rebuild the Cython extension
-pip install -e . --no-deps
-
-# Then run
-python -m python.main
-```
-
-This rebuilds the `.pyd` in-place.
-
-### Edit `.ui` (Qt Designer files)
-
-If you modify `Nuummite/ui/*.ui`:
-
-```powershell
-# Force rebuild (pyside6-uic will regenerate Python bindings)
-pip install -e . --force-reinstall --no-cache-dir
-
-# Run
-python -m python.main
+.\build-msvc\bin\voice_client.exe
 ```
 
 ---
 
-## Packaging as .exe
+## Real-Time Audio Pipelines
 
-Convert your development installation into a standalone executable that runs on any Windows 10/11 x64 machine without Python installed.
+### C++ Transmit (TX) Pipeline Workflow
 
-### Option 1: Using `Nuummite.spec` (Recommended)
+**Phase 1: Hardware Input Capture and Stereo Downmixing (48 kHz, 20ms = 960 samples)**
 
-This spec file bundles all DLLs and assets automatically:
+The audio engine opens a WASAPI stream via PortAudio, or falls back to WaveIn if unavailable. Raw PCM samples enter the capture callback. Stereo input is downmixed to mono:
 
-```powershell
-# Install PyInstaller
-pip install pyinstaller
-
-# Create exe
-pyinstaller --clean -y Nuummite.spec
+```cpp
+// Stereo to Mono Downmixing
+int32_t mixed = (static_cast<int32_t>(samples[2 * i]) + 
+                 static_cast<int32_t>(samples[2 * i + 1])) / 2;
+frame[i] = static_cast<int16_t>(std::clamp(mixed, -32768, 32767));
 ```
 
-**Output:**
-- `dist/Nuummite/Nuummite.exe` (one-folder executable)
-- `dist/Nuummite/_internal/` (all runtime files: DLLs, Qt plugins, etc.)
+Mono frames are written to a cache-line-aligned SPSC ring buffer (16-frame capacity) and a semaphore signals the transmission thread.
 
-**To distribute:**
-1. Zip the entire `dist/Nuummite/` folder
-2. Share the zip file
-3. Users extract and run `Nuummite.exe`
+**Phase 2: Multi-Stage Preprocessing**
 
-### Option 2: Direct PyInstaller (Quick local test)
+The transmission thread pops frames and processes through three modules:
+1. **Acoustic Echo Cancellation (AEC):** WebRTC APM high-pass filtering and echo cancellation using playback reference frames
+2. **Deep Noise Suppression:** RNNoise processes two 10ms blocks (480 samples each) per 20ms frame
+3. **Automatic Gain Control:** If enabled, APM normalizes output. If disabled, manual gain scaling applies:
+   ```
+   ScaledSample = RawSample × (10^(tx_gain_db/20) × mic_sensitivity/50)
+   ```
 
-```powershell
-pip install pyinstaller
+**Phase 3: Voice Activity Detection (VAD) and Hangover Protection**
 
-# One-folder (recommended)
-pyinstaller --clean --onedir --windowed --icon Nuummite/technical-support.ico --name "Nuummite" python/main.py
+WebRTC's VAD runs; fallback to peak amplitude comparison against dynamic threshold:
+```
+VAD_Threshold = clamp(260 - (mic_sensitivity × 2), 60, 220)
+```
+If speech detected, hangover counter set to 18 frames (360ms). Prevents audio cutoff during pauses. When hangover reaches zero, transmission pauses.
 
-# One-file (slower startup, slightly more AV false-positives)
-# pyinstaller --clean --onefile --windowed --noupx --icon Nuummite/technical-support.ico --name "Nuummite" python/main.py
+**Phase 4: Opus Voice Encoding and Authenticated Encryption**
+
+Active frames compressed with Opus (OPUS_APPLICATION_VOIP, 48 kbps, complexity 10, in-band FEC enabled). Plaintext header + Opus payload encrypted with SodiumWrapper:
+
+```
+Plaintext = "client_id|seq|timestamp:" + OpusData
+Packet = [Nonce (24 bytes)] + [Authenticated Ciphertext (variable)]
 ```
 
-**Output:**
-- `dist/Nuummite/Nuummite.exe` + `dist/Nuummite/_internal/`
+**Phase 5: Network Serialization and QoS Mapping**
+
+Packet sent to all active peer addresses via non-blocking UDP socket. DSCP EF (value 46) applied to IP header's ToS field (0xB8) for voice prioritization.
+
+### C++ Receive (RX) and Mixing Pipeline Workflow
+
+**Phase 1: Packet Reception and Security Verification**
+
+listenLoop monitors recv_sock_ using WSAPoll (100ms timeout). Received packet's first 24 bytes parsed as nonce; remaining bytes decrypted:
+
+```
+Plaintext = crypto_secretbox_open_easy(Ciphertext, Nonce, RoomKey)
+```
+Decryption failure discards packet. Success extracts sender ID, sequence number, timestamp, and routes to peer's StreamState.
+
+**Phase 2: Jitter Buffer and Packet Loss Concealment (PLC)**
+
+Each peer has 64-slot JitterBuffer. Sequence validation detects missing packets. Target buffer size adapts dynamically:
+- If packet loss over 50-packet window > 10%: increase target (up to 6 frames)
+- If packet loss < 2%: decrease target (down to 2 frames)
+
+Missing packets trigger Opus decoder PLC, synthesizing audio from prior frames.
+
+**Phase 3: Synchronized Stream Mixing and Soft-Clipping**
+
+Hardware playback thread uses StreamSnapshotGuard lock-free reader pattern:
+
+```cpp
+// Lock-Free Reader Registration
+for (;;) {
+    idx = engine->stream_snapshot_active_.load(std::memory_order_acquire);
+    engine->stream_snapshot_readers_[idx].fetch_add(1, std::memory_order_acq_rel);
+    if (idx == engine->stream_snapshot_active_.load(std::memory_order_acquire)) break;
+    engine->stream_snapshot_readers_[idx].fetch_sub(1, std::memory_order_release);
+}
+```
+
+Frames from active peers mixed into high-precision accumulator. If peak exceeds 28,000, scaling applied:
+```
+ScaleFactor = 28000.0 / Peak
+```
+opus_pcm_soft_clip then compresses peaks, converted back to int16 PCM.
+
+**Phase 4: Reference Echo Loop, Volume Scaling, and Stereo Output**
+
+Mixed frame sent to AecProcessor::process_render for WebRTC reference. Master and output volume applied:
+```
+ScaledPCM = MixedPCM × (master_volume × output_volume)
+```
+Mono samples written to playback FIFO. For stereo output, mono duplicated to both channels.
+
+---
+
+## Defensive Engineering and Codebase Optimizations
+
+**Optimization 1: Dynamic CPU Core Protection during Double-Buffered Reads**
+
+High-priority hardware thread uses StreamSnapshotGuard spin-wait with CPU pause instructions to prevent audio dropouts when UI updates participant list:
+
+```cpp
+while (stream_snapshot_readers_[write].load(std::memory_order_acquire) != 0) {
+#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
+    _mm_pause(); // Low-power thread spin-wait state
+#endif
+    std::this_thread::yield();
+}
+```
+
+**Optimization 2: Dual-Driver Input Fallback Path**
+
+If WASAPI/PortAudio fails, system automatically switches to Windows Multimedia WaveIn (mono, 48 kHz, 4 async buffers).
+
+**Optimization 3: SIO_UDP_CONNRESET Socket Guard**
+
+Disables WSAECONNRESET on UDP sockets, preventing ICMP port unreachable from interrupting receiver loop when peers leave:
+
+```cpp
+BOOL new_behavior = FALSE;
+WSAIoctl(sock, SIO_UDP_CONNRESET, &new_behavior, sizeof(new_behavior), 
+         nullptr, 0, &bytes_returned, nullptr, nullptr);
+```
+
+**Optimization 4: Peak-Aware Audio Saturation and Soft-Clipping**
+
+Mixing engine measures accumulated frame peak. If > 28,000, scales down before soft-clipping to prevent digital distortion.
+
+### Engine Parameters and Thresholds
+
+| Domain | Parameter | Value | Purpose |
+|--------|-----------|-------|---------|
+| Audio Processing | Sampling Rate | 48000 Hz | Core frequency |
+| Audio Processing | Frame Size | 960 Samples | 20ms processing block |
+| Audio Processing | Frame Bytes | 1920 Bytes | Mono 16-bit PCM |
+| Acoustic Preprocessor | RNNoise Block Size | 480 Samples | 10ms neural input |
+| Network Protocol | Target UDP Port | 50002 | Voice packets |
+| Network Protocol | IP QoS Marking | DSCP 46 (TOS 184) | High priority |
+| Network Protocol | Jitter Buffer Size | 64 Slots | Out-of-order window |
+| Network Protocol | Max Payload Bytes | 1500 Bytes | Encrypted packet MTU |
+| Concurrency | Thread Cache Align | alignas(64) | False sharing prevention |
+| Concurrency | SPSC Queue Capacity | 17 Slots | Capture frame queue |
+
+
 
 ### Troubleshooting Packaged Builds
 
@@ -426,10 +410,6 @@ copy third_party\libsodium\libsodium.dll dist\Nuummite\_internal\
 copy third_party\rnnoise\rnnoise.dll dist\Nuummite\_internal\
 ```
 
-Or use the helper script (if available):
-```powershell
-python scripts/copy_required_dlls.py --target dist/Nuummite/_internal
-```
 
 **Issue: Window never appears**
 
@@ -491,6 +471,14 @@ cmake --build --preset ninja-release
 .\build-ninja\voice_client.exe
 ```
 
+**Two-instance audio flow test**
+
+```powershell
+.\build-msvc\bin\audio_flow_test.exe --pair --seconds 4 --room test-room --sender-id alpha --receiver-id beta
+```
+
+This starts a synthetic sender and a receiver over loopback, then prints `AUDIO FLOW VERIFIED` when packets travel successfully.
+
 ### Preset Reference
 
 Available in `CMakePresets.json`:
@@ -508,10 +496,6 @@ Available in `CMakePresets.json`:
 
 ### Installation Issues
 
-**"pip: command not found"**
-- Python is not in PATH
-- Solution: Reinstall Python, check "Add Python to PATH" during setup
-
 **"error: Microsoft Visual C++ 14.0 or greater is required"**
 - MSVC Build Tools not installed
 - Solution: Install from [Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
@@ -519,13 +503,6 @@ Available in `CMakePresets.json`:
 **"error: cmake: command not found"**
 - CMake not installed or not in PATH
 - Solution: Install CMake from [cmake.org](https://cmake.org/download/), check "Add CMake to PATH"
-
-**"venv/Scripts/Activate.ps1 cannot be loaded because running scripts is disabled"**
-- PowerShell execution policy is restricted
-- Solution:
-  ```powershell
-  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-  ```
 
 ### Runtime Issues
 
@@ -566,16 +543,13 @@ Available in `CMakePresets.json`:
 - `third_party/opus/opus.lib` missing
 - Solution: Ensure you cloned with submodules or downloaded prebuilt libs
 
+**"Cannot open include file: 'cstdint' / 'windows.h' / 'winsock2.h'"**
+- The MSVC environment was not initialized before configuring or building.
+- Solution: open the `x64 Native Tools Command Prompt for VS 2022`, or run the `cmd /c` build command shown above.
+
 **"LINK: fatal error LNK1104: cannot open file 'opus.lib'"**
 - Same as above; also check bitness (must be x64)
 
-**"Cython: module initialization failed"**
-- C++ extension failed to compile
-- Solution:
-  ```powershell
-  pip install -e . --force-reinstall --no-cache-dir --verbose
-  ```
-  Look for actual error in output
 
 ---
 
@@ -602,14 +576,15 @@ Hard-coded in `audio_engine.cpp`:
 - **Sample Rate:** 48 kHz
 - **Frame Size:** 960 samples (20 ms)
 - **Channels:** Mono
-- **Bitrate:** 48 kbps (variable)
-- **Application:** VOIP (low-latency tuned)
+- **Bitrate:** 48 kbps (variable, VOIP application)
+- **Complexity:** 10 (maximum quality)
+- **In-Band FEC:** Enabled (forward error correction)
 
 ### Room Encryption
 
-- Shared secret: **Room name** (user-supplied)
-- Encryption: libsodium secretbox (XSalsa20-Poly1305)
-- Each room is isolated; peers from different rooms can't hear each other
+- **Key Derivation:** Argon2id (crypto_pwhash) with salt "NuummiteVoiceKDF", fallback to BLAKE2b
+- **Encryption:** libsodium secretbox (XSalsa20-Poly1305)
+- **Isolation:** Each room is cryptographically isolated; peers from different rooms cannot decrypt each other's traffic
 
 ---
 
@@ -617,10 +592,10 @@ Hard-coded in `audio_engine.cpp`:
 
 ### Ports & Protocols
 
-| Port | Protocol | Direction | Purpose |
-|------|----------|-----------|---------|
-| 50000 | UDP | Broadcast | Peer discovery |
-| 50002 | UDP | Unicast | Audio stream |
+| Port | Protocol | Direction | Purpose | Cycle |
+|------|----------|-----------|---------|-------|
+| 50000 | UDP | Broadcast | Peer discovery | 1000ms broadcast, 250ms poll |
+| 50002 | UDP | Unicast | Audio stream | Real-time, per-frame |
 
 ### Firewall Configuration (Windows)
 
@@ -635,19 +610,21 @@ New-NetFirewallRule -DisplayName "Nuummite Audio" `
   -Profile Private
 ```
 
-### Security Notes
+### Security Properties
 
-- ✅ Audio packets are **encrypted** (libsodium secretbox)
-- ✅ Room name acts as **shared secret**
-- ⚠️ **Does not authenticate peers**—anyone who knows the room name can join
-- ⚠️ **Recommend private network only** (LAN behind NAT/firewall)
-- ⚠️ **No message authentication**—cannot verify sender identity
+- ✅ **Audio packets encrypted:** libsodium secretbox (XSalsa20-Poly1305)
+- ✅ **Key derivation:** Argon2id with unique static salt
+- ✅ **Packet authentication:** Poly1305 MAC (authenticated encryption)
+- ⚠️ **No peer authentication:** Anyone with room name can join
+- ⚠️ **Recommend private network only:** LAN behind NAT/firewall
+- ⚠️ **No forward secrecy:** Compromised passphrase reveals historical sessions
 
 ### Recommended Deployment
 
 - Use on **trusted LAN only** (office, home, friend's network)
 - Pair with **network segmentation** if on corporate network
 - For untrusted networks, use **VPN + Nuummite**
+- Rotate passphrases periodically for long-running deployments
 
 ---
 
@@ -657,32 +634,32 @@ New-NetFirewallRule -DisplayName "Nuummite Audio" `
 Nuummite/
 ├── Nuummite/
 │   ├── audio/              # C++ audio engine (PortAudio, WebRTC APM, RNNoise)
-│   │   ├── audio_engine.cpp/h
-│   │   ├── aec_processor.cpp/h         (Echo cancellation)
-│   │   ├── rnnoise_processor.cpp/h     (Noise suppression)
-│   │   ├── jitter_buffer.cpp/h         (RTP jitter handling)
-│   │   └── webrtc_apm.cpp/h            (WebRTC audio processing)
+│   │   ├── audio_engine.cpp/h        (Core TX/RX pipelines, 48 kHz, 20ms frames)
+│   │   ├── aec_processor.cpp/h       (Echo cancellation, WebRTC APM wrapper)
+│   │   ├── rnnoise_processor.cpp/h   (Deep noise suppression, 10ms blocks)
+│   │   ├── jitter_buffer.cpp/h       (Adaptive jitter handling, 64-slot buffer)
+│   │   └── webrtc_apm.cpp/h          (WebRTC audio processing module)
 │   ├── common/             # Shared utilities
-│   │   ├── opus_codec.cpp/h            (Opus wrapper)
-│   │   ├── audio_packet.cpp/h          (Protocol)
-│   │   ├── libsodium_wrapper.cpp/h     (Encryption)
-│   │   ├── socket_utils.cpp/h
-│   │   └── winsock_init.cpp/h
-│   ├── p2p/                # Peer discovery & RTP
-│   │   ├── peer_discovery.cpp/h
-│   │   └── rtp_transport.cpp/h
+│   │   ├── opus_codec.cpp/h          (Opus VOIP codec, 48 kbps)
+│   │   ├── audio_packet.cpp/h        (Packet format & parsing)
+│   │   ├── libsodium_wrapper.cpp/h   (Encryption, Argon2id KDF)
+│   │   ├── socket_utils.cpp/h        (UDP socket configuration)
+│   │   └── winsock_init.cpp/h        (Winsock & COM initialization)
+│   ├── p2p/                # Peer discovery & transport
+│   │   ├── peer_discovery.cpp/h      (UDP broadcast, atomic double-buffering)
+│   │   └── rtp_transport.cpp/h       (RTP packet delivery, DSCP QoS)
 │   ├── ui/                 # Qt Designer files
-│   │   └── *.ui
+│   │   └── *.ui            (MainWindow, SettingsDialog, VolumePanel)
 │   └── CMakeLists.txt      (Qt client build config)
 ├── third_party/
-│   ├── opus/               (Prebuilt opus.dll, headers)
-│   ├── libsodium/          (Prebuilt libsodium.dll, headers)
+│   ├── opus/               (Prebuilt opus.dll, opus.lib, headers)
+│   ├── libsodium/          (Prebuilt libsodium.dll, libsodium.lib, headers)
 │   ├── rnnoise/            (Prebuilt rnnoise.dll, sources)
-│   └── webrtc_audio_processing/
+│   └── webrtc_audio_processing/ (WebRTC APM static library)
 ├── tools/
-│   └── audio_flow_test.cpp (Diagnostic utility)
+│   └── audio_flow_test.cpp (Diagnostic utility for pipeline verification)
 ├── CMakeLists.txt          (Root CMake config)
-├── CMakePresets.json       (Build presets)
+├── CMakePresets.json       (Build presets: vs-release, ninja-release, etc.)
 └── README.md               (This file)
 ```
 
@@ -707,12 +684,14 @@ MIT License. See `LICENSE` file.
 **Issues or Questions?**
 
 1. Check [Troubleshooting](#troubleshooting) section above
-2. Review firewall settings (port 50000, 50002 must be open)
+2. Review firewall settings (port 50000, 50002 must be open on private networks)
 3. Check Windows Event Viewer for crash details
 4. Run diagnostic:
    ```powershell
-   python tools/audio_flow_test.py
+    tools/audio_flow_test.py
    ```
+5. Verify peer discovery: Look for "VOICE_PEER:*" broadcasts on port 50000 with Wireshark or tcpdump
+
 ---
 
 **Happy voice chatting! 🎤🎧**

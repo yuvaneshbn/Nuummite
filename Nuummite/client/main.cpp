@@ -1,5 +1,4 @@
 #include "MainWindow.h"
-
 #include "audio/audio_engine.h"
 #include "p2p/peer_discovery.h"
 
@@ -15,8 +14,10 @@
 #include <QVariant>
 
 #include <algorithm>
+#include <iostream>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <objbase.h> 
 
 #include "ui_Popup_message.h"
 
@@ -24,7 +25,7 @@ namespace {
 int readIntSetting(QSettings& settings, const char* key, int defaultValue) {
     bool ok = false;
     const int v = settings.value(key, defaultValue).toInt(&ok);
-    return ok ? v : defaultValue;
+    return ok? v : defaultValue;
 }
 
 bool readBoolSetting(QSettings& settings, const char* key, bool defaultValue) {
@@ -52,28 +53,28 @@ void applySavedAudioSettings(AudioEngine& audio) {
     audio.setAutoGain(readBoolSetting(s, "audio/autoGainEnabled", false));
 
     const QVariant inIdxV = s.value("audio/inputDeviceIndex", QVariant());
-    if (inIdxV.isValid() && !inIdxV.toString().isEmpty()) {
+    if (inIdxV.isValid() &&!inIdxV.toString().isEmpty()) {
         const int requested = inIdxV.toInt();
         const auto inputs = audio.listInputDevices();
         const bool exists = std::any_of(inputs.begin(), inputs.end(), [requested](const AudioDeviceInfo& dev) {
             return dev.index == requested;
         });
-        audio.setInputDevice(exists ? requested : -1);
+        audio.setInputDevice(exists? requested : -1);
     }
     const QVariant outIdxV = s.value("audio/outputDeviceIndex", QVariant());
-    if (outIdxV.isValid() && !outIdxV.toString().isEmpty()) {
+    if (outIdxV.isValid() &&!outIdxV.toString().isEmpty()) {
         const int requested = outIdxV.toInt();
         const auto outputs = audio.listOutputDevices();
         const bool exists = std::any_of(outputs.begin(), outputs.end(), [requested](const AudioDeviceInfo& dev) {
             return dev.index == requested;
         });
-        audio.setOutputDevice(exists ? requested : -1);
+        audio.setOutputDevice(exists? requested : -1);
     }
 }
 
 QString getLocalIpBestEffort() {
     WSADATA wsa{};
-    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
+    if (WSAStartup(MAKEWORD(2, 2), &wsa)!= 0) {
         return "127.0.0.1";
     }
 
@@ -88,7 +89,6 @@ QString getLocalIpBestEffort() {
     addr.sin_port = htons(80);
     inet_pton(AF_INET, "8.8.8.8", &addr.sin_addr);
     (void)connect(sock, reinterpret_cast<const sockaddr*>(&addr), sizeof(addr));
-
     sockaddr_in name{};
     int name_len = sizeof(name);
     QString out = "127.0.0.1";
@@ -106,6 +106,13 @@ QString getLocalIpBestEffort() {
 } // namespace
 
 int main(int argc, char* argv[]) {
+    // Fixed Defect 3: Force the thread COM apartment state to MTA
+    // before Qt6 or PortAudio are initialized on the main thread.
+    const HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr) && hr!= RPC_E_CHANGED_MODE) {
+        std::cerr << " Failed to set main thread apartment state to COM MTA\n";
+    }
+
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
     QApplication app(argc, argv);
@@ -113,21 +120,24 @@ int main(int argc, char* argv[]) {
     app.setWindowIcon(QIcon(":/icons/app.ico"));
     QCoreApplication::setOrganizationName("Nuummite");
     QCoreApplication::setApplicationName("Nuummite");
-
+    
     QDialog join;
     Ui::Dialog joinUi;
     joinUi.setupUi(&join);
     if (joinUi.localIpLabel) {
         joinUi.localIpLabel->setText(getLocalIpBestEffort());
     }
-    if (join.exec() != QDialog::Accepted) return 0;
+    if (join.exec()!= QDialog::Accepted) {
+        if (SUCCEEDED(hr)) CoUninitialize();
+        return 0;
+    }
 
-    const QString myId = joinUi.nameEdit ? joinUi.nameEdit->text().trimmed() : QString();
-    QString room = joinUi.manualIpEdit ? joinUi.manualIpEdit->text().trimmed() : QString("main");
+    const QString myId = joinUi.nameEdit? joinUi.nameEdit->text().trimmed() : QString();
+    QString room = joinUi.manualIpEdit? joinUi.manualIpEdit->text().trimmed() : QString("main");
     if (room.isEmpty()) room = "main";
-
     if (myId.isEmpty()) {
         QMessageBox::warning(nullptr, "Error", "Name is required!");
+        if (SUCCEEDED(hr)) CoUninitialize();
         return 1;
     }
 
@@ -141,6 +151,7 @@ int main(int argc, char* argv[]) {
         &ok
     ).trimmed();
     if (!ok || passphrase.isEmpty()) {
+        if (SUCCEEDED(hr)) CoUninitialize();
         return 0;
     }
 
@@ -156,5 +167,12 @@ int main(int argc, char* argv[]) {
     win.show();
     win.raise();
     win.activateWindow();
-    return app.exec();
+    
+    const int ret_code = app.exec();
+    
+    // Safely uninitialize the COM stack on exit
+    if (SUCCEEDED(hr)) {
+        CoUninitialize();
+    }
+    return ret_code;
 }
