@@ -128,7 +128,6 @@ bool WebRtcApm::process_render(const int16_t* frame, int samples) {
 
     impl_->stream_config.set_sample_rate_hz(impl_->sample_rate_hz);
     impl_->stream_config.set_num_channels(1);
-    impl_->apm->set_stream_delay_ms(std::max(0, impl_->stream_delay_ms));
 
     const int rc = impl_->apm->ProcessReverseStream(frame,
                                                     impl_->stream_config,
@@ -151,6 +150,8 @@ bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
 
     impl_->stream_config.set_sample_rate_hz(impl_->sample_rate_hz);
     impl_->stream_config.set_num_channels(1);
+
+    impl_->apm->set_stream_delay_ms(std::max(0, impl_->stream_delay_ms));
 
     if (impl_->auto_gain_enabled) {
         impl_->apm->set_stream_analog_level(impl_->analog_level);

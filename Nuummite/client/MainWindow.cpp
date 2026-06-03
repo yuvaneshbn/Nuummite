@@ -372,20 +372,21 @@ void MainWindow::updateLiveUI() {
     speakingState[myIdStd] = selfState;
     lastVoiceMs_[myIdStd] = monotonic_.elapsed();
 
-    const float rawPeak = audio_->mixedPeak();
-    const int level = rawPeak > 0.0f ? std::min(100, static_cast<int>((rawPeak * 100.0f) / 32767.0f)) : 0;
     const qint64 now = monotonic_.elapsed();
 
     for (auto& it : rows_) {
         const std::string& cid = it.first;
         if (cid == myIdStd) continue;
 
-        const bool activeInstant = level >= 2;
+        const int peerPeakRaw = audio_->getPeerPeak(cid);
+        const int peerLevel = peerPeakRaw > 0 ? std::min(100, static_cast<int>((peerPeakRaw * 100.0f) / 32767.0f)) : 0;
+
+        const bool activeInstant = peerLevel >= 2;
         if (activeInstant) lastVoiceMs_[cid] = now;
         const qint64 last = lastVoiceMs_.count(cid) ? lastVoiceMs_[cid] : 0;
         const bool isActive = (now - last) < 800;
 
-        it.second->setVolume(level);
+        it.second->setVolume(peerLevel);
         it.second->setMicStatus(isActive);
 
         const bool prev = speakerState_.count(cid) ? speakerState_[cid] : false;

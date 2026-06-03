@@ -444,7 +444,8 @@ void CALLBACK waveInCallback(HWAVEIN handle, UINT msg, DWORD_PTR instance, DWORD
 } // namespace
 
 AudioEngine::AudioEngine()
-    : encoder_(RATE, 1, FRAME, false, 0, 48000, 10, false, OPUS_APPLICATION_VOIP, true, false) {
+    : encoder_(RATE, 1, FRAME, false, 0, 48000, 10, false, OPUS_APPLICATION_VOIP, true, false),
+      softclip_mem_(0.0f) {
     fprintf(stderr, "[debug] AudioEngine::AudioEngine entry thread=%lu\n", (unsigned long)GetCurrentThreadId());
     fflush(stderr);
     appendNativeDebugLog("AudioEngine ctor: entry");
@@ -506,6 +507,7 @@ AudioEngine::AudioEngine()
     fflush(stderr);
     appendNativeDebugLog("AudioEngine ctor: before buffer sockopts");
     setsockopt(recv_sock_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
+    setsockopt(recv_sock_, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
     socket_utils::set_dscp(recv_sock_, IP_TOS_EF);
     socket_utils::set_non_blocking(recv_sock_, true);
     socket_utils::disable_udp_connreset(recv_sock_);
@@ -709,13 +711,20 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
         return capture_level_.load(std::memory_order_relaxed);
     }
 
-    if (is_mic_testing_.exchange(true, std::memory_order_acq_rel)) {
+    std::lock_guard<std::mutex> lock(mic_test_mutex_);
+    if (is_mic_testing_.load(std::memory_order_acquire)) {
         return capture_level_.load(std::memory_order_relaxed);
     }
 
+    stop_mic_test_.store(false, std::memory_order_release);
+    is_mic_testing_.store(true, std::memory_order_release);
     duration_sec = std::max(0.2, duration_sec);
 
-    std::thread([this, duration_sec]() {
+    if (mic_test_thread_.joinable()) {
+        mic_test_thread_.join();
+    }
+
+    mic_test_thread_ = std::thread([this, duration_sec]() {
         auto& pa = portAudioApi();
         PaDeviceIndex device = resolveInputDevice(input_device_index_);
         if (device == paNoDevice) {
@@ -750,7 +759,10 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
         std::vector<int16_t> temp_input_buf(FRAME * params.channelCount, 0);
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(static_cast<int>(duration_sec * 1000));
 
-        while (std::chrono::steady_clock::now() < deadline &&!running_.load(std::memory_order_acquire)) {
+        while (std::chrono::steady_clock::now() < deadline &&
+              !running_.load(std::memory_order_acquire) &&
+              !stop_mic_test_.load(std::memory_order_acquire)) {
+
             err = pa.ReadStream(stream, temp_input_buf.data(), FRAME);
             if (err!= paNoError) {
                 break;
@@ -776,7 +788,7 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
         pa.CloseStream(stream);
         capture_level_.store(0, std::memory_order_relaxed);
         is_mic_testing_.store(false, std::memory_order_release);
-    }).detach();
+    });
 
     return 0;
 }
@@ -1269,8 +1281,7 @@ void AudioEngine::renderOutput(int16_t* out, int sample_count) {
         for (int i = 0; i < FRAME; ++i) {
             mix_accum_[i] = (mix_accum_[i] * pre_scale) / 32768.0f;
         }
-        static float softclip_mem = 0.0f;
-        opus_pcm_soft_clip(mix_accum_.data(), FRAME, 1, &softclip_mem);
+        opus_pcm_soft_clip(mix_accum_.data(), FRAME, 1, &softclip_mem_);
         for (int i = 0; i < FRAME; ++i) {
             const float v = mix_accum_[i] * 32767.0f;
             mix_frame_[i] = static_cast<int16_t>(std::clamp(v, -32768.0f, 32767.0f));
@@ -1379,23 +1390,9 @@ bool AudioEngine::start(const std::vector<std::string>& destinations) {
         fflush(stderr);
     }
 
-    send_sock_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if (send_sock_ == INVALID_SOCKET) {
-        running_.store(false);
-        closeInput();
-        closeOutput();
-        return false;
-    }
-    const int buf_size = 65536;
-    setsockopt(send_sock_, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&buf_size), sizeof(buf_size));
-    socket_utils::set_dscp(send_sock_, IP_TOS_EF);
-    socket_utils::set_non_blocking(send_sock_, true);
-    socket_utils::disable_udp_connreset(send_sock_);
     try {
         send_thread_ = std::thread(&AudioEngine::sendLoop, this);
     } catch (...) {
-        closesocket(send_sock_);
-        send_sock_ = INVALID_SOCKET;
         running_.store(false);
         closeInput();
         closeOutput();
@@ -1564,7 +1561,7 @@ void AudioEngine::sendLoop() {
 
         seq_ = static_cast<uint16_t>((seq_ + 1) & 0xFFFF);
         timestamp_ += FRAME;
-        const int sent = transport_.sendPacket(send_sock_, packet);
+        const int sent = transport_.sendPacket(recv_sock_, packet);
         if (sent > 0) {
             packets_sent_.fetch_add(static_cast<uint64_t>(sent), std::memory_order_relaxed);
         }
@@ -1585,10 +1582,6 @@ void AudioEngine::stop() {
     capture_level_.store(0);
 
     closeInput();
-    if (send_sock_!= INVALID_SOCKET) {
-        closesocket(send_sock_);
-        send_sock_ = INVALID_SOCKET;
-    }
 
     {
         std::lock_guard<std::mutex> lock(routing_mutex_);
@@ -1598,6 +1591,14 @@ void AudioEngine::stop() {
 }
 
 void AudioEngine::shutdown() {
+    stop_mic_test_.store(true, std::memory_order_release);
+    {
+        std::lock_guard<std::mutex> lock(mic_test_mutex_);
+        if (mic_test_thread_.joinable()) {
+            mic_test_thread_.join();
+        }
+    }
+
     stop();
     listen_running_.store(false);
 
@@ -1617,9 +1618,7 @@ void AudioEngine::shutdown() {
     }
 
     auto& pa = portAudioApi();
-    if (pa.Terminate) {
-        pa.Terminate();
-    }
+    pa.unload();
 
     SodiumWrapper::shutdown();
 }

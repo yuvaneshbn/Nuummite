@@ -671,10 +671,6 @@ Nuummite/
 │   ├── p2p/                # Peer discovery & RTP
 │   │   ├── peer_discovery.cpp/h
 │   │   └── rtp_transport.cpp/h
-│   ├── python/             # Python UI & Cython
-│   │   ├── main.py                     (Qt app entry)
-│   │   ├── audio_wrapper.pyx           (Cython C++ wrapper)
-│   │   └── __init__.py
 │   ├── ui/                 # Qt Designer files
 │   │   └── *.ui
 │   └── CMakeLists.txt      (Qt client build config)
@@ -687,8 +683,6 @@ Nuummite/
 │   └── audio_flow_test.cpp (Diagnostic utility)
 ├── CMakeLists.txt          (Root CMake config)
 ├── CMakePresets.json       (Build presets)
-├── setup.py                (Python package config)
-├── Nuummite.spec           (PyInstaller spec)
 └── README.md               (This file)
 ```
 
@@ -719,12 +713,6 @@ MIT License. See `LICENSE` file.
    ```powershell
    python tools/audio_flow_test.py
    ```
-5. File an issue on GitHub with:
-   - Windows version
-   - Python version
-   - Error message (full traceback)
-   - Steps to reproduce
-
 ---
 
 **Happy voice chatting! 🎤🎧**

@@ -223,7 +223,6 @@ private:
     uint16_t seq_ = 0;
     uint32_t timestamp_ = 0;
     SOCKET recv_sock_ = INVALID_SOCKET;
-    SOCKET send_sock_ = INVALID_SOCKET;
     RTPTransport transport_;
     void* wave_out_ = nullptr;
     void* wave_in_ = nullptr;
@@ -241,5 +240,9 @@ private:
     bool audio_debug_ = false;
     HANDLE capture_semaphore_ = nullptr;
     std::atomic<bool> is_mic_testing_{false};
+    std::atomic<bool> stop_mic_test_{false};
+    std::thread mic_test_thread_;
+    std::mutex mic_test_mutex_;
+    float softclip_mem_ = 0.0f;
 };
 #endif // AUDIO_ENGINE_H
