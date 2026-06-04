@@ -3,7 +3,6 @@
 
 #include <QElapsedTimer>
 #include <QMainWindow>
-
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -41,6 +40,7 @@ private slots:
     void updateLiveUI();
     void stopCaptureIfIdle();
     void autoRefreshParticipants();
+    void onRoomChangeRequested(const QString& newRoom);
 
 private:
     void setConnectedState(bool connected, const QString& detail = QString());
@@ -50,7 +50,6 @@ private:
     void updateLocalTargets();
     void syncBroadcastButton();
     void setSelfMute(bool muted, const char* source);
-
     void onTalkToggled(const QString& clientId, bool enabled);
     void onMuteToggled(const QString& clientId, bool enabled);
 
@@ -79,14 +78,12 @@ private:
     QStatusBar* mainStatusBar_ = nullptr;
 
     VolumeControlPanel* volumeControls_ = nullptr;
-
     QTimer* uiTimer_ = nullptr;
     QTimer* autoRefreshTimer_ = nullptr;
     QTimer* stopCaptureTimer_ = nullptr;
 
     bool connected_ = true;
     bool selfMuted_ = false;
-
     std::unordered_set<std::string> targets_;
     std::unordered_set<std::string> muted_;
     std::unordered_set<std::string> hearTargets_;
@@ -96,5 +93,4 @@ private:
     QElapsedTimer monotonic_;
 };
 
-#endif
-
+#endif // NUUMMITE_MAINWINDOW_H

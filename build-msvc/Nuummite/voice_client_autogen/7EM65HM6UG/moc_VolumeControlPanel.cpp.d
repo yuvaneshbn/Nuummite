@@ -1,4 +1,5 @@
 C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/voice_client_autogen/7EM65HM6UG/moc_VolumeControlPanel.cpp: C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/VolumeControlPanel.h \
+  C:/Qt/6.11.1/msvc2022_64/include/QtCore/QList \
   C:/Qt/6.11.1/msvc2022_64/include/QtCore/q17memory.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtCore/q20bit.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtCore/q20functional.h \

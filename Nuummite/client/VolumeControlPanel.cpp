@@ -1,5 +1,4 @@
 #include "VolumeControlPanel.h"
-
 #include "audio/audio_engine.h"
 
 #include <algorithm>
@@ -18,7 +17,7 @@ namespace {
 int readIntSetting(QSettings& settings, const char* key, int defaultValue) {
     bool ok = false;
     const int v = settings.value(key, defaultValue).toInt(&ok);
-    return ok ? v : defaultValue;
+    return ok? v : defaultValue;
 }
 
 bool readBoolSetting(QSettings& settings, const char* key, bool defaultValue) {
@@ -36,6 +35,9 @@ bool readBoolSetting(QSettings& settings, const char* key, bool defaultValue) {
 VolumeControlPanel::VolumeControlPanel(AudioEngine* audio, QWidget* parent)
     : QWidget(parent), audio_(audio), ui_(new Ui::VolumeControlForm) {
     ui_->setupUi(this);
+    
+    // Registering instance to observer array
+    instances_.append(this);
 
     const auto ticks = QSlider::TicksBelow;
     for (auto* slider : {ui_->masterSlider, ui_->outputSlider, ui_->gainSlider, ui_->inputSensitivitySlider, ui_->noiseSuppressionSlider, ui_->aecDelaySlider}) {
@@ -62,7 +64,6 @@ VolumeControlPanel::VolumeControlPanel(AudioEngine* audio, QWidget* parent)
 
     connect(ui_->testMicButton, &QPushButton::clicked, this, &VolumeControlPanel::onTestMic, Qt::AutoConnection);
     connect(ui_->restoreDefaultsButton, &QPushButton::clicked, this, &VolumeControlPanel::onRestoreDefaults, Qt::AutoConnection);
-
     ui_->micLevelBar->setRange(0, 100);
     ui_->micLevelBar->setValue(0);
 
@@ -72,7 +73,22 @@ VolumeControlPanel::VolumeControlPanel(AudioEngine* audio, QWidget* parent)
     syncFeatureControls();
 }
 
-VolumeControlPanel::~VolumeControlPanel() { delete ui_; }
+VolumeControlPanel::~VolumeControlPanel() {
+    instances_.removeAll(this);
+    delete ui_;
+}
+
+void VolumeControlPanel::notifyObservers() {
+    for (auto* inst : instances_) {
+        if (inst!= this) {
+            inst->blockSignals(true);
+            inst->loadSettingsIntoUi();
+            inst->updateValueLabels();
+            inst->syncFeatureControls();
+            inst->blockSignals(false);
+        }
+    }
+}
 
 void VolumeControlPanel::setMicLevel(int level) {
     if (!ui_->micLevelBar) return;
@@ -113,7 +129,7 @@ void VolumeControlPanel::updateValueLabels() {
     if (ui_->gainLabel) {
         const bool autogainOn = ui_->autoGainCheckbox && ui_->autoGainCheckbox->isChecked();
         const QString base = QString("Gain (dB): %1").arg(ui_->gainSlider->value());
-        ui_->gainLabel->setText(autogainOn ? (base + " (Auto Gain enabled)") : base);
+        ui_->gainLabel->setText(autogainOn? (base + " (Auto Gain enabled)") : base);
     }
     if (ui_->inputSensitivityLabel) ui_->inputSensitivityLabel->setText(QString("Input Sensitivity: %1").arg(ui_->inputSensitivitySlider->value()));
     if (ui_->noiseSuppressionLabel) ui_->noiseSuppressionLabel->setText(QString("Noise Suppression: %1").arg(ui_->noiseSuppressionSlider->value()));
@@ -125,10 +141,9 @@ void VolumeControlPanel::syncFeatureControls() {
     const bool autogainOn = ui_->autoGainCheckbox && ui_->autoGainCheckbox->isChecked();
     const bool rnnoiseOn = ui_->noiseSuppCheckbox && ui_->noiseSuppCheckbox->isChecked();
     const bool echoRequested = ui_->echoCheckbox && ui_->echoCheckbox->isChecked();
-
     if (ui_->gainSlider) {
         ui_->gainSlider->setEnabled(!autogainOn);
-        ui_->gainSlider->setToolTip(autogainOn ? "Disabled because Auto Gain is enabled." : "Manual transmit gain.");
+        ui_->gainSlider->setToolTip(autogainOn? "Disabled because Auto Gain is enabled." : "Manual transmit gain.");
     }
     if (ui_->gainLabel) {
         ui_->gainLabel->setEnabled(!autogainOn);
@@ -137,11 +152,9 @@ void VolumeControlPanel::syncFeatureControls() {
     if (ui_->noiseSuppressionSlider) ui_->noiseSuppressionSlider->setEnabled(rnnoiseOn);
     if (ui_->noiseSuppressionLabel) ui_->noiseSuppressionLabel->setEnabled(rnnoiseOn);
 
-    // Echo must be available to enable AEC controls.
     const bool echoAvailable = audio_->echoAvailable();
     if (ui_->echoCheckbox) ui_->echoCheckbox->setEnabled(echoAvailable);
     if (!echoAvailable && ui_->echoCheckbox && ui_->echoCheckbox->isChecked()) {
-        // Keep UI/engine consistent if the feature isn't available.
         ui_->echoCheckbox->blockSignals(true);
         ui_->echoCheckbox->setChecked(false);
         ui_->echoCheckbox->blockSignals(false);
@@ -160,58 +173,67 @@ void VolumeControlPanel::onMasterChanged(int value) {
     if (audio_) audio_->setMasterVolume(value);
     QSettings().setValue("audio/masterVolume", value);
     updateValueLabels();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onOutputChanged(int value) {
     if (audio_) audio_->setOutputVolume(value);
     QSettings().setValue("audio/outputVolume", value);
     updateValueLabels();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onGainChanged(int value) {
     if (audio_) audio_->setGainDb(value);
     QSettings().setValue("audio/txGainDb", value);
     updateValueLabels();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onMicSensitivityChanged(int value) {
     if (audio_) audio_->setMicSensitivity(value);
     QSettings().setValue("audio/micSensitivity", value);
     updateValueLabels();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onNoiseSuppressionChanged(int value) {
     if (audio_) audio_->setNoiseSuppression(value);
     QSettings().setValue("audio/noiseSuppAmount", value);
     updateValueLabels();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onAecDelayChanged(int value) {
     if (audio_) audio_->setAecStreamDelayMs(value);
     QSettings().setValue("audio/aecDelayMs", value);
     updateValueLabels();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onAutoGainToggled(bool enabled) {
     if (audio_) audio_->setAutoGain(enabled);
     QSettings().setValue("audio/autoGainEnabled", enabled);
     syncFeatureControls();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onNoiseSuppressionToggled(bool enabled) {
     if (audio_) audio_->setNoiseSuppressionEnabled(enabled);
     QSettings().setValue("audio/noiseSuppEnabled", enabled);
     syncFeatureControls();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onEchoToggled(bool enabled) {
     if (audio_) audio_->setEchoEnabled(enabled);
     QSettings().setValue("audio/echoEnabled", enabled);
     syncFeatureControls();
+    notifyObservers();
 }
 
 void VolumeControlPanel::onTestMic() {
-    if (!audio_ || !ui_->testStatusLabel) return;
+    if (!audio_ ||!ui_->testStatusLabel) return;
     ui_->testStatusLabel->setText("Testing...");
     QCoreApplication::processEvents();
 
@@ -220,7 +242,6 @@ void VolumeControlPanel::onTestMic() {
 }
 
 void VolumeControlPanel::onRestoreDefaults() {
-    // Persist defaults explicitly (setValue() won't emit if the value is unchanged).
     QSettings s;
     s.setValue("audio/masterVolume", 100);
     s.setValue("audio/outputVolume", 100);
@@ -236,4 +257,5 @@ void VolumeControlPanel::onRestoreDefaults() {
     applyUiToEngine();
     updateValueLabels();
     syncFeatureControls();
+    notifyObservers();
 }

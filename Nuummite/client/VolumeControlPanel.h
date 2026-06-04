@@ -2,6 +2,7 @@
 #define NUUMMITE_VOLUMECONTROLPANEL_H
 
 #include <QWidget>
+#include <QList>
 
 class AudioEngine;
 
@@ -18,11 +19,15 @@ public:
 
     void setMicLevel(int level);
 
+    // Static registry tracking active control panels to sync values in real-time
+    inline static QList<VolumeControlPanel*> instances_;
+
 private:
     void loadSettingsIntoUi();
     void applyUiToEngine();
     void updateValueLabels();
     void syncFeatureControls();
+    void notifyObservers();
 
     void onMasterChanged(int value);
     void onOutputChanged(int value);
@@ -42,5 +47,4 @@ private:
     Ui::VolumeControlForm* ui_ = nullptr;
 };
 
-#endif
-
+#endif // NUUMMITE_VOLUMECONTROLPANEL_H

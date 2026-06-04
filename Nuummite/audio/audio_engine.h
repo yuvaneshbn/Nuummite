@@ -68,6 +68,7 @@ public:
     void setEchoEnabled(bool enabled);
     void setAecStreamDelayMs(int delay_ms);
     void setTxMuted(bool enabled);
+    void setInputActive(bool active);
 
     int testMicrophoneLevel(double duration_sec = 1.0);
 

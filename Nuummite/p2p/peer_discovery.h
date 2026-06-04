@@ -32,6 +32,7 @@ public:
 
     void start(const std::string& my_id, uint16_t audio_port, const std::string& room_name);
     void stop();
+    void forceAnnounce();
     std::vector<PeerInfo> peers() const;
     std::vector<PeerSnapshot> peerSnapshots() const;
     std::vector<std::string> peerLines() const;
@@ -44,6 +45,7 @@ private:
     uint16_t my_port_ = 50002;
     std::string my_room_;
     std::atomic<bool> running_{false};
+    std::atomic<bool> force_broadcast_{false};
     std::thread thread_;
     std::shared_ptr<const std::vector<PeerSnapshot>> snapshot_;
 };

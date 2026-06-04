@@ -1,5 +1,6 @@
 voice_client_autogen/timestamp: \
 	C:/Qt/6.11.1/msvc2022_64/include/QtCore/QElapsedTimer \
+	C:/Qt/6.11.1/msvc2022_64/include/QtCore/QList \
 	C:/Qt/6.11.1/msvc2022_64/include/QtCore/q17memory.h \
 	C:/Qt/6.11.1/msvc2022_64/include/QtCore/q20bit.h \
 	C:/Qt/6.11.1/msvc2022_64/include/QtCore/q20functional.h \
@@ -451,6 +452,8 @@ voice_client_autogen/timestamp: \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/audio/rnnoise_processor.h \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/audio/webrtc_apm.cpp \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/audio/webrtc_apm.h \
+	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/EncryptionDialog.cpp \
+	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/EncryptionDialog.h \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/MainWindow.cpp \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/MainWindow.h \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/ParticipantRowWidget.cpp \
@@ -481,6 +484,7 @@ voice_client_autogen/timestamp: \
 	C:/mingw64/share/cmake-4.3/Modules/Internal/CheckFlagCommonConfig.cmake \
 	C:/mingw64/share/cmake-4.3/Modules/Internal/CheckSourceCompiles.cmake \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/ui/Popup_message.ui \
+	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/ui/encryption_dialog.ui \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/ui/main_window.ui \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/ui/participant_item.ui \
 	C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/ui/settings_dialog.ui \

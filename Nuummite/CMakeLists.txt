@@ -4,6 +4,7 @@ set(CLIENT_SOURCES
     client/ParticipantRowWidget.cpp
     client/SettingsDialog.cpp
     client/VolumeControlPanel.cpp
+    client/EncryptionDialog.cpp
     audio/audio_engine.cpp
     audio/aec_processor.cpp
     audio/jitter_buffer.cpp
@@ -17,6 +18,7 @@ set(CLIENT_SOURCES
     ui/Popup_message.ui
     ui/settings_dialog.ui
     ui/volume_control.ui
+    ui/encryption_dialog.ui 
 )
 
 set(CMAKE_AUTOUIC ON)

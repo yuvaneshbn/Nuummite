@@ -709,6 +709,23 @@ void AudioEngine::setTxMuted(bool enabled) {
     tx_muted_.store(enabled, std::memory_order_relaxed);
 }
 
+void AudioEngine::setInputActive(bool active) {
+    if (active) {
+        if (!wave_in_) {
+            fprintf(stderr, "[debug] Activating audio recording stream on-demand.\n");
+            openInput();
+        }
+    } else {
+        if (wave_in_) {
+            fprintf(stderr, "[debug] Suspending microphone stream to conserve resources.\n");
+            closeInput();
+            capture_frames_.reset();
+            capture_level_.store(0);
+            capture_active_.store(false);
+        }
+    }
+}
+
 bool AudioEngine::isTxMuted() const {
     return tx_muted_.load(std::memory_order_relaxed);
 }

@@ -66,6 +66,10 @@ void PeerDiscovery::stop() {
     if (thread_.joinable()) thread_.join();
 }
 
+void PeerDiscovery::forceAnnounce() {
+    force_broadcast_.store(true);
+}
+
 std::vector<PeerInfo> PeerDiscovery::peers() const {
     auto snapshot = std::atomic_load(&snapshot_);
     std::vector<PeerInfo> out;
@@ -164,7 +168,13 @@ void PeerDiscovery::loop() {
 
     while (running_.load()) {
         const auto now = std::chrono::steady_clock::now();
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_broadcast).count() >= BROADCAST_INTERVAL_MS) {
+        bool need_broadcast = false;
+        if (force_broadcast_.exchange(false) ||
+            std::chrono::duration_cast<std::chrono::milliseconds>(now - last_broadcast).count() >= BROADCAST_INTERVAL_MS) {
+            need_broadcast = true;
+        }
+
+        if (need_broadcast) {
             sockaddr_in mcast_addr{};
             mcast_addr.sin_family = AF_INET;
             mcast_addr.sin_port = htons(DISCOVERY_PORT);
