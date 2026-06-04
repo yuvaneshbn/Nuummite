@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/cmake_install.cmake",
+		"C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
