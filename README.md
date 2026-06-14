@@ -13,7 +13,8 @@ For a deeper project overview, architecture notes, and design details, see [ABOU
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](legal/LICENSE) for the full text.
-Community guidance lives in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) and [legal/CODE_OF_CONDUCT.md](legal/CODE_OF_CONDUCT.md).
+Community guidance lives in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) and [docs/README.md](docs/README.md).
+Project policies live in [legal/README.md](legal/README.md).
 
 ## Repository Layout
 
