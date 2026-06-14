@@ -257,7 +257,6 @@ void MainWindow::onRoomChangeRequested(const QString& newRoom) {
     rows_.clear();
     targets_.clear();
     muted_.clear();
-    hearTargets_.clear();
 
     mainStatusBar_->showMessage(QString("Migrated to room '%1'").arg(currentRoom_));
     refreshParticipants(false);
@@ -432,13 +431,7 @@ void MainWindow::applySearchFilter() {
 }
 
 void MainWindow::recomputeHearTargets() {
-    hearTargets_.clear();
-    const std::string myIdStd = myId_.toStdString();
-    for (const auto& it : rows_) {
-        if (it.first == myIdStd) continue;
-        if (muted_.count(it.first)!= 0) continue;
-        hearTargets_.insert(it.first);
-    }
+    // Legacy no-op retained for call sites; deny-list now drives audio routing.
 }
 
 void MainWindow::updateLocalTargets() {
@@ -471,7 +464,7 @@ void MainWindow::updateLocalTargets() {
     bool micNeeded =!targets_.empty();
     audio_->setInputActive(micNeeded);
 
-    audio_->setHearTargets(hearTargets_);
+    audio_->setMutedTargets(muted_);
     syncBroadcastButton();
 }
 

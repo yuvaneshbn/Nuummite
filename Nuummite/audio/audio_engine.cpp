@@ -444,13 +444,11 @@ void CALLBACK waveInCallback(HWAVEIN handle, UINT msg, DWORD_PTR instance, DWORD
             audio->handleWaveInBuffer(header);
         }
         audio->wave_in_outstanding_.fetch_add(1, std::memory_order_relaxed);
-        std::thread([audio, handle, header]() {
-            if (audio->wave_in_active_.load(std::memory_order_acquire) && audio->isRunning()) {
-                audio->requeueWaveInBuffer(handle, header);
-            } else {
-                audio->wave_in_outstanding_.fetch_sub(1, std::memory_order_relaxed);
-            }
-        }).detach();
+        if (audio->wave_in_active_.load(std::memory_order_acquire) && audio->isRunning()) {
+            audio->requeueWaveInBuffer(handle, header);
+        } else {
+            audio->wave_in_outstanding_.fetch_sub(1, std::memory_order_relaxed);
+        }
     }
 }
 } // namespace
@@ -667,14 +665,32 @@ void AudioEngine::setAecStreamDelayMs(int delay_ms) {
     aec_stream_delay_ms_.store(delay_ms);
 }
 
-void AudioEngine::setHearTargets(const std::unordered_set<std::string>& hear_ids) {
+void AudioEngine::setMutedTargets(const std::unordered_set<std::string>& muted_ids) {
     std::lock_guard<std::mutex> lock(streams_mutex_);
-    hear_targets_ = hear_ids;
+    std::unordered_set<std::string> affected_ids = muted_targets_;
+    affected_ids.insert(muted_ids.begin(), muted_ids.end());
+
+    muted_targets_ = muted_ids;
     rebuildStreamSnapshotLocked_();
+
+    for (const auto& id : affected_ids) {
+        auto it = streams_.find(id);
+        if (it != streams_.end() && it->second) {
+            std::lock_guard<std::mutex> stream_lock(it->second->mutex);
+            it->second->jitter_buffer.reset();
+            if (it->second->decoder) {
+                it->second->decoder->resetDecoderState();
+            }
+        }
+    }
 }
 
 AudioEngine::StreamState* AudioEngine::getOrCreateStream(const std::string& id) {
     std::lock_guard<std::mutex> lock(streams_mutex_);
+    return getOrCreateStreamLocked(id);
+}
+
+AudioEngine::StreamState* AudioEngine::getOrCreateStreamLocked(const std::string& id) {
     auto& st = streams_[id];
     const bool created = (st == nullptr);
     if (!st) {
@@ -710,7 +726,7 @@ void AudioEngine::rebuildStreamSnapshotLocked_() {
     buf.reserve(streams_.size());
     for (const auto& [id, st] : streams_) {
         if (!st) continue;
-        if (!hear_targets_.empty() &&!hear_targets_.count(id)) continue;
+        if (muted_targets_.count(id)) continue;
         buf.push_back(st.get());
     }
 
@@ -863,7 +879,7 @@ bool AudioEngine::openOutput() {
     // Fixed Defect 1: Dynamically allocate stereo channels if supported by WASAPI driver interface
     params.channelCount = (info->maxOutputChannels >= 2)? 2 : 1;
     params.sampleFormat = paInt16;
-    params.suggestedLatency = info->defaultHighOutputLatency;
+    params.suggestedLatency = info->defaultLowOutputLatency;
     
     output_channels_ = params.channelCount;
 
@@ -1192,7 +1208,14 @@ void AudioEngine::handleIncomingPacket(const std::vector<uint8_t>& data) {
     }
     packets_decrypted_.fetch_add(1, std::memory_order_relaxed);
 
-    auto* st = getOrCreateStream(packet->sender_id);
+    StreamState* st = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(streams_mutex_);
+        if (muted_targets_.count(packet->sender_id)) {
+            return;
+        }
+        st = getOrCreateStreamLocked(packet->sender_id);
+    }
     if (!st) return;
 
     std::unique_lock<std::mutex> lock(st->mutex);

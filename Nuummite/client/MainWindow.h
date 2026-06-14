@@ -99,7 +99,6 @@ private:
     bool selfMuted_ = false;
     std::unordered_set<std::string> targets_;
     std::unordered_set<std::string> muted_;
-    std::unordered_set<std::string> hearTargets_;
     std::unordered_map<std::string, ParticipantRowWidget*> rows_;
     std::unordered_map<std::string, bool> speakerState_;
     std::unordered_map<std::string, qint64> lastVoiceMs_;
@@ -107,5 +106,4 @@ private:
 };
 
 #endif // NUUMMITE_MAINWINDOW_H
-
 

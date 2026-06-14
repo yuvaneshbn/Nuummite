@@ -87,7 +87,7 @@ public:
     uint64_t debugPacketsRecv() const { return packets_recv_.load(std::memory_order_relaxed); }
     uint64_t debugPacketsDecrypted() const { return packets_decrypted_.load(std::memory_order_relaxed); }
 
-    void setHearTargets(const std::unordered_set<std::string>& hear_ids);
+    void setMutedTargets(const std::unordered_set<std::string>& muted_ids);
     void handleWaveInBuffer(WAVEHDR* header);
     void requeueWaveInBuffer(HWAVEIN handle, WAVEHDR* header);
 
@@ -161,6 +161,7 @@ private:
     };
 
     StreamState* getOrCreateStream(const std::string& id);
+    StreamState* getOrCreateStreamLocked(const std::string& id);
     void rebuildStreamSnapshotLocked_();
 
     int port_ = 0;
@@ -213,7 +214,7 @@ private:
     OpusCodec encoder_;
     mutable std::mutex streams_mutex_;
     std::unordered_map<std::string, std::unique_ptr<StreamState>> streams_;
-    std::unordered_set<std::string> hear_targets_;
+    std::unordered_set<std::string> muted_targets_;
 
     std::atomic<uint8_t> stream_snapshot_active_{0};
     std::array<std::atomic<uint32_t>, 2> stream_snapshot_readers_{{0u, 0u}};
