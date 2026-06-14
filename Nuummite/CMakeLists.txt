@@ -66,78 +66,7 @@ add_custom_command(TARGET voice_client POST_BUILD
         $<TARGET_FILE_DIR:voice_client>/ui
 )
 
-if (OPUS_DLL AND EXISTS "${OPUS_DLL}")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${OPUS_DLL}
-            $<TARGET_FILE_DIR:voice_client>/opus.dll
-    )
-endif()
-
-if (PORTAUDIO_DLL AND EXISTS "${PORTAUDIO_DLL}")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${PORTAUDIO_DLL}
-            $<TARGET_FILE_DIR:voice_client>/libportaudio.dll
-    )
-endif()
-
-# Deploy libsodium runtime libraries from third_party
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/libsodium.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/libsodium/libsodium.dll
-            $<TARGET_FILE_DIR:voice_client>/libsodium.dll
-    )
-endif()
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll
-            $<TARGET_FILE_DIR:voice_client>/libsodium-26.dll
-    )
-endif()
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll
-            $<TARGET_FILE_DIR:voice_client>/libgcc_s_seh-1.dll
-    )
-endif()
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll
-            $<TARGET_FILE_DIR:voice_client>/libwinpthread-1.dll
-    )
-endif()
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.dll
-            $<TARGET_FILE_DIR:voice_client>/rnnoise.dll
-    )
-endif()
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-processing-1-3.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-processing-1-3.dll
-            $<TARGET_FILE_DIR:voice_client>/webrtc-audio-processing-1-3.dll
-    )
-endif()
-
-if (EXISTS "${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-coding-1-3.dll")
-    add_custom_command(TARGET voice_client POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-coding-1-3.dll
-            $<TARGET_FILE_DIR:voice_client>/webrtc-audio-coding-1-3.dll
-    )
-endif()
+voice_deploy_runtime(voice_client)
 
 add_custom_command(TARGET voice_client POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different

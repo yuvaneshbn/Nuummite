@@ -3,6 +3,10 @@
 
 #include <QElapsedTimer>
 #include <QMainWindow>
+#include <QCheckBox>
+#include <QPalette>
+#include <QColor>
+
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -41,9 +45,18 @@ private slots:
     void stopCaptureIfIdle();
     void autoRefreshParticipants();
     void onRoomChangeRequested(const QString& newRoom);
+    void onThemeToggled(bool checked);
+
 
 private:
+    QCheckBox* themeSwitch_ = nullptr;
+
+    void applyTheme(bool dark);
+    QPalette createDarkPalette() const;
+    QPalette createLightPalette() const;
+
     void setConnectedState(bool connected, const QString& detail = QString());
+
     void refreshParticipants(bool silent);
     void applySearchFilter();
     void recomputeHearTargets();
@@ -94,3 +107,5 @@ private:
 };
 
 #endif // NUUMMITE_MAINWINDOW_H
+
+

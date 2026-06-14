@@ -35,6 +35,19 @@ set(LIBSODIUM_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/libsodium.dll)
 set(LIBSODIUM_DLL_VERSIONED ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll)
 set(LIBGCC_SEH_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll)
 set(LIBWINPTHREAD_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll)
+set(VOICE_RUNTIME_BUNDLE_DIR ${CMAKE_SOURCE_DIR}/third_party/runtime/bin)
+
+function(voice_deploy_runtime TARGET_NAME)
+    if (EXISTS "${VOICE_RUNTIME_BUNDLE_DIR}")
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${VOICE_RUNTIME_BUNDLE_DIR}"
+                $<TARGET_FILE_DIR:${TARGET_NAME}>
+        )
+    else()
+        message(WARNING "Runtime bundle not found at ${VOICE_RUNTIME_BUNDLE_DIR}; build outputs will not be mirrored from third_party.")
+    endif()
+endfunction()
 
 if (EXISTS ${OPUS_LIB})
     add_library(opus SHARED IMPORTED)
@@ -94,34 +107,7 @@ if (VOICE_BUILD_AUDIO_FLOW_TEST)
 
     target_compile_definitions(audio_flow_test PRIVATE NOMINMAX)
 
-    if (EXISTS "${OPUS_DLL}")
-        add_custom_command(TARGET audio_flow_test POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                ${OPUS_DLL}
-                $<TARGET_FILE_DIR:audio_flow_test>/opus.dll
-        )
-    endif()
-    if (EXISTS "${RNNOISE_DLL}")
-        add_custom_command(TARGET audio_flow_test POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                ${RNNOISE_DLL}
-                $<TARGET_FILE_DIR:audio_flow_test>/rnnoise.dll
-        )
-    endif()
-    if (EXISTS "${WEBRTC_AUDIOPROC_DLL}")
-        add_custom_command(TARGET audio_flow_test POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                ${WEBRTC_AUDIOPROC_DLL}
-                $<TARGET_FILE_DIR:audio_flow_test>/webrtc-audio-processing-1-3.dll
-        )
-    endif()
-    if (EXISTS "${PORTAUDIO_DLL}")
-        add_custom_command(TARGET audio_flow_test POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                ${PORTAUDIO_DLL}
-                $<TARGET_FILE_DIR:audio_flow_test>/libportaudio.dll
-        )
-    endif()
+    voice_deploy_runtime(audio_flow_test)
 endif()
 
 add_subdirectory(Nuummite)

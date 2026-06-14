@@ -106,11 +106,10 @@ QString getLocalIpBestEffort() {
 } // namespace
 
 int main(int argc, char* argv[]) {
-    // Fixed Defect 3: Force the thread COM apartment state to MTA
-    // before Qt6 or PortAudio are initialized on the main thread.
-    const HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    // Initialize the main thread as STA so Qt/OLE subsystems can initialize cleanly.
+    const HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     if (FAILED(hr) && hr!= RPC_E_CHANGED_MODE) {
-        std::cerr << " Failed to set main thread apartment state to COM MTA\n";
+        std::cerr << " Failed to set main thread apartment state to COM STA\n";
     }
 
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);

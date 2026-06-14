@@ -19,7 +19,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QSettings>
 #include <vector>
+
 
 #include "ui_main_window.h"
 
@@ -81,7 +83,10 @@ MainWindow::MainWindow(const QString& myId, const QString& roomName, AudioEngine
     settingsButton_ = ui.settingsButton;
     warningLabel_ = ui.warningLabel;
 
+    themeSwitch_ = ui.themeSwitch;
+
     mainStatusBar_ = root_->findChild<QStatusBar*>("mainStatusBar");
+
     if (!mainStatusBar_) {
         mainStatusBar_ = statusBar();
     } else {
@@ -148,11 +153,29 @@ MainWindow::MainWindow(const QString& myId, const QString& roomName, AudioEngine
     autoRefreshTimer_->start();
 
     monotonic_.start();
+
+    // Load user's saved preference, defaulting to dark mode
+    bool startInDarkMode = QSettings().value("ui/darkMode", true).toBool();
+
+    if (themeSwitch_) {
+        themeSwitch_->blockSignals(true);
+        themeSwitch_->setChecked(startInDarkMode);
+        themeSwitch_->blockSignals(false);
+    }
+
+    // Apply the loaded theme state
+    applyTheme(startInDarkMode);
+
+    if (themeSwitch_) {
+        connect(themeSwitch_, &QCheckBox::toggled, this, &MainWindow::onThemeToggled);
+    }
+
     mainStatusBar_->showMessage(QString("Client %1 in room '%2' (P2P mesh)").arg(myId_).arg(currentRoom_));
 
     refreshParticipants(false);
     setConnectedState(true);
 }
+
 
 MainWindow::~MainWindow() = default;
 
@@ -345,6 +368,11 @@ void MainWindow::refreshParticipants(bool silent) {
         }
     }
 
+    for (auto& [cid, row] : rows_) {
+        if (row) {
+            QObject::disconnect(row, nullptr, this, nullptr);
+        }
+    }
     rows_.clear();
     participantList_->clear();
     for (const auto& cid : participants) {
@@ -466,7 +494,65 @@ void MainWindow::stopCaptureIfIdle() {
     // Dynamic resource allocation removes the need for hard thread stops
 }
 
+void MainWindow::onThemeToggled(bool checked) {
+    applyTheme(checked);
+    QSettings().setValue("ui/darkMode", checked);
+    QSettings().sync();
+}
+
+void MainWindow::applyTheme(bool dark) {
+    QApplication::setStyle("Fusion");
+    if (dark) {
+        QApplication::setPalette(createDarkPalette());
+        if (themeSwitch_) themeSwitch_->setText("Dark Theme");
+    } else {
+        QApplication::setPalette(createLightPalette());
+        if (themeSwitch_) themeSwitch_->setText("Light Theme");
+    }
+
+    // Force a full window redraw to apply palette changes cleanly
+    this->update();
+}
+
+QPalette MainWindow::createDarkPalette() const {
+    QPalette palette;
+    QColor darkBg(45, 45, 45);
+    QColor alternateBg(53, 53, 53);
+    QColor baseBg(25, 25, 25);
+    QColor textWhite(255, 255, 255);
+    QColor accentBlue(42, 130, 218);
+    QColor disabledGray(128, 128, 128);
+
+    palette.setColor(QPalette::Window, darkBg);
+    palette.setColor(QPalette::WindowText, textWhite);
+    palette.setColor(QPalette::Base, baseBg);
+    palette.setColor(QPalette::AlternateBase, darkBg);
+    palette.setColor(QPalette::ToolTipBase, baseBg);
+    palette.setColor(QPalette::ToolTipText, textWhite);
+    palette.setColor(QPalette::Text, textWhite);
+    palette.setColor(QPalette::Button, darkBg);
+    palette.setColor(QPalette::ButtonText, textWhite);
+    palette.setColor(QPalette::BrightText, Qt::red);
+    palette.setColor(QPalette::Link, accentBlue);
+    palette.setColor(QPalette::Highlight, accentBlue);
+    palette.setColor(QPalette::HighlightedText, Qt::black);
+
+    // Explicit colors for disabled widgets
+    palette.setColor(QPalette::Disabled, QPalette::WindowText, disabledGray);
+    palette.setColor(QPalette::Disabled, QPalette::Text, disabledGray);
+    palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledGray);
+    palette.setColor(QPalette::Disabled, QPalette::Base, darkBg);
+
+    return palette;
+}
+
+QPalette MainWindow::createLightPalette() const {
+    // Falls back to the default light theme palette of the Fusion style
+    return QApplication::style()->standardPalette();
+}
+
 void MainWindow::updateLiveUI() {
+
     if (!audio_) return;
 
     const int micLevel = audio_->captureLevel();

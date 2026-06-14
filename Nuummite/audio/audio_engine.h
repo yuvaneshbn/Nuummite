@@ -232,6 +232,11 @@ private:
     std::vector<std::vector<uint8_t>> wave_in_buffers_;
     std::vector<WAVEHDR> wave_in_headers_;
 
+public:
+    std::atomic<int> wave_in_outstanding_{0};
+    std::atomic<bool> wave_in_active_{false};
+
+private:
     std::vector<float> mix_accum_;
     std::vector<int16_t> mix_frame_;
     std::vector<int16_t> playback_fifo_;

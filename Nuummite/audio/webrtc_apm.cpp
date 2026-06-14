@@ -126,14 +126,28 @@ bool WebRtcApm::process_render(const int16_t* frame, int samples) {
         return false;
     }
 
-    impl_->stream_config.set_sample_rate_hz(impl_->sample_rate_hz);
-    impl_->stream_config.set_num_channels(1);
+    constexpr int kBlockSize = 480;
+    webrtc::StreamConfig local_render_config(impl_->sample_rate_hz, 1, false);
 
-    const int rc = impl_->apm->ProcessReverseStream(frame,
-                                                    impl_->stream_config,
-                                                    impl_->stream_config,
-                                                    const_cast<int16_t*>(frame));
-    return rc == 0;
+    if (samples % kBlockSize != 0) {
+        const int rc = impl_->apm->ProcessReverseStream(frame,
+                                                        local_render_config,
+                                                        local_render_config,
+                                                        const_cast<int16_t*>(frame));
+        return rc == 0;
+    }
+
+    bool success = true;
+    for (int offset = 0; offset < samples; offset += kBlockSize) {
+        const int rc = impl_->apm->ProcessReverseStream(frame + offset,
+                                                        local_render_config,
+                                                        local_render_config,
+                                                        const_cast<int16_t*>(frame) + offset);
+        if (rc != 0) {
+            success = false;
+        }
+    }
+    return success;
 }
 
 bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
@@ -148,28 +162,48 @@ bool WebRtcApm::process_capture(std::vector<int16_t>& frame) {
         return true;
     }
 
-    impl_->stream_config.set_sample_rate_hz(impl_->sample_rate_hz);
-    impl_->stream_config.set_num_channels(1);
+    constexpr size_t kBlockSize = 480;
+    webrtc::StreamConfig local_capture_config(impl_->sample_rate_hz, 1, false);
 
-    impl_->apm->set_stream_delay_ms(std::max(0, impl_->stream_delay_ms));
+    if (frame.size() % kBlockSize != 0) {
+        impl_->apm->set_stream_delay_ms(std::max(0, impl_->stream_delay_ms));
 
-    if (impl_->auto_gain_enabled) {
-        impl_->apm->set_stream_analog_level(impl_->analog_level);
+        if (impl_->auto_gain_enabled) {
+            impl_->apm->set_stream_analog_level(impl_->analog_level);
+        }
+
+        const int rc = impl_->apm->ProcessStream(frame.data(),
+                                                 local_capture_config,
+                                                 local_capture_config,
+                                                 frame.data());
+        if (impl_->auto_gain_enabled) {
+            impl_->analog_level = impl_->apm->recommended_stream_analog_level();
+        }
+        return rc == 0;
     }
 
-    const int rc = impl_->apm->ProcessStream(frame.data(),
-                                             impl_->stream_config,
-                                             impl_->stream_config,
-                                             frame.data());
-    if (rc != 0) {
-        return false;
+    bool success = true;
+    for (size_t offset = 0; offset < frame.size(); offset += kBlockSize) {
+        impl_->apm->set_stream_delay_ms(std::max(0, impl_->stream_delay_ms));
+
+        if (impl_->auto_gain_enabled) {
+            impl_->apm->set_stream_analog_level(impl_->analog_level);
+        }
+
+        const int rc = impl_->apm->ProcessStream(frame.data() + offset,
+                                                 local_capture_config,
+                                                 local_capture_config,
+                                                 frame.data() + offset);
+        if (rc != 0) {
+            success = false;
+        }
+
+        if (impl_->auto_gain_enabled) {
+            impl_->analog_level = impl_->apm->recommended_stream_analog_level();
+        }
     }
 
-    if (impl_->auto_gain_enabled) {
-        impl_->analog_level = impl_->apm->recommended_stream_analog_level();
-    }
-
-    return true;
+    return success;
 }
 
 bool WebRtcApm::hasVoice() const {

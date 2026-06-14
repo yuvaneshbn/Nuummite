@@ -30,7 +30,17 @@ ParticipantRowWidget::ParticipantRowWidget(
     connect(ui_->muteCheckbox, &QCheckBox::toggled, this, &ParticipantRowWidget::onMuteToggled);
 }
 
-ParticipantRowWidget::~ParticipantRowWidget() { delete ui_; }
+ParticipantRowWidget::~ParticipantRowWidget() {
+    if (ui_) {
+        if (ui_->talkCheckbox) {
+            ui_->talkCheckbox->blockSignals(true);
+        }
+        if (ui_->muteCheckbox) {
+            ui_->muteCheckbox->blockSignals(true);
+        }
+    }
+    delete ui_;
+}
 
 void ParticipantRowWidget::onTalkToggled(bool checked) { emit talkToggled(clientId_, checked); }
 

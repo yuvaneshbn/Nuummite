@@ -129,6 +129,8 @@ C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/voice_client_autoge
   C:/Qt/6.11.1/msvc2022_64/include/QtCore/qversiontagging.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtCore/qxptype_traits.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtCore/qyieldcpu.h \
+  C:/Qt/6.11.1/msvc2022_64/include/QtGui/QColor \
+  C:/Qt/6.11.1/msvc2022_64/include/QtGui/QPalette \
   C:/Qt/6.11.1/msvc2022_64/include/QtGui/qaction.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtGui/qbitmap.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtGui/qbrush.h \
@@ -155,7 +157,10 @@ C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/voice_client_autoge
   C:/Qt/6.11.1/msvc2022_64/include/QtGui/qtransform.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtGui/qwindowdefs.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtGui/qwindowdefs_win.h \
+  C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/QCheckBox \
   C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/QMainWindow \
+  C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/qabstractbutton.h \
+  C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/qcheckbox.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/qmainwindow.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/qsizepolicy.h \
   C:/Qt/6.11.1/msvc2022_64/include/QtWidgets/qtabwidget.h \

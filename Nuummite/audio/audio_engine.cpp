@@ -434,12 +434,24 @@ void CALLBACK waveInCallback(HWAVEIN handle, UINT msg, DWORD_PTR instance, DWORD
     if (!audio) {
         return;
     }
+    audio->wave_in_outstanding_.fetch_sub(1, std::memory_order_relaxed);
     auto* header = reinterpret_cast<WAVEHDR*>(param1);
-    if (!header || header->dwBytesRecorded == 0) {
+    if (!header) {
         return;
     }
-    audio->handleWaveInBuffer(header);
-    audio->requeueWaveInBuffer(handle, header);
+    if (audio->isRunning() && audio->wave_in_active_.load(std::memory_order_acquire)) {
+        if (header->dwBytesRecorded > 0) {
+            audio->handleWaveInBuffer(header);
+        }
+        audio->wave_in_outstanding_.fetch_add(1, std::memory_order_relaxed);
+        std::thread([audio, handle, header]() {
+            if (audio->wave_in_active_.load(std::memory_order_acquire) && audio->isRunning()) {
+                audio->requeueWaveInBuffer(handle, header);
+            } else {
+                audio->wave_in_outstanding_.fetch_sub(1, std::memory_order_relaxed);
+            }
+        }).detach();
+    }
 }
 } // namespace
 
@@ -736,6 +748,11 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
     }
 
     std::lock_guard<std::mutex> lock(mic_test_mutex_);
+    if (mic_test_thread_.joinable()) {
+        stop_mic_test_.store(true, std::memory_order_release);
+        mic_test_thread_.join();
+    }
+
     if (is_mic_testing_.load(std::memory_order_acquire)) {
         return capture_level_.load(std::memory_order_relaxed);
     }
@@ -743,10 +760,6 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
     stop_mic_test_.store(false, std::memory_order_release);
     is_mic_testing_.store(true, std::memory_order_release);
     duration_sec = std::max(0.2, duration_sec);
-
-    if (mic_test_thread_.joinable()) {
-        mic_test_thread_.join();
-    }
 
     mic_test_thread_ = std::thread([this, duration_sec]() {
         auto& pa = portAudioApi();
@@ -784,8 +797,8 @@ int AudioEngine::testMicrophoneLevel(double duration_sec) {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(static_cast<int>(duration_sec * 1000));
 
         while (std::chrono::steady_clock::now() < deadline &&
-              !running_.load(std::memory_order_acquire) &&
-              !stop_mic_test_.load(std::memory_order_acquire)) {
+               !running_.load(std::memory_order_acquire) &&
+               !stop_mic_test_.load(std::memory_order_acquire)) {
 
             err = pa.ReadStream(stream, temp_input_buf.data(), FRAME);
             if (err!= paNoError) {
@@ -921,6 +934,9 @@ bool AudioEngine::openInputWaveIn() {
         return false;
     }
 
+    wave_in_active_.store(true, std::memory_order_release);
+    wave_in_outstanding_.store(0, std::memory_order_release);
+
     const size_t buffer_count = 4;
     const size_t buffer_bytes = static_cast<size_t>(FRAME) * sizeof(int16_t);
     wave_in_buffers_.clear();
@@ -952,6 +968,7 @@ bool AudioEngine::openInputWaveIn() {
         if (mr != MMSYSERR_NOERROR) {
             fprintf(stderr, "[debug] AudioEngine::openInputWaveIn add buffer failed err=%u buffer=%zu\n", static_cast<unsigned>(mr), i);
             fflush(stderr);
+            wave_in_active_.store(false, std::memory_order_release);
             waveInReset(handle);
             for (size_t j = 0; j <= i; ++j) {
                 if (wave_in_headers_[j].dwFlags & WHDR_PREPARED) {
@@ -961,6 +978,7 @@ bool AudioEngine::openInputWaveIn() {
             waveInClose(handle);
             wave_in_buffers_.clear();
             wave_in_headers_.clear();
+            wave_in_outstanding_.store(0, std::memory_order_release);
             return false;
         }
     }
@@ -969,6 +987,7 @@ bool AudioEngine::openInputWaveIn() {
     if (mr != MMSYSERR_NOERROR) {
         fprintf(stderr, "[debug] AudioEngine::openInputWaveIn start failed err=%u\n", static_cast<unsigned>(mr));
         fflush(stderr);
+        wave_in_active_.store(false, std::memory_order_release);
         waveInReset(handle);
         for (auto& header : wave_in_headers_) {
             if (header.dwFlags & WHDR_PREPARED) {
@@ -978,6 +997,7 @@ bool AudioEngine::openInputWaveIn() {
         waveInClose(handle);
         wave_in_buffers_.clear();
         wave_in_headers_.clear();
+        wave_in_outstanding_.store(0, std::memory_order_release);
         return false;
     }
 
@@ -994,12 +1014,23 @@ void AudioEngine::closeInputWaveIn() {
     if (!wave_in_) {
         wave_in_buffers_.clear();
         wave_in_headers_.clear();
+        wave_in_active_.store(false, std::memory_order_release);
+        wave_in_outstanding_.store(0, std::memory_order_release);
         return;
     }
 
     HWAVEIN handle = reinterpret_cast<HWAVEIN>(wave_in_);
+    wave_in_active_.store(false, std::memory_order_release);
     waveInStop(handle);
     waveInReset(handle);
+    auto start_time = std::chrono::steady_clock::now();
+    while (wave_in_outstanding_.load(std::memory_order_acquire) > 0) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - start_time).count() > 1000) {
+            break;
+        }
+    }
     for (auto& header : wave_in_headers_) {
         if (header.dwFlags & WHDR_PREPARED) {
             waveInUnprepareHeader(handle, &header, sizeof(WAVEHDR));
@@ -1010,6 +1041,7 @@ void AudioEngine::closeInputWaveIn() {
     use_wave_in_input_ = false;
     wave_in_buffers_.clear();
     wave_in_headers_.clear();
+    wave_in_outstanding_.store(0, std::memory_order_release);
 }
 
 void AudioEngine::handleWaveInBuffer(WAVEHDR* header) {
@@ -1116,6 +1148,16 @@ void AudioEngine::listenLoop() {
             continue;
         }
         if (poll_result == 0) {
+            continue;
+        }
+
+        if (poll_fd.revents & (POLLERR | POLLHUP | POLLNVAL)) {
+            char error_drain = 0;
+            sockaddr_in src{};
+            int src_len = sizeof(src);
+            (void)recvfrom(recv_sock_, &error_drain, sizeof(error_drain), 0,
+                           reinterpret_cast<sockaddr*>(&src), &src_len);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
             continue;
         }
 
@@ -1372,21 +1414,20 @@ void AudioEngine::updateMixedLevel(const std::vector<int16_t>& frame) {
 void AudioEngine::pushCaptureFrame(const int16_t* samples, int sample_count) {
     if (!samples || sample_count <= 0 ||!running_.load()) return;
 
-    AudioEngine::CaptureFrame frame{};
-    
-    // Fixed Defect 3: Downmix interleaved stereo frames to mono before processing
+    AudioEngine::CaptureFrame frame{}; // Zero-initialized so short reads stay padded.
+    const int n = std::min(sample_count, FRAME);
+
     if (input_channels_ == 2) {
-        const int n = std::min(sample_count, FRAME);
         for (int i = 0; i < n; ++i) {
             int32_t mixed = (static_cast<int32_t>(samples[2 * i]) + static_cast<int32_t>(samples[2 * i + 1])) / 2;
             frame[i] = static_cast<int16_t>(std::clamp(mixed, -32768, 32767));
         }
     } else {
-        const int n = std::min(sample_count, FRAME);
         std::copy_n(samples, n, frame.begin());
-        if (n < FRAME) {
-            std::fill(frame.begin() + n, frame.end(), 0);
-        }
+    }
+
+    if (n < FRAME) {
+        std::fill(frame.begin() + n, frame.end(), 0);
     }
 
     if (capture_frames_.push(frame)) {
