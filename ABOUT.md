@@ -161,7 +161,7 @@ The transmit thread processes captured audio through:
 Manual gain scaling follows:
 
 $$
-\text{ScaledSample} = \text{RawSample} \times \left(10^{\frac{\text{tx\_gain\_db}}{20}} \times \frac{\text{mic\_sensitivity}}{50}\right)
+\text{ScaledSample} = \text{RawSample} \times \left(10^{\frac{\text{tx gain db}}{20}} \times \frac{\text{mic sensitivity}}{50}\right)
 $$
 
 ### Phase 3: Voice Activity Detection
@@ -169,7 +169,7 @@ $$
 To reduce unnecessary packet transmission, the engine checks for active speech before encoding. If the built-in VAD is unavailable, the engine falls back to peak-based detection using the microphone sensitivity slider:
 
 $$
-\text{VAD\_Threshold} = \text{clamp}(260 - (\text{mic\_sensitivity} \times 2), 60, 220)
+\text{VAD Threshold} = \text{clamp}(260 - (\text{mic sensitivity} \times 2), 60, 220)
 $$
 
 If voice is detected, a hangover counter keeps transmission active for `18` frames, or `360 ms`, to avoid choppy cuts between words.
@@ -241,7 +241,7 @@ $$
 Final output scaling:
 
 $$
-\text{ScaledPCM} = \text{MixedPCM} \times (\text{master\_volume} \times \text{output\_volume})
+\text{ScaledPCM} = \text{MixedPCM} \times (\text{master volume} \times \text{output volume})
 $$
 
 The mono signal is duplicated to both output channels when stereo hardware is used.
