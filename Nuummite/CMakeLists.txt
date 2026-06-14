@@ -73,3 +73,14 @@ add_custom_command(TARGET voice_client POST_BUILD
         ${CMAKE_SOURCE_DIR}/Nuummite/technical-support.ico
         $<TARGET_FILE_DIR:voice_client>/technical-support.ico
 )
+
+set(VC_REDIST_X64_EXE ${CMAKE_SOURCE_DIR}/third_party/runtime/bin/vc_redist.x64.exe)
+if (EXISTS "${VC_REDIST_X64_EXE}")
+    add_custom_command(TARGET voice_client POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${VC_REDIST_X64_EXE}"
+            $<TARGET_FILE_DIR:voice_client>/vc_redist.x64.exe
+    )
+else()
+    message(STATUS "VC++ redistributable not found at ${VC_REDIST_X64_EXE}; place vc_redist.x64.exe there to include it in bin/.")
+endif()

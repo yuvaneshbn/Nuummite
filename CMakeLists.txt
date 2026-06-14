@@ -36,6 +36,7 @@ set(LIBSODIUM_DLL_VERSIONED ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsod
 set(LIBGCC_SEH_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll)
 set(LIBWINPTHREAD_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll)
 set(VOICE_RUNTIME_BUNDLE_DIR ${CMAKE_SOURCE_DIR}/third_party/runtime/bin)
+set(VC_REDIST_X64_EXE ${VOICE_RUNTIME_BUNDLE_DIR}/vc_redist.x64.exe)
 
 function(voice_deploy_runtime TARGET_NAME)
     if (EXISTS "${VOICE_RUNTIME_BUNDLE_DIR}")
@@ -44,6 +45,15 @@ function(voice_deploy_runtime TARGET_NAME)
                 "${VOICE_RUNTIME_BUNDLE_DIR}"
                 $<TARGET_FILE_DIR:${TARGET_NAME}>
         )
+        if (EXISTS "${VC_REDIST_X64_EXE}")
+            add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${VC_REDIST_X64_EXE}"
+                    $<TARGET_FILE_DIR:${TARGET_NAME}>/vc_redist.x64.exe
+            )
+        else()
+            message(STATUS "VC++ redistributable not found at ${VC_REDIST_X64_EXE}; place vc_redist.x64.exe there to bundle it into bin/.")
+        endif()
     else()
         message(WARNING "Runtime bundle not found at ${VOICE_RUNTIME_BUNDLE_DIR}; build outputs will not be mirrored from third_party.")
     endif()
