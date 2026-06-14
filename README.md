@@ -8,6 +8,13 @@ Nuummite is a Windows LAN voice chat project built around:
 - optional RNNoise and WebRTC audio processing
 - libsodium for packet encryption
 
+For a deeper project overview, architecture notes, and design details, see [ABOUT.md](ABOUT.md).
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](legal/LICENSE) for the full text.
+Community guidance lives in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) and [legal/CODE_OF_CONDUCT.md](legal/CODE_OF_CONDUCT.md).
+
 ## Repository Layout
 
 - `Nuummite/` - main application sources

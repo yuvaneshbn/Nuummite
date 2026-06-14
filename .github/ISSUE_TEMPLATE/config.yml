@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security reports
+    url: ../legal/SECURITY.md
+    about: Please review the security policy before reporting a vulnerability.
