@@ -93,6 +93,26 @@ MainWindow::MainWindow(const QString& myId, const QString& roomName, AudioEngine
         setStatusBar(mainStatusBar_);
     }
 
+    if (audio_) {
+        hasPhysicalInput_ = audio_->hasPhysicalInputDevices();
+        hasPhysicalOutput_ = audio_->hasPhysicalOutputDevices();
+        if (!hasPhysicalInput_ || !hasPhysicalOutput_) {
+            QString warning;
+            if (!hasPhysicalInput_ && !hasPhysicalOutput_) {
+                warning = "No physical microphone or speaker hardware was detected.";
+            } else if (!hasPhysicalInput_) {
+                warning = "No physical microphone hardware was detected.";
+            } else {
+                warning = "No physical speaker hardware was detected.";
+            }
+            QMessageBox::warning(this, "Hardware Configuration Warning", warning);
+            if (warningLabel_) {
+                warningLabel_->setText(warning);
+                warningLabel_->setStyleSheet("color: #C62828; font-weight: bold;");
+            }
+        }
+    }
+
     volumeControls_ = new VolumeControlPanel(audio_, this);
     if (controlsHint_) controlsHint_->setParent(nullptr);
     if (controlsLayout_) controlsLayout_->addWidget(volumeControls_);
@@ -574,6 +594,29 @@ QPalette MainWindow::createLightPalette() const {
 void MainWindow::updateLiveUI() {
 
     if (!audio_) return;
+
+    const bool currentInput = audio_->hasPhysicalInputDevices();
+    const bool currentOutput = audio_->hasPhysicalOutputDevices();
+    if (currentInput != hasPhysicalInput_ || currentOutput != hasPhysicalOutput_) {
+        hasPhysicalInput_ = currentInput;
+        hasPhysicalOutput_ = currentOutput;
+        if (!hasPhysicalInput_ || !hasPhysicalOutput_) {
+            QString warning;
+            if (!hasPhysicalInput_ && !hasPhysicalOutput_) {
+                warning = "No physical microphone or speaker hardware was detected.";
+            } else if (!hasPhysicalInput_) {
+                warning = "No physical microphone hardware was detected.";
+            } else {
+                warning = "No physical speaker hardware was detected.";
+            }
+            if (warningLabel_) {
+                warningLabel_->setText(warning);
+                warningLabel_->setStyleSheet("color: #C62828; font-weight: bold;");
+            }
+        } else if (warningLabel_ && warningLabel_->text().contains("No physical")) {
+            warningLabel_->clear();
+        }
+    }
 
     const int micLevel = audio_->captureLevel();
     systemLevelBar_->setValue(micLevel);

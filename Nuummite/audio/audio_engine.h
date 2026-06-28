@@ -45,6 +45,8 @@ public:
     bool updateDestinations(const std::vector<std::string>& destinations);
     void stop();
     void shutdown();
+    bool hasPhysicalInputDevices() const;
+    bool hasPhysicalOutputDevices() const;
 
     int port() const { return port_; }
     void setClientId(const std::string& id) { client_id_ = id; }

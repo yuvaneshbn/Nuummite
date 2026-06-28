@@ -133,9 +133,8 @@ void PeerDiscovery::loop() {
     inet_pton(AF_INET, MULTICAST_IP, &mreq.imr_multiaddr);
     mreq.imr_interface.s_addr = htonl(INADDR_ANY);
     if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<const char*>(&mreq), sizeof(mreq)) == SOCKET_ERROR) {
-        closesocket(sock);
-        running_.store(false);
-        return;
+        std::fprintf(stderr, "[debug] PeerDiscovery: IP_ADD_MEMBERSHIP failed (Code %d). Continuing in loopback mode.\n", WSAGetLastError());
+        std::fflush(stderr);
     }
 
     const int multicast_loop = 1;

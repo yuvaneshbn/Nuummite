@@ -97,6 +97,8 @@ private:
 
     bool connected_ = true;
     bool selfMuted_ = false;
+    bool hasPhysicalInput_ = true;
+    bool hasPhysicalOutput_ = true;
     std::unordered_set<std::string> targets_;
     std::unordered_set<std::string> muted_;
     std::unordered_map<std::string, ParticipantRowWidget*> rows_;
@@ -106,4 +108,3 @@ private:
 };
 
 #endif // NUUMMITE_MAINWINDOW_H
-

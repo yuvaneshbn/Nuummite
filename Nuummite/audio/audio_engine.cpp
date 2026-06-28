@@ -155,6 +155,7 @@ struct PortAudioApi {
     using Pa_CloseStream_Fn = PaError (*)(PaStream*);
     using Pa_StartStream_Fn = PaError (*)(PaStream*);
     using Pa_StopStream_Fn = PaError (*)(PaStream*);
+    using Pa_AbortStream_Fn = PaError (*)(PaStream*);
     using Pa_ReadStream_Fn = PaError (*)(PaStream*, void*, unsigned long);
     HMODULE module = nullptr;
     Pa_Initialize_Fn Initialize = nullptr;
@@ -169,6 +170,7 @@ struct PortAudioApi {
     Pa_CloseStream_Fn CloseStream = nullptr;
     Pa_StartStream_Fn StartStream = nullptr;
     Pa_StopStream_Fn StopStream = nullptr;
+    Pa_AbortStream_Fn AbortStream = nullptr;
     Pa_ReadStream_Fn ReadStream = nullptr;
     bool initialized = false;
 
@@ -189,6 +191,7 @@ struct PortAudioApi {
             CloseStream = nullptr;
             StartStream = nullptr;
             StopStream = nullptr;
+            AbortStream = nullptr;
             ReadStream = nullptr;
             return false;
         };
@@ -231,6 +234,7 @@ struct PortAudioApi {
             load_symbol(CloseStream, "Pa_CloseStream") &&
             load_symbol(StartStream, "Pa_StartStream") &&
             load_symbol(StopStream, "Pa_StopStream") &&
+            load_symbol(AbortStream, "Pa_AbortStream") &&
             load_symbol(ReadStream, "Pa_ReadStream");
         if (!ok) {
             return fail(error);
@@ -873,6 +877,7 @@ bool AudioEngine::openOutput() {
         return false;
     }
 
+    
     PaStreamParameters params{};
     params.device = device;
     
@@ -912,7 +917,11 @@ void AudioEngine::closeOutput() {
     if (!wave_out_) return;
     auto& pa = portAudioApi();
     PaStream* stream = reinterpret_cast<PaStream*>(wave_out_);
-    pa.StopStream(stream);
+    if (pa.AbortStream) {
+        pa.AbortStream(stream);
+    } else if (pa.StopStream) {
+        pa.StopStream(stream);
+    }
     pa.CloseStream(stream);
     wave_out_ = nullptr;
 }
@@ -1037,13 +1046,19 @@ void AudioEngine::closeInputWaveIn() {
 
     HWAVEIN handle = reinterpret_cast<HWAVEIN>(wave_in_);
     wave_in_active_.store(false, std::memory_order_release);
-    waveInStop(handle);
-    waveInReset(handle);
+    const MMRESULT mrStop = waveInStop(handle);
+    if (mrStop == MMSYSERR_NOERROR) {
+        waveInReset(handle);
+    } else {
+        std::fprintf(stderr, "[debug] AudioEngine: waveInStop returned %u. Skipping waveInReset.\n", static_cast<unsigned>(mrStop));
+        std::fflush(stderr);
+    }
     auto start_time = std::chrono::steady_clock::now();
     while (wave_in_outstanding_.load(std::memory_order_acquire) > 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        const int timeout_limit = (mrStop == MMSYSERR_NOERROR) ? 1000 : 100;
         if (std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::steady_clock::now() - start_time).count() > 1000) {
+                std::chrono::steady_clock::now() - start_time).count() > timeout_limit) {
             break;
         }
     }
@@ -1144,9 +1159,57 @@ void AudioEngine::closeInput() {
     }
     auto& pa = portAudioApi();
     PaStream* stream = reinterpret_cast<PaStream*>(wave_in_);
-    pa.StopStream(stream);
+    if (pa.AbortStream) {
+        pa.AbortStream(stream);
+    } else if (pa.StopStream) {
+        pa.StopStream(stream);
+    }
     pa.CloseStream(stream);
     wave_in_ = nullptr;
+}
+
+bool AudioEngine::hasPhysicalInputDevices() const {
+    auto& api = portAudioApi();
+    std::string err;
+    if (!api.ensureReady(err)) {
+        return waveInGetNumDevs() > 0;
+    }
+
+    const int count = static_cast<int>(api.GetDeviceCount());
+    if (count <= 0) {
+        return waveInGetNumDevs() > 0;
+    }
+
+    for (int i = 0; i < count; ++i) {
+        const PaDeviceInfo* info = api.GetDeviceInfo(i);
+        if (info && info->maxInputChannels > 0) {
+            return true;
+        }
+    }
+
+    return waveInGetNumDevs() > 0;
+}
+
+bool AudioEngine::hasPhysicalOutputDevices() const {
+    auto& api = portAudioApi();
+    std::string err;
+    if (!api.ensureReady(err)) {
+        return waveOutGetNumDevs() > 0;
+    }
+
+    const int count = static_cast<int>(api.GetDeviceCount());
+    if (count <= 0) {
+        return waveOutGetNumDevs() > 0;
+    }
+
+    for (int i = 0; i < count; ++i) {
+        const PaDeviceInfo* info = api.GetDeviceInfo(i);
+        if (info && info->maxOutputChannels > 0) {
+            return true;
+        }
+    }
+
+    return waveOutGetNumDevs() > 0;
 }
 
 void AudioEngine::listenLoop() {
