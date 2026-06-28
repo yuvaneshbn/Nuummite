@@ -540,8 +540,35 @@ QPalette MainWindow::createDarkPalette() const {
 }
 
 QPalette MainWindow::createLightPalette() const {
-    // Falls back to the default light theme palette of the Fusion style
-    return QApplication::style()->standardPalette();
+    QPalette palette_;
+    QColor lightBg(225, 225, 225);
+    QColor alternate_Bg(130, 130, 130);
+    QColor base_Bg(250, 250, 250);
+    QColor textBlack(45, 45, 45);
+    QColor accent_Blue(42, 130, 218);
+    QColor disabledGray(128, 128, 128);
+
+    palette_.setColor(QPalette::Window, lightBg);
+    palette_.setColor(QPalette::WindowText, textBlack);
+    palette_.setColor(QPalette::Base, base_Bg);
+    palette_.setColor(QPalette::AlternateBase, lightBg);
+    palette_.setColor(QPalette::ToolTipBase, base_Bg);
+    palette_.setColor(QPalette::ToolTipText, textBlack);
+    palette_.setColor(QPalette::Text, textBlack);
+    palette_.setColor(QPalette::Button, lightBg);
+    palette_.setColor(QPalette::ButtonText, textBlack);
+    palette_.setColor(QPalette::BrightText, Qt::red);
+    palette_.setColor(QPalette::Link, accent_Blue);
+    palette_.setColor(QPalette::Highlight, accent_Blue);
+    palette_.setColor(QPalette::HighlightedText, Qt::white);
+
+    // Explicit colors for disabled widgets
+    palette_.setColor(QPalette::Disabled, QPalette::WindowText, disabledGray);
+    palette_.setColor(QPalette::Disabled, QPalette::Text, disabledGray);
+    palette_.setColor(QPalette::Disabled, QPalette::ButtonText, disabledGray);
+    palette_.setColor(QPalette::Disabled, QPalette::Base, lightBg);
+
+    return palette_;
 }
 
 void MainWindow::updateLiveUI() {
