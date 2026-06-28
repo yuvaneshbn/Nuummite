@@ -11,7 +11,7 @@ any release branches that are actively maintained.
 
 If you discover a security issue, please do not open a public issue.
 
-Report it privately to `security@nuummite.example` with:
+Report it privately to `yuvanesh.b.n@gmail.com` with:
 
 - a short summary of the issue
 - affected component or feature
