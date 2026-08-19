@@ -1,0 +1,9 @@
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/voice_shared.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/audio_flow_test.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/edit_cache.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/voice_client.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/edit_cache.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/rebuild_cache.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/voice_client_autogen_timestamp_deps.dir
+C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/voice_client_autogen.dir

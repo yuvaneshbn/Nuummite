@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>VideoCallWindow</class>
+  <widget class="QWidget" name="VideoCallWindow">
+    <property name="windowTitle"><string>Video Call</string></property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+        <widget class="QLabel" name="videoDisplay">
+          <!-- In a real app use QVideoWidget -->
+          <property name="text"><string>[Video Feed]</string></property>
+        </widget>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" name="controlsLayout">
+          <item>
+            <widget class="QPushButton" name="cameraButton">
+              <property name="text"><string>Toggle Camera</string></property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="endCallButton">
+              <property name="text"><string>End Call</string></property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <resources/>
+  <connections>
+    <connection>
+      <sender>cameraButton</sender>
+      <signal>clicked()</signal>
+      <receiver>VideoCallWindow</receiver>
+      <slot>toggleCamera()</slot>
+    </connection>
+    <connection>
+      <sender>endCallButton</sender>
+      <signal>clicked()</signal>
+      <receiver>VideoCallWindow</receiver>
+      <slot>endCall()</slot>
+    </connection>
+  </connections>
+</ui>

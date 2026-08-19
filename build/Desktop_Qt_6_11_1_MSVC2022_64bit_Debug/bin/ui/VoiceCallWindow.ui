@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VoiceCallWindow</class>
+ <widget class="QWidget" name="VoiceCallWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>291</width>
+    <height>105</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Voice Call</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="callStatusLabel">
+     <property name="text">
+      <string>Calling [Name]...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSlider" name="volumeSlider">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="controlsLayout">
+     <item>
+      <widget class="QToolButton" name="muteButton">
+       <property name="toolTip">
+        <string>Mute Microphone</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="speakerButton">
+       <property name="toolTip">
+        <string>Speaker Off/On</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="endCallButton">
+       <property name="text">
+        <string>End Call</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>endCallButton</sender>
+   <signal>clicked()</signal>
+   <receiver>VoiceCallWindow</receiver>
+   <slot>endCall()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>endCall()</slot>
+ </slots>
+</ui>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>ChatWindow</class>
+  <widget class="QWidget" name="ChatWindow">
+    <property name="windowTitle"><string>Chat</string></property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+        <widget class="QTextEdit" name="chatHistory">
+          <property name="readOnly"><bool>true</bool></property>
+        </widget>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" name="inputLayout">
+          <item>
+            <widget class="QLineEdit" name="messageEdit">
+              <property name="placeholderText">
+                <string>Type a message...</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="sendButton">
+              <property name="text"><string>Send</string></property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="attachButton">
+              <property name="icon">
+                <iconset>:/icons/attach.png</iconset>
+              </property>
+              <property name="toolTip">
+                <string>Attach File</string>
+              </property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <resources/>
+  <connections>
+    <connection>
+      <sender>messageEdit</sender>
+      <signal>returnPressed()</signal>
+      <receiver>ChatWindow</receiver>
+      <slot>sendMessage()</slot>
+    </connection>
+    <connection>
+      <sender>sendButton</sender>
+      <signal>clicked()</signal>
+      <receiver>ChatWindow</receiver>
+      <slot>sendMessage()</slot>
+    </connection>
+    <connection>
+      <sender>attachButton</sender>
+      <signal>clicked()</signal>
+      <receiver>ChatWindow</receiver>
+      <slot>attachFile()</slot>
+    </connection>
+  </connections>
+</ui>

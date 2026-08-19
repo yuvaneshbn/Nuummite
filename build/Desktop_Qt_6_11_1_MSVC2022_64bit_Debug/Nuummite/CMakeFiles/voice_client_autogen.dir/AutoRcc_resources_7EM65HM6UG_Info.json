@@ -1,0 +1,25 @@
+{
+	"BUILD_DIR" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/voice_client_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite",
+	"CMAKE_SOURCE_DIR" : "C:/Users/YUVANESH/Downloads/Nuummite-old",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/voice_client_autogen/include",
+	"INPUTS" : 
+	[
+		"C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/technical-support.ico"
+	],
+	"LOCK_FILE" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/voice_client_autogen.dir/AutoRcc_resources_7EM65HM6UG_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "7EM65HM6UG",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "C:/Qt/6.11.1/msvc2022_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/CMakeFiles/voice_client_autogen.dir/AutoRcc_resources_7EM65HM6UG_Used.txt",
+	"SOURCE" : "C:/Users/YUVANESH/Downloads/Nuummite-old/Nuummite/client/resources.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

@@ -5,6 +5,8 @@ set(CLIENT_SOURCES
     client/SettingsDialog.cpp
     client/VolumeControlPanel.cpp
     client/EncryptionDialog.cpp
+    client/LoadingSpinner.cpp
+    client/CrystalRoomSelectionDialog.cpp
     audio/audio_engine.cpp
     audio/aec_processor.cpp
     audio/jitter_buffer.cpp
@@ -15,16 +17,18 @@ set(CLIENT_SOURCES
     client/resources.qrc
     ui/main_window.ui
     ui/participant_item.ui
-    ui/Popup_message.ui
     ui/settings_dialog.ui
     ui/volume_control.ui
-    ui/encryption_dialog.ui 
+    ui/encryption_dialog.ui
 )
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/Nuummite/ui)
+set(CMAKE_AUTOUIC_SEARCH_PATHS
+    ${CMAKE_SOURCE_DIR}/Nuummite/ui
+    ${CMAKE_SOURCE_DIR}/Nuummite/client
+)
 
 find_package(Qt6 6.5 COMPONENTS Core Gui Widgets Network UiTools REQUIRED)
 

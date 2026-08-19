@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>ContactListWindow</class>
+  <widget class="QMainWindow" name="ContactListWindow">
+    <property name="windowTitle"><string>Contacts</string></property>
+    <widget class="QWidget" name="centralwidget">
+      <layout class="QVBoxLayout" name="mainLayout">
+        <item>
+          <widget class="QLineEdit" name="searchLineEdit">
+            <property name="placeholderText">
+              <string>Search Contacts</string>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QListWidget" name="contactsListWidget"/>
+        </item>
+      </layout>
+    </widget>
+    <action name="actionSettings">
+      <property name="text"><string>&amp;Settings</string></property>
+    </action>
+    <menubar name="menubar">
+      <addaction name="actionSettings"/>
+    </menubar>
+  </widget>
+  <resources/>
+  <connections>
+    <connection>
+      <sender>contactsListWidget</sender>
+      <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+      <receiver>ContactListWindow</receiver>
+      <slot>openChat(QListWidgetItem*,QListWidgetItem*)</slot>
+    </connection>
+    <connection>
+      <sender>actionSettings</sender>
+      <signal>triggered()</signal>
+      <receiver>ContactListWindow</receiver>
+      <slot>openSettings()</slot>
+    </connection>
+  </connections>
+</ui>
