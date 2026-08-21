@@ -12,62 +12,73 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-option(VOICE_BUILD_AUDIO_NATIVE "Build native audio test tools" OFF)
-option(VOICE_BUILD_AUDIO_FLOW_TEST "Build audio flow diagnostic tool" ON)
+option(VOICE_BUILD_AUDIO_NATIVE    "Build native audio test tools"        OFF)
+option(VOICE_BUILD_AUDIO_FLOW_TEST "Build audio flow diagnostic tool"     ON)
 
-set(OPUS_DIR ${CMAKE_SOURCE_DIR}/third_party/opus)
-set(OPUS_INCLUDE_DIR ${OPUS_DIR})
-set(OPUS_DLL ${OPUS_DIR}/opus.dll)
-set(OPUS_LIB ${OPUS_DIR}/opus.lib)
-set(PORTAUDIO_DLL ${CMAKE_SOURCE_DIR}/third_party/libportaudio/libportaudio.dll)
-set(RNNOISE_DIR ${CMAKE_SOURCE_DIR}/third_party/rnnoise)
-set(RNNOISE_INCLUDE_DIR ${RNNOISE_DIR})
-set(RNNOISE_DLL ${RNNOISE_DIR}/rnnoise.dll)
-set(RNNOISE_LIB ${RNNOISE_DIR}/rnnoise.lib)
+# ── Third-party paths ─────────────────────────────────────────────────────────
 
-set(WEBRTC_DIR ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing)
-set(WEBRTC_INCLUDE_DIR ${WEBRTC_DIR}/include)
-set(WEBRTC_AUDIOPROC_DLL ${WEBRTC_DIR}/bin/webrtc-audio-processing-1-3.dll)
-set(WEBRTC_AUDIOCODING_DLL ${WEBRTC_DIR}/bin/webrtc-audio-coding-1-3.dll)
-set(WEBRTC_AUDIOPROC_LIB ${WEBRTC_DIR}/lib/webrtc-audio-processing-1-msvc.lib)
-set(WEBRTC_AUDIOCODING_LIB ${WEBRTC_DIR}/lib/webrtc-audio-coding-1.lib)
-set(LIBSODIUM_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/libsodium.dll)
-set(LIBSODIUM_DLL_VERSIONED ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll)
-set(LIBGCC_SEH_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll)
-set(LIBWINPTHREAD_DLL ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll)
-set(VOICE_RUNTIME_BUNDLE_DIR ${CMAKE_SOURCE_DIR}/third_party/runtime/bin)
-set(VC_REDIST_X64_EXE ${VOICE_RUNTIME_BUNDLE_DIR}/vc_redist.x64.exe)
+set(TP ${CMAKE_SOURCE_DIR}/third_party)
 
-function(voice_deploy_runtime TARGET_NAME)
-    if (EXISTS "${VOICE_RUNTIME_BUNDLE_DIR}")
-        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-                "${VOICE_RUNTIME_BUNDLE_DIR}"
-                $<TARGET_FILE_DIR:${TARGET_NAME}>
-        )
-        if (EXISTS "${VC_REDIST_X64_EXE}")
-            add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "${VC_REDIST_X64_EXE}"
-                    $<TARGET_FILE_DIR:${TARGET_NAME}>/vc_redist.x64.exe
-            )
-        else()
-            message(STATUS "VC++ redistributable not found at ${VC_REDIST_X64_EXE}; place vc_redist.x64.exe there to bundle it into bin/.")
-        endif()
-    else()
-        message(WARNING "Runtime bundle not found at ${VOICE_RUNTIME_BUNDLE_DIR}; build outputs will not be mirrored from third_party.")
-    endif()
-endfunction()
-
-if (EXISTS ${OPUS_LIB})
-    add_library(opus SHARED IMPORTED)
-    set_target_properties(opus PROPERTIES
-        IMPORTED_IMPLIB ${OPUS_LIB}
-        IMPORTED_LOCATION ${OPUS_DLL}
-    )
-else()
-    message(FATAL_ERROR "Missing Opus import library: ${OPUS_LIB}")
+# Opus — built from source (static)
+set(OPUS_BUILD_SHARED_LIBRARY OFF CACHE BOOL "" FORCE)
+set(OPUS_BUILD_TESTING        OFF CACHE BOOL "" FORCE)
+set(OPUS_BUILD_PROGRAMS       OFF CACHE BOOL "" FORCE)
+set(OPUS_INSTALL_CMAKE_CONFIG_MODULE OFF CACHE BOOL "" FORCE)
+set(OPUS_INSTALL_PKG_CONFIG_MODULE   OFF CACHE BOOL "" FORCE)
+add_subdirectory(${TP}/opus/src opus_build)
+# The opus CMake defines an 'Opus::opus' target; alias for convenient use
+if(NOT TARGET opus)
+    add_library(opus ALIAS Opus::opus)
 endif()
+set(OPUS_INCLUDE_DIR ${TP}/opus/src/include)
+
+# PortAudio — built from source (static, WASAPI + WMME)
+add_subdirectory(${TP}/libportaudio portaudio_build)
+set(PORTAUDIO_INCLUDE_DIR ${TP}/libportaudio/src/include)
+
+# RNNoise — built from source (static C files)
+add_library(rnnoise_static STATIC
+    ${TP}/rnnoise/denoise.c
+    ${TP}/rnnoise/celt_lpc.c
+    ${TP}/rnnoise/pitch.c
+    ${TP}/rnnoise/rnn.c
+    ${TP}/rnnoise/rnn_data.c
+    ${TP}/rnnoise/kiss_fft.c
+    ${TP}/rnnoise/rnn_reader.c
+)
+target_include_directories(rnnoise_static PUBLIC ${TP}/rnnoise)
+if(MSVC)
+    target_compile_options(rnnoise_static PRIVATE /W0)
+else()
+    target_compile_options(rnnoise_static PRIVATE -w)
+endif()
+
+# WebRTC Audio Processing — pre-built static .lib (MSVC)
+set(WEBRTC_DIR         ${TP}/webrtc_audio_processing)
+set(WEBRTC_INCLUDE_DIR ${WEBRTC_DIR}/include)
+set(WEBRTC_AUDIOPROC_LIB  ${WEBRTC_DIR}/lib/webrtc-audio-processing-1-msvc.lib)
+set(WEBRTC_AUDIOCODING_LIB ${WEBRTC_DIR}/lib/webrtc-audio-coding-1.lib)
+
+add_library(webrtc_audio_processing STATIC IMPORTED GLOBAL)
+set_target_properties(webrtc_audio_processing PROPERTIES
+    IMPORTED_LOCATION ${WEBRTC_AUDIOPROC_LIB}
+)
+add_library(webrtc_audio_coding STATIC IMPORTED GLOBAL)
+set_target_properties(webrtc_audio_coding PROPERTIES
+    IMPORTED_LOCATION ${WEBRTC_AUDIOCODING_LIB}
+)
+
+# libsodium — pre-built MSVC static .lib
+# Define SODIUM_STATIC so sodium.h exposes symbols as plain (non-dllimport) linkage.
+set(SODIUM_INCLUDE_DIR ${TP}/libsodium/include)
+set(SODIUM_LIB         ${TP}/libsodium/libsodium.lib)
+
+add_library(libsodium_static STATIC IMPORTED GLOBAL)
+set_target_properties(libsodium_static PROPERTIES
+    IMPORTED_LOCATION ${SODIUM_LIB}
+)
+
+# ── Shared internal library ───────────────────────────────────────────────────
 
 add_library(voice_shared STATIC
     Nuummite/common/audio_packet.cpp
@@ -76,8 +87,15 @@ add_library(voice_shared STATIC
     Nuummite/common/socket_utils.cpp
     Nuummite/common/winsock_init.cpp
 )
-target_include_directories(voice_shared PUBLIC ${CMAKE_SOURCE_DIR}/Nuummite/common ${OPUS_INCLUDE_DIR})
-target_link_libraries(voice_shared PUBLIC opus ws2_32)
+target_include_directories(voice_shared PUBLIC
+    ${CMAKE_SOURCE_DIR}/Nuummite/common
+    ${OPUS_INCLUDE_DIR}
+    ${SODIUM_INCLUDE_DIR}
+)
+target_link_libraries(voice_shared PUBLIC Opus::opus libsodium_static ws2_32)
+target_compile_definitions(voice_shared PUBLIC SODIUM_STATIC)
+
+# ── Optional tools ────────────────────────────────────────────────────────────
 
 if (VOICE_BUILD_AUDIO_NATIVE)
     add_subdirectory(audio_native)
@@ -101,23 +119,36 @@ if (VOICE_BUILD_AUDIO_FLOW_TEST)
         ${CMAKE_SOURCE_DIR}/Nuummite/audio
         ${CMAKE_SOURCE_DIR}/Nuummite/p2p
         ${OPUS_INCLUDE_DIR}
-        ${RNNOISE_INCLUDE_DIR}
+        ${PORTAUDIO_INCLUDE_DIR}
+        ${TP}/rnnoise
         ${WEBRTC_INCLUDE_DIR}
         ${WEBRTC_INCLUDE_DIR}/webrtc-audio-processing-1
     )
 
     target_link_libraries(audio_flow_test PRIVATE
         voice_shared
-        ws2_32
-        winmm
-        iphlpapi
-        ${RNNOISE_LIB}
-        ${WEBRTC_AUDIOPROC_LIB}
+        portaudio_static
+        rnnoise_static
+        webrtc_audio_processing
+        webrtc_audio_coding
+        ws2_32 winmm iphlpapi
     )
 
-    target_compile_definitions(audio_flow_test PRIVATE NOMINMAX)
+    target_compile_definitions(audio_flow_test PRIVATE
+        NOMINMAX
+        SODIUM_STATIC
+        PA_USE_STATIC        # signals audio_engine to use direct Pa_ calls
+    )
 
-    voice_deploy_runtime(audio_flow_test)
+    add_custom_command(TARGET audio_flow_test POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-processing-1-3.dll
+            ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-coding-1-3.dll
+            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll
+            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll
+            ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll
+            $<TARGET_FILE_DIR:audio_flow_test>
+    )
 endif()
 
 add_subdirectory(Nuummite)

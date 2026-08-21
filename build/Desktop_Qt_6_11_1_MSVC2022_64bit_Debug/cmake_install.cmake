@@ -34,6 +34,16 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/portaudio_build/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/Nuummite/cmake_install.cmake")
 endif()
 

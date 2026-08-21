@@ -1,0 +1,32 @@
+AudioEngine ctor: entry
+AudioEngine ctor: after SodiumWrapper::init
+AudioEngine ctor: after CreateSemaphore
+AudioEngine ctor: after RnNoiseProcessor
+AudioEngine ctor: after AecProcessor
+AudioEngine ctor: before socket()
+AudioEngine ctor: after socket()
+AudioEngine ctor: before SO_EXCLUSIVEADDRUSE
+AudioEngine ctor: after SO_EXCLUSIVEADDRUSE
+AudioEngine ctor: before buffer sockopts
+AudioEngine ctor: before bind()
+AudioEngine ctor: after bind()
+AudioEngine ctor: attempting initial openOutput
+AudioEngine ctor: initial openOutput succeeded
+AudioEngine ctor: entry
+AudioEngine ctor: after SodiumWrapper::init
+AudioEngine ctor: after CreateSemaphore
+AudioEngine ctor: after RnNoiseProcessor
+AudioEngine ctor: after AecProcessor
+AudioEngine ctor: before socket()
+AudioEngine ctor: after socket()
+AudioEngine ctor: before SO_EXCLUSIVEADDRUSE
+AudioEngine ctor: after SO_EXCLUSIVEADDRUSE
+AudioEngine ctor: before buffer sockopts
+AudioEngine ctor: before bind()
+AudioEngine ctor: after bind()
+AudioEngine ctor: attempting initial openOutput
+AudioEngine ctor: initial openOutput succeeded
+AudioEngine::setMasterVolume enter
+AudioEngine::setMasterVolume exit
+AudioEngine::setOutputVolume enter
+AudioEngine::setOutputVolume exit

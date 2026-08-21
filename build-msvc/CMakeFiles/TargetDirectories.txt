@@ -1,9 +1,0 @@
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/CMakeFiles/voice_shared.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/CMakeFiles/audio_flow_test.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/CMakeFiles/edit_cache.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/CMakeFiles/rebuild_cache.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/CMakeFiles/voice_client.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/CMakeFiles/edit_cache.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/CMakeFiles/rebuild_cache.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/CMakeFiles/voice_client_autogen_timestamp_deps.dir
-C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/Nuummite/CMakeFiles/voice_client_autogen.dir

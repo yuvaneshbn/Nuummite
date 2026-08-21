@@ -40,9 +40,17 @@ target_include_directories(voice_client PRIVATE
     ${CMAKE_SOURCE_DIR}/Nuummite/audio
     ${CMAKE_SOURCE_DIR}/Nuummite/p2p
     ${OPUS_INCLUDE_DIR}
+    ${PORTAUDIO_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/third_party/rnnoise
     ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/include
     ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/include/webrtc-audio-processing-1
+    ${SODIUM_INCLUDE_DIR}
+)
+
+target_compile_definitions(voice_client PRIVATE
+    NOMINMAX
+    SODIUM_STATIC          # libsodium: suppress dllimport, use static symbols
+    PA_USE_STATIC          # audio_engine.cpp: use direct Pa_ calls instead of LoadLibrary
 )
 
 target_link_libraries(voice_client PRIVATE
@@ -52,25 +60,37 @@ target_link_libraries(voice_client PRIVATE
     Qt6::Widgets
     Qt6::Network
     Qt6::UiTools
+    portaudio_static
+    rnnoise_static
+    webrtc_audio_processing
+    webrtc_audio_coding
     ws2_32
     winmm
     iphlpapi
-    ${CMAKE_SOURCE_DIR}/third_party/rnnoise/rnnoise.lib
-    ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/lib/webrtc-audio-processing-1-msvc.lib
-    ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/lib/webrtc-audio-coding-1.lib
+    ole32
+    uuid
+    ksuser
+    mfplat
+    mfuuid
+    wmcodecdspuuid
 )
 
-target_compile_definitions(voice_client PRIVATE
-    NOMINMAX
-)
-
+# ── Post-build: copy UI files ─────────────────────────────────────────────────
 add_custom_command(TARGET voice_client POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/Nuummite/ui
         $<TARGET_FILE_DIR:voice_client>/ui
 )
 
-voice_deploy_runtime(voice_client)
+add_custom_command(TARGET voice_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-processing-1-3.dll
+        ${CMAKE_SOURCE_DIR}/third_party/webrtc_audio_processing/bin/webrtc-audio-coding-1-3.dll
+        ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libsodium-26.dll
+        ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libgcc_s_seh-1.dll
+        ${CMAKE_SOURCE_DIR}/third_party/libsodium/bin/libwinpthread-1.dll
+        $<TARGET_FILE_DIR:voice_client>
+)
 
 add_custom_command(TARGET voice_client POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different

@@ -28,8 +28,8 @@
 #define RNN_H_
 
 #include "rnnoise.h"
-
 #include "opus_types.h"
+#include "common.h"
 
 #define WEIGHTS_SCALE (1.f/256)
 

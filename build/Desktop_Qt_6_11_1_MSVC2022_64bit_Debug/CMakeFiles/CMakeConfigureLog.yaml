@@ -366,3 +366,887 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "third_party/opus/src/cmake/CFeatureCheck.cmake:30 (try_compile)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:27 (c_feature_check)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/CMakeFiles/CMakeTmp"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/CMakeFiles/CMakeTmp"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "COMPILE_VLA_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/CMakeFiles/CMakeTmp'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_8d25d
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_8d25d.dir\\vla.c.obj /FdCMakeFiles\\cmTC_8d25d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c
+        \x1b[31mFAILED: \x1b[0mCMakeFiles/cmTC_8d25d.dir/vla.c.obj 
+        C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_8d25d.dir\\vla.c.obj /FdCMakeFiles\\cmTC_8d25d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(3): error C2057: expected constant expression
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(3): error C2466: cannot allocate an array of constant size 0
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(3): error C2133: 'a': unknown size
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(4): warning C4034: sizeof returns 0
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:30 (check_include_file)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for alloca.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-7sbwef"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-7sbwef"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_ALLOCA_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-7sbwef'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_695cb
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_695cb.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_695cb.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-7sbwef\\CheckIncludeFile.c
+        \x1b[31mFAILED: \x1b[0mCMakeFiles/cmTC_695cb.dir/CheckIncludeFile.c.obj 
+        C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_695cb.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_695cb.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-7sbwef\\CheckIncludeFile.c
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-7sbwef\\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'alloca.h': No such file or directory
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:154 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:37 (check_symbol_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for alloca"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-15x4ie"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-15x4ie"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "USE_ALLOCA_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-15x4ie'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_6dc00
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_6dc00.dir\\CheckSymbolExists.c.obj /FdCMakeFiles\\cmTC_6dc00.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-15x4ie\\CheckSymbolExists.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_6dc00.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_6dc00.dir\\CheckSymbolExists.c.obj  /out:cmTC_6dc00.exe /implib:cmTC_6dc00.lib /pdb:cmTC_6dc00.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:43 (check_library_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for floor in m"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-p20va0"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-p20va0"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_LIBM"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-p20va0'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_83bcd
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS -DCHECK_FUNCTION_EXISTS=floor /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_83bcd.dir\\CheckFunctionExists.c.obj /FdCMakeFiles\\cmTC_83bcd.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-p20va0\\CheckFunctionExists.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_83bcd.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_83bcd.dir\\CheckFunctionExists.c.obj  /out:cmTC_83bcd.exe /implib:cmTC_83bcd.lib /pdb:cmTC_83bcd.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  m.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        \x1b[31mFAILED: \x1b[0mcmTC_83bcd.exe 
+        C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_83bcd.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_83bcd.dir\\CheckFunctionExists.c.obj  /out:cmTC_83bcd.exe /implib:cmTC_83bcd.lib /pdb:cmTC_83bcd.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  m.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        LINK Pass 1: command "C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_83bcd.dir\\CheckFunctionExists.c.obj /out:cmTC_83bcd.exe /implib:cmTC_83bcd.lib /pdb:cmTC_83bcd.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console m.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\\cmTC_83bcd.dir/intermediate.manifest CMakeFiles\\cmTC_83bcd.dir/manifest.res" failed (exit code 1104) with the following output:
+        LINK : fatal error LNK1104: cannot open file 'm.lib'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:154 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:49 (check_symbol_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for lrintf"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-6xuy3r"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-6xuy3r"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_LRINTF"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-6xuy3r'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_01b8d
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_01b8d.dir\\CheckSymbolExists.c.obj /FdCMakeFiles\\cmTC_01b8d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-6xuy3r\\CheckSymbolExists.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_01b8d.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_01b8d.dir\\CheckSymbolExists.c.obj  /out:cmTC_01b8d.exe /implib:cmTC_01b8d.lib /pdb:cmTC_01b8d.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:154 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:50 (check_symbol_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for lrint"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-giej5d"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-giej5d"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_LRINT"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-giej5d'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_c5a0e
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_c5a0e.dir\\CheckSymbolExists.c.obj /FdCMakeFiles\\cmTC_c5a0e.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-giej5d\\CheckSymbolExists.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_c5a0e.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_c5a0e.dir\\CheckSymbolExists.c.obj  /out:cmTC_c5a0e.exe /implib:cmTC_c5a0e.lib /pdb:cmTC_c5a0e.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:150 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:64 (opus_supports_cpu_detection)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for intrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-7onb63"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-7onb63"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_INTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-7onb63'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_e74ad
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_e74ad.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_e74ad.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-7onb63\\CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_e74ad.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_e74ad.dir\\CheckIncludeFile.c.obj  /out:cmTC_e74ad.exe /implib:cmTC_e74ad.lib /pdb:cmTC_e74ad.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:58 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for xmmintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-q838te"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-q838te"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_XMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-q838te'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_e8f6d
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_e8f6d.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_e8f6d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-q838te\\CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_e8f6d.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_e8f6d.dir\\CheckIncludeFile.c.obj  /out:cmTC_e8f6d.exe /implib:cmTC_e8f6d.lib /pdb:cmTC_e8f6d.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:78 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for emmintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-bpjy6r"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-bpjy6r"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_EMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-bpjy6r'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_3835b
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_3835b.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_3835b.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-bpjy6r\\CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_3835b.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_3835b.dir\\CheckIncludeFile.c.obj  /out:cmTC_3835b.exe /implib:cmTC_3835b.lib /pdb:cmTC_3835b.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:97 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for smmintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-1d5rlk"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-1d5rlk"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_SMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-1d5rlk'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_d7f28
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_d7f28.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_d7f28.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-1d5rlk\\CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_d7f28.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_d7f28.dir\\CheckIncludeFile.c.obj  /out:cmTC_d7f28.exe /implib:cmTC_d7f28.lib /pdb:cmTC_d7f28.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:116 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for immintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-zuu6ga"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-zuu6ga"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_IMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-zuu6ga'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_29d14
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_29d14.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_29d14.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-zuu6ga\\CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_29d14.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_29d14.dir\\CheckIncludeFile.c.obj  /out:cmTC_29d14.exe /implib:cmTC_29d14.lib /pdb:cmTC_29d14.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:119 (check_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test AVX2_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-e8kd36"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-e8kd36"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "AVX2_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-e8kd36'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_f255a
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DAVX2_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /arch:AVX2 /showIncludes /FoCMakeFiles\\cmTC_f255a.dir\\src.c.obj /FdCMakeFiles\\cmTC_f255a.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-e8kd36\\src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_f255a.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_f255a.dir\\src.c.obj  /out:cmTC_f255a.exe /implib:cmTC_f255a.lib /pdb:cmTC_f255a.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:84 (check_flag)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test FAST_MATH_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-5pyl3x"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-5pyl3x"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "FAST_MATH_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-5pyl3x'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_3421f
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DFAST_MATH_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /fp:fast /showIncludes /FoCMakeFiles\\cmTC_3421f.dir\\src.c.obj /FdCMakeFiles\\cmTC_3421f.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-5pyl3x\\src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_3421f.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_3421f.dir\\src.c.obj  /out:cmTC_3421f.exe /implib:cmTC_3421f.lib /pdb:cmTC_3421f.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:85 (check_flag)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test STACK_PROTECTOR_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-r8gl3z"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-r8gl3z"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "STACK_PROTECTOR_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-r8gl3z'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_642e4
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DSTACK_PROTECTOR_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /GS /showIncludes /FoCMakeFiles\\cmTC_642e4.dir\\src.c.obj /FdCMakeFiles\\cmTC_642e4.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-r8gl3z\\src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_642e4.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_642e4.dir\\src.c.obj  /out:cmTC_642e4.exe /implib:cmTC_642e4.lib /pdb:cmTC_642e4.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:86 (check_flag)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test STACK_PROTECTOR_DISABLED_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-egumo7"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-egumo7"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "STACK_PROTECTOR_DISABLED_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-egumo7'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_d63e7
+        [1/2] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DSTACK_PROTECTOR_DISABLED_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /GS- /showIncludes /FoCMakeFiles\\cmTC_d63e7.dir\\src.c.obj /FdCMakeFiles\\cmTC_d63e7.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-egumo7\\src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_d63e7.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_d63e7.dir\\src.c.obj  /out:cmTC_d63e7.exe /implib:cmTC_d63e7.lib /pdb:cmTC_d63e7.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "third_party/opus/src/cmake/CFeatureCheck.cmake:30 (try_compile)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:27 (c_feature_check)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/CMakeFiles/CMakeTmp"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/CMakeFiles/CMakeTmp"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "COMPILE_VLA_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build/CMakeFiles/CMakeTmp'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_fc69f
+        [1/2 20.0/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_fc69f.dir\\vla.c.obj /FdCMakeFiles\\cmTC_fc69f.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c
+        \x1b[31mFAILED: \x1b[0mCMakeFiles/cmTC_fc69f.dir/vla.c.obj 
+        C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_fc69f.dir\\vla.c.obj /FdCMakeFiles\\cmTC_fc69f.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(3): error C2057: expected constant expression
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(3): error C2466: cannot allocate an array of constant size 0
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(3): error C2133: 'a': unknown size
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\third_party\\opus\\src\\cmake\\vla.c(4): warning C4034: sizeof returns 0
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:30 (check_include_file)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for alloca.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-c6ar7j"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-c6ar7j"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_ALLOCA_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-c6ar7j'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_9f92d
+        [1/2 26.3/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_9f92d.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_9f92d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-c6ar7j\\CheckIncludeFile.c
+        \x1b[31mFAILED: \x1b[0mCMakeFiles/cmTC_9f92d.dir/CheckIncludeFile.c.obj 
+        C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_9f92d.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_9f92d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-c6ar7j\\CheckIncludeFile.c
+        C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-c6ar7j\\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'alloca.h': No such file or directory
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:154 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:37 (check_symbol_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for alloca"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-s69fbs"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-s69fbs"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "USE_ALLOCA_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-s69fbs'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_b9533
+        [1/2 17.9/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_b9533.dir\\CheckSymbolExists.c.obj /FdCMakeFiles\\cmTC_b9533.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-s69fbs\\CheckSymbolExists.c
+        [2/2 6.0/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_b9533.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_b9533.dir\\CheckSymbolExists.c.obj  /out:cmTC_b9533.exe /implib:cmTC_b9533.lib /pdb:cmTC_b9533.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:43 (check_library_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for floor in m"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-sh6zt6"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-sh6zt6"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_LIBM"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-sh6zt6'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_f8746
+        [1/2 21.7/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS -DCHECK_FUNCTION_EXISTS=floor /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_f8746.dir\\CheckFunctionExists.c.obj /FdCMakeFiles\\cmTC_f8746.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-sh6zt6\\CheckFunctionExists.c
+        [2/2 16.8/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_f8746.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_f8746.dir\\CheckFunctionExists.c.obj  /out:cmTC_f8746.exe /implib:cmTC_f8746.lib /pdb:cmTC_f8746.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  m.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        \x1b[31mFAILED: \x1b[0mcmTC_f8746.exe 
+        C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_f8746.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_f8746.dir\\CheckFunctionExists.c.obj  /out:cmTC_f8746.exe /implib:cmTC_f8746.lib /pdb:cmTC_f8746.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  m.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        LINK Pass 1: command "C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_f8746.dir\\CheckFunctionExists.c.obj /out:cmTC_f8746.exe /implib:cmTC_f8746.lib /pdb:cmTC_f8746.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:console m.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTFILE:CMakeFiles\\cmTC_f8746.dir/intermediate.manifest CMakeFiles\\cmTC_f8746.dir/manifest.res" failed (exit code 1104) with the following output:
+        LINK : fatal error LNK1104: cannot open file 'm.lib'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:154 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:49 (check_symbol_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for lrintf"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-hbz080"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-hbz080"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_LRINTF"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-hbz080'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_d4259
+        [1/2 20.0/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_d4259.dir\\CheckSymbolExists.c.obj /FdCMakeFiles\\cmTC_d4259.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-hbz080\\CheckSymbolExists.c
+        [2/2 6.2/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_d4259.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_d4259.dir\\CheckSymbolExists.c.obj  /out:cmTC_d4259.exe /implib:cmTC_d4259.lib /pdb:cmTC_d4259.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:154 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:50 (check_symbol_exists)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for lrint"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-4l64q5"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-4l64q5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_LRINT"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-4l64q5'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_b4078
+        [1/2 20.4/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_b4078.dir\\CheckSymbolExists.c.obj /FdCMakeFiles\\cmTC_b4078.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-4l64q5\\CheckSymbolExists.c
+        [2/2 6.5/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_b4078.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_b4078.dir\\CheckSymbolExists.c.obj  /out:cmTC_b4078.exe /implib:cmTC_b4078.lib /pdb:cmTC_b4078.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:150 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:64 (opus_supports_cpu_detection)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for intrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-p6wnhp"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-p6wnhp"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_INTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-p6wnhp'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_10724
+        [1/2 15.6/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_10724.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_10724.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-p6wnhp\\CheckIncludeFile.c
+        [2/2 6.1/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_10724.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_10724.dir\\CheckIncludeFile.c.obj  /out:cmTC_10724.exe /implib:cmTC_10724.lib /pdb:cmTC_10724.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:58 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for xmmintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-fcpho8"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-fcpho8"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_XMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-fcpho8'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_5f90e
+        [1/2 20.8/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_5f90e.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_5f90e.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-fcpho8\\CheckIncludeFile.c
+        [2/2 7.1/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_5f90e.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_5f90e.dir\\CheckIncludeFile.c.obj  /out:cmTC_5f90e.exe /implib:cmTC_5f90e.lib /pdb:cmTC_5f90e.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:78 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for emmintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-qxv1wq"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-qxv1wq"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_EMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-qxv1wq'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_8b16d
+        [1/2 21.3/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_8b16d.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_8b16d.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-qxv1wq\\CheckIncludeFile.c
+        [2/2 6.4/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_8b16d.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_8b16d.dir\\CheckIncludeFile.c.obj  /out:cmTC_8b16d.exe /implib:cmTC_8b16d.lib /pdb:cmTC_8b16d.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:97 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for smmintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-3zkoa9"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-3zkoa9"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_SMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-3zkoa9'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_ab080
+        [1/2 20.8/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_ab080.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_ab080.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-3zkoa9\\CheckIncludeFile.c
+        [2/2 6.0/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_ab080.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_ab080.dir\\CheckIncludeFile.c.obj  /out:cmTC_ab080.exe /implib:cmTC_ab080.lib /pdb:cmTC_ab080.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:116 (check_include_file)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Looking for immintrin.h"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-iu2qu5"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-iu2qu5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "HAVE_IMMINTRIN_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-iu2qu5'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_1bd13
+        [1/2 16.7/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /showIncludes /FoCMakeFiles\\cmTC_1bd13.dir\\CheckIncludeFile.c.obj /FdCMakeFiles\\cmTC_1bd13.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-iu2qu5\\CheckIncludeFile.c
+        [2/2 6.1/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_1bd13.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_1bd13.dir\\CheckIncludeFile.c.obj  /out:cmTC_1bd13.exe /implib:cmTC_1bd13.lib /pdb:cmTC_1bd13.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:119 (check_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:68 (opus_detect_sse)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test AVX2_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-0gx2s4"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-0gx2s4"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "AVX2_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-0gx2s4'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_af87e
+        [1/2 23.3/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DAVX2_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /arch:AVX2 /showIncludes /FoCMakeFiles\\cmTC_af87e.dir\\src.c.obj /FdCMakeFiles\\cmTC_af87e.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-0gx2s4\\src.c
+        [2/2 6.9/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_af87e.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_af87e.dir\\src.c.obj  /out:cmTC_af87e.exe /implib:cmTC_af87e.lib /pdb:cmTC_af87e.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:84 (check_flag)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test FAST_MATH_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-2diwh5"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-2diwh5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "FAST_MATH_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-2diwh5'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_6ed4f
+        [1/2 26.3/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DFAST_MATH_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /fp:fast /showIncludes /FoCMakeFiles\\cmTC_6ed4f.dir\\src.c.obj /FdCMakeFiles\\cmTC_6ed4f.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-2diwh5\\src.c
+        [2/2 7.4/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_6ed4f.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_6ed4f.dir\\src.c.obj  /out:cmTC_6ed4f.exe /implib:cmTC_6ed4f.lib /pdb:cmTC_6ed4f.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:85 (check_flag)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test STACK_PROTECTOR_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-44c3fu"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-44c3fu"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "STACK_PROTECTOR_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-44c3fu'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_d2bbe
+        [1/2 25.0/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DSTACK_PROTECTOR_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /GS /showIncludes /FoCMakeFiles\\cmTC_d2bbe.dir\\src.c.obj /FdCMakeFiles\\cmTC_d2bbe.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-44c3fu\\src.c
+        [2/2 7.4/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_d2bbe.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_d2bbe.dir\\src.c.obj  /out:cmTC_d2bbe.exe /implib:cmTC_d2bbe.lib /pdb:cmTC_d2bbe.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusFunctions.cmake:46 (check_c_compiler_flag)"
+      - "third_party/opus/src/cmake/OpusConfig.cmake:86 (check_flag)"
+      - "third_party/opus/src/CMakeLists.txt:11 (include)"
+    checks:
+      - "Performing Test STACK_PROTECTOR_DISABLED_SUPPORTED"
+    directories:
+      source: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-rkx3ag"
+      binary: "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-rkx3ag"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src/cmake"
+    buildResult:
+      variable: "STACK_PROTECTOR_DISABLED_SUPPORTED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/CMakeFiles/CMakeScratch/TryCompile-rkx3ag'
+        
+        Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v cmTC_ef7ee
+        [1/2 25.0/sec] C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe  /nologo -DSTACK_PROTECTOR_DISABLED_SUPPORTED  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -std:c11 -MDd   /GS- /showIncludes /FoCMakeFiles\\cmTC_ef7ee.dir\\src.c.obj /FdCMakeFiles\\cmTC_ef7ee.dir\\ /FS -c C:\\Users\\YUVANESH\\Downloads\\Nuummite-old\\build\\Desktop_Qt_6_11_1_MSVC2022_64bit_Debug\\CMakeFiles\\CMakeScratch\\TryCompile-rkx3ag\\src.c
+        [2/2 7.2/sec] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && C:\\Qt\\Tools\\CMake_64\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_ef7ee.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\10.0.26100.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\18\\BuildTools\\VC\\Tools\\MSVC\\14.51.36231\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_ef7ee.dir\\src.c.obj  /out:cmTC_ef7ee.exe /implib:cmTC_ef7ee.lib /pdb:cmTC_ef7ee.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+...

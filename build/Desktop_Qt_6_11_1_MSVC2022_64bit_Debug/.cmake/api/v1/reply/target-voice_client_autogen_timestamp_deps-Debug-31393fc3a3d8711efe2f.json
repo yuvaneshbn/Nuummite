@@ -1,0 +1,42 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"Nuummite/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "rnnoise_static::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "voice_shared::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "portaudio_static::@9b62f84dc91b36e8bcab"
+		}
+	],
+	"id" : "voice_client_autogen_timestamp_deps::@17e8d7377dc5d9abfc46",
+	"isGeneratorProvided" : true,
+	"name" : "voice_client_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "Nuummite",
+		"source" : "Nuummite"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

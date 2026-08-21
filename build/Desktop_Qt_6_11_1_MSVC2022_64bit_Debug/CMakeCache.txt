@@ -188,6 +188,21 @@ CMAKE_PROJECT_INCLUDE_BEFORE:FILEPATH=C:/Users/YUVANESH/Downloads/Nuummite-old/b
 //Value Computed by CMake
 CMAKE_PROJECT_NAME:STATIC=Nuummite
 
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION:STATIC=1.5.2
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_MAJOR:STATIC=1
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_MINOR:STATIC=5
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_PATCH:STATIC=2
+
+//Value Computed by CMake
+CMAKE_PROJECT_VERSION_TWEAK:STATIC=
+
 //RC compiler
 CMAKE_RC_COMPILER:FILEPATH=C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/rc.exe
 
@@ -259,6 +274,9 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Git command line client
+GIT_EXECUTABLE:FILEPATH=C:/Program Files/Git/cmd/git.exe
+
 //Value Computed by CMake
 Nuummite_BINARY_DIR:STATIC=C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug
 
@@ -267,6 +285,102 @@ Nuummite_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 Nuummite_SOURCE_DIR:STATIC=C:/Users/YUVANESH/Downloads/Nuummite-old
+
+//additional software error checking.
+OPUS_ASSERTIONS:BOOL=OFF
+
+//build programs.
+OPUS_BUILD_PROGRAMS:BOOL=OFF
+
+//build shared library.
+OPUS_BUILD_SHARED_LIBRARY:BOOL=OFF
+
+//build tests.
+OPUS_BUILD_TESTING:BOOL=OFF
+
+//enable bit-exactness checks between optimized and c implementations.
+OPUS_CHECK_ASM:BOOL=OFF
+
+//enable non-Opus modes, e.g. 44.1 kHz & 2^n frames.
+OPUS_CUSTOM_MODES:BOOL=OFF
+
+//disable all intrinsics optimizations.
+OPUS_DISABLE_INTRINSICS:BOOL=OFF
+
+//Run DNN computations as float for debugging purposes.
+OPUS_DNN_FLOAT_DEBUG:BOOL=OFF
+
+//enable DRED.
+OPUS_DRED:BOOL=OFF
+
+//compile with the floating point API (for machines with float
+// library).
+OPUS_ENABLE_FLOAT_API:BOOL=ON
+
+//compile as fixed-point (for machines without a fast enough FPU).
+OPUS_FIXED_POINT:BOOL=OFF
+
+//enable floating point approximations (Ensure your platform supports
+// IEEE 754 before enabling).
+OPUS_FLOAT_APPROX:BOOL=OFF
+
+//causes the encoder to make random decisions (do not use in production).
+OPUS_FUZZING:BOOL=OFF
+
+//run-time checks that are cheap and safe for use in production.
+OPUS_HARDENING:BOOL=ON
+
+//install CMake package config module.
+OPUS_INSTALL_CMAKE_CONFIG_MODULE:BOOL=OFF
+
+//install pkg-config module.
+OPUS_INSTALL_PKG_CONFIG_MODULE:BOOL=OFF
+
+//enable OSCE.
+OPUS_OSCE:BOOL=OFF
+
+//use stack protection.
+OPUS_STACK_PROTECTOR:BOOL=ON
+
+//build with static runtime library.
+OPUS_STATIC_RUNTIME:BOOL=OFF
+
+//use alloca for stack arrays (on non-C99 compilers).
+OPUS_USE_ALLOCA:BOOL=ON
+
+//does runtime check for AVX FMA AVX2 support.
+OPUS_X86_MAY_HAVE_AVX2:BOOL=ON
+
+//does runtime check for SSE1 support.
+OPUS_X86_MAY_HAVE_SSE:BOOL=ON
+
+//does runtime check for SSE2 support.
+OPUS_X86_MAY_HAVE_SSE2:BOOL=ON
+
+//does runtime check for SSE4.1 support.
+OPUS_X86_MAY_HAVE_SSE4_1:BOOL=ON
+
+//assume target CPU has AVX FMA AVX2 support (override runtime
+// check).
+OPUS_X86_PRESUME_AVX2:BOOL=OFF
+
+//assume target CPU has SSE1 support (override runtime check).
+OPUS_X86_PRESUME_SSE:BOOL=ON
+
+//assume target CPU has SSE2 support (override runtime check).
+OPUS_X86_PRESUME_SSE2:BOOL=ON
+
+//assume target CPU has SSE4.1 support (override runtime check).
+OPUS_X86_PRESUME_SSE4_1:BOOL=OFF
+
+//Value Computed by CMake
+Opus_BINARY_DIR:STATIC=C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/opus_build
+
+//Value Computed by CMake
+Opus_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+Opus_SOURCE_DIR:STATIC=C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/src
 
 //Additional directories where find(Qt6 ...) host Qt components
 // are searched
@@ -350,11 +464,22 @@ Vulkan_LIBRARY:FILEPATH=Vulkan_LIBRARY-NOTFOUND
 //Path to a program.
 WINDEPLOYQT_EXECUTABLE:FILEPATH=C:/Qt/6.11.1/msvc2022_64/bin/windeployqt.exe
 
+//Value Computed by CMake
+portaudio_BINARY_DIR:STATIC=C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/portaudio_build
+
+//Value Computed by CMake
+portaudio_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+portaudio_SOURCE_DIR:STATIC=C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/libportaudio
+
 
 ########################
 # INTERNAL cache entries
 ########################
 
+//Test AVX2_SUPPORTED
+AVX2_SUPPORTED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
 //This is the directory where this CMakeCache.txt was created
@@ -477,7 +602,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=4
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib
@@ -523,8 +648,34 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Result of TRY_COMPILE
+COMPILE_VLA_SUPPORTED:INTERNAL=FALSE
+//Test FAST_MATH_SUPPORTED
+FAST_MATH_SUPPORTED:INTERNAL=1
+//Details about finding Git
+FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[C:/Program Files/Git/cmd/git.exe][v2.45.1.windows.1()]
+//ADVANCED property for variable: GIT_EXECUTABLE
+GIT_EXECUTABLE-ADVANCED:INTERNAL=1
+//Have include alloca.h
+HAVE_ALLOCA_H:INTERNAL=
+//Have include emmintrin.h
+HAVE_EMMINTRIN_H:INTERNAL=1
+//Have include immintrin.h
+HAVE_IMMINTRIN_H:INTERNAL=1
+//Have include intrin.h
+HAVE_INTRIN_H:INTERNAL=1
+//Have library m
+HAVE_LIBM:INTERNAL=
+//Have symbol lrint
+HAVE_LRINT:INTERNAL=1
+//Have symbol lrintf
+HAVE_LRINTF:INTERNAL=1
+//Have include smmintrin.h
+HAVE_SMMINTRIN_H:INTERNAL=1
 //Test HAVE_STDATOMIC
 HAVE_STDATOMIC:INTERNAL=1
+//Have include xmmintrin.h
+HAVE_XMMINTRIN_H:INTERNAL=1
 QTCREATOR_CMAKE_HELPER_DIRECTORY:INTERNAL=C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug/.qtcreator/cmake-helper
 //Qt feature: abstractbutton (from target Qt6::Widgets)
 QT_FEATURE_abstractbutton:INTERNAL=ON
@@ -1423,6 +1574,12 @@ QT_FEATURE_xmlstreamreader:INTERNAL=ON
 QT_FEATURE_xmlstreamwriter:INTERNAL=ON
 //Qt feature: zstd (from target Qt6::Core)
 QT_FEATURE_zstd:INTERNAL=OFF
+//Test STACK_PROTECTOR_DISABLED_SUPPORTED
+STACK_PROTECTOR_DISABLED_SUPPORTED:INTERNAL=1
+//Test STACK_PROTECTOR_SUPPORTED
+STACK_PROTECTOR_SUPPORTED:INTERNAL=1
+//Have symbol alloca
+USE_ALLOCA_SUPPORTED:INTERNAL=1
 //ADVANCED property for variable: Vulkan_GLSLANG_VALIDATOR_EXECUTABLE
 Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: Vulkan_GLSLC_EXECUTABLE

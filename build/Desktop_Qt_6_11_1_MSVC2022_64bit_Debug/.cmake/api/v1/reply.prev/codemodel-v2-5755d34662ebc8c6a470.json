@@ -1,0 +1,201 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						3,
+						7
+					]
+				},
+				{
+					"build" : "opus_build",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-opus_build-Debug-e830ebe491d62198cf39.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "third_party/opus/src",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "portaudio_build",
+					"jsonFile" : "directory-portaudio_build-Debug-49954ab90920e1e3778c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "third_party/libportaudio",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "Nuummite",
+					"jsonFile" : "directory-Nuummite-Debug-011b0b86f358160dc9f5.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Nuummite",
+					"targetIndexes" : 
+					[
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						3
+					],
+					"name" : "Nuummite",
+					"targetIndexes" : 
+					[
+						0,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "Opus",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "portaudio",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "audio_flow_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-audio_flow_test-Debug-dc7026aeeddb2636ac34.json",
+					"name" : "audio_flow_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "opus::@e42b9166975b3a2be099",
+					"jsonFile" : "target-opus-Debug-e82df30420e5cfb0e76c.json",
+					"name" : "opus",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "portaudio_static::@9b62f84dc91b36e8bcab",
+					"jsonFile" : "target-portaudio_static-Debug-12d9b50506bc9edc7848.json",
+					"name" : "portaudio_static",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rnnoise_static::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rnnoise_static-Debug-50df2793d0d766869542.json",
+					"name" : "rnnoise_static",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "voice_client::@17e8d7377dc5d9abfc46",
+					"jsonFile" : "target-voice_client-Debug-02aab31dc936f859d431.json",
+					"name" : "voice_client",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "voice_client_autogen::@17e8d7377dc5d9abfc46",
+					"jsonFile" : "target-voice_client_autogen-Debug-88d8f56964adfa48ec25.json",
+					"name" : "voice_client_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "voice_client_autogen_timestamp_deps::@17e8d7377dc5d9abfc46",
+					"jsonFile" : "target-voice_client_autogen_timestamp_deps-Debug-31393fc3a3d8711efe2f.json",
+					"name" : "voice_client_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "voice_shared::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-voice_shared-Debug-233212a4c015ec2d22fd.json",
+					"name" : "voice_shared",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/YUVANESH/Downloads/Nuummite-old/build/Desktop_Qt_6_11_1_MSVC2022_64bit_Debug",
+		"source" : "C:/Users/YUVANESH/Downloads/Nuummite-old"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

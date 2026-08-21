@@ -47,6 +47,24 @@ cmake --build build-msvc
 
 cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake -S . -B build-msvc-rel -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=C:\Qt\6.11.1\msvc2022_64 && cmake --build build-msvc-rel'
 ```
+'''
+How to Build and Run
+1. Build
+From the Visual Studio Build Tools Developer Command Prompt:
+
+cmd
+
+cd C:\Users\YUVANESH\Downloads\Nuummite-old
+cmd /c ""C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cmake -S . -B build-msvc-rel -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=C:\Qt\6.11.1\msvc2022_64 && cmake --build build-msvc-rel --parallel"
+2. Deploy Qt DLLs (One-time per build directory)
+cmd
+
+C:\Qt\6.11.1\msvc2022_64\bin\windeployqt.exe build-msvc-rel\bin\voice_client.exe --compiler-runtime
+3. Run
+cmd
+
+build-msvc-rel\bin\voice_client.exe
+'''
 
 ## Run
 

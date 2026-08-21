@@ -1,11 +1,15 @@
 #include "audio_engine.h"
 #include "audio_packet.h"
 #include "socket_utils.h"
-#include "portaudio_dyn.h"
+#ifdef PA_USE_STATIC
+#include "portaudio_static.h"   // static PortAudio: Pa_* called directly
+#else
+#include "portaudio_dyn.h"      // dynamic PortAudio: loaded via LoadLibrary
+#endif
 #include "aec_processor.h"
 #include "rnnoise_processor.h"
 #include "winsock_init.h"
-#include "opus.h"
+#include "opus.h"   // resolved from OPUS_INCLUDE_DIR (third_party/opus/src/include/ for static build)
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -33,7 +37,9 @@ constexpr int AUDIO_PORT = 50002;
 constexpr int DSCP_EF = 46;
 constexpr int IP_TOS_EF = DSCP_EF << 2;
 constexpr int RX_QUEUE_MAX_FRAMES = 8;
+#ifndef PA_USE_STATIC
 constexpr const wchar_t* DEFAULT_PORTAUDIO_DLL_W = L"libportaudio.dll";
+#endif
 static WinSockInit g_wsa;
 
 std::string toLower(std::string value) {
@@ -121,9 +127,13 @@ void appendNativeDebugLog(const char* message) {
     std::fclose(file);
 }
 
+#ifndef PA_USE_STATIC
+// ── Dynamic PortAudio loader (LoadLibrary path) ───────────────────────────────
+// Only compiled when building without static portaudio (PA_USE_STATIC not set).
+
 HMODULE SecureLoadPortAudioLibraryW(const std::wstring& full_path) {
-    const bool has_dir = (full_path.find(L'\\')!= std::wstring::npos) ||
-                         (full_path.find(L'/')!= std::wstring::npos);
+    const bool has_dir = (full_path.find(L'\\') != std::wstring::npos) ||
+                         (full_path.find(L'/') != std::wstring::npos);
     DWORD flags =
         LOAD_LIBRARY_SEARCH_APPLICATION_DIR |
         LOAD_LIBRARY_SEARCH_SYSTEM32 |
@@ -251,7 +261,7 @@ struct PortAudioApi {
         }
 
         const PaError err = Initialize();
-        if (err!= paNoError) {
+        if (err != paNoError) {
             error = "PortAudio dynamic initialization failed: ";
             error += (GetErrorText? GetErrorText(err) : "PortAudio error");
             return false;
@@ -272,6 +282,8 @@ struct PortAudioApi {
         initialized = false;
     }
 };
+
+#endif // !PA_USE_STATIC
 
 PortAudioApi& portAudioApi() {
     static PortAudioApi api;

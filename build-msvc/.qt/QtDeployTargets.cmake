@@ -1,8 +1,0 @@
-set(__QT_DEPLOY_TARGET_voice_client_FILE C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/bin/voice_client.exe)
-set(__QT_DEPLOY_TARGET_voice_client_TYPE EXECUTABLE)
-set(__QT_DEPLOY_TARGET_voice_client_RUNTIME_DLLS C:/Qt/6.11.1/msvc2022_64/bin/Qt6Network.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6UiTools.dll;C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/opus.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6OpenGLWidgets.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Widgets.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6OpenGL.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Gui.dll;C:/Qt/6.11.1/msvc2022_64/bin/Qt6Core.dll)
-set(__QT_DEPLOY_TARGET_voice_shared_FILE C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/lib/voice_shared.lib)
-set(__QT_DEPLOY_TARGET_voice_shared_TYPE STATIC_LIBRARY)
-set(__QT_DEPLOY_TARGET_audio_flow_test_FILE C:/Users/YUVANESH/Downloads/Nuummite-old/build-msvc/bin/audio_flow_test.exe)
-set(__QT_DEPLOY_TARGET_audio_flow_test_TYPE EXECUTABLE)
-set(__QT_DEPLOY_TARGET_audio_flow_test_RUNTIME_DLLS C:/Users/YUVANESH/Downloads/Nuummite-old/third_party/opus/opus.dll)

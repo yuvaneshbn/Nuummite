@@ -99,6 +99,68 @@ SodiumWrapper::crypto_secretbox_easy_fn SodiumWrapper::p_encrypt_ = nullptr;
 SodiumWrapper::crypto_secretbox_open_easy_fn SodiumWrapper::p_decrypt_ = nullptr;
 SodiumWrapper::randombytes_buf_fn SodiumWrapper::p_random_ = nullptr;
 
+#ifdef SODIUM_STATIC
+#include <sodium.h>
+
+bool SodiumWrapper::init() {
+    if (initialized_) return true;
+
+    if (sodium_init() < 0) {
+        std::cerr << " sodium_init() failed.\n";
+        return false;
+    }
+
+    p_encrypt_ = crypto_secretbox_easy;
+    p_decrypt_ = crypto_secretbox_open_easy;
+    p_random_  = randombytes_buf;
+    initialized_ = true;
+    std::cout << " Libsodium static initialized successfully\n";
+    return true;
+}
+
+void SodiumWrapper::shutdown() {
+    initialized_ = false;
+    std::atomic_store(&key_, std::shared_ptr<const std::array<uint8_t, 32>>());
+    p_encrypt_ = nullptr;
+    p_decrypt_ = nullptr;
+    p_random_ = nullptr;
+}
+
+std::vector<uint8_t> SodiumWrapper::deriveKey(const std::string& passphrase) {
+    if (passphrase.empty() || !initialized_) {
+        return {};
+    }
+
+    static const unsigned char salt[16] = {
+        'N','u','u','m','m','i','t','e','V','o','i','c','e','K','D','F'
+    };
+    std::vector<uint8_t> out(32, 0);
+    const unsigned long long ops = static_cast<unsigned long long>(crypto_pwhash_opslimit_interactive());
+    const size_t mem = crypto_pwhash_memlimit_interactive();
+    const int alg = crypto_pwhash_alg_default();
+
+    const int rc = crypto_pwhash(out.data(),
+                                static_cast<unsigned long long>(out.size()),
+                                passphrase.c_str(),
+                                static_cast<unsigned long long>(passphrase.size()),
+                                salt, ops, mem, alg);
+    if (rc == 0) {
+        return out;
+    }
+
+    const char* domain = "Nuummite:secretbox:key:v1";
+    std::string input = passphrase + "|" + domain;
+
+    uint8_t final_key[32] = {0};
+    crypto_generichash(final_key, 32, reinterpret_cast<const unsigned char*>(input.data()), static_cast<unsigned long long>(input.size()), nullptr, 0);
+
+    std::vector<uint8_t> fallback_out(final_key, final_key + 32);
+    std::memset(final_key, 0, sizeof(final_key));
+    return fallback_out;
+}
+
+#else
+
 bool SodiumWrapper::init() {
     if (initialized_) return true;
 
@@ -200,6 +262,7 @@ std::vector<uint8_t> SodiumWrapper::deriveKey(const std::string& passphrase) {
     std::memset(final_key, 0, sizeof(final_key));
     return out;
 }
+#endif
 
 void SodiumWrapper::setKey(const std::string& passphrase) {
     if (passphrase.empty()) return;
